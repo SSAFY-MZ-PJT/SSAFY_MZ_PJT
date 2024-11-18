@@ -129,12 +129,21 @@ WSGI_APPLICATION = 'CINERIUM.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# MySQL로 설정
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cinerium',  # 데이터베이스 이름
+        'USER': 'root',      # MySQL 사용자 이름
+        'PASSWORD': '1q2w3e4r%',  # MySQL 비밀번호
+        'HOST': 'localhost',   # MySQL 서버 주소 (보통 로컬은 'localhost')
+        'PORT': '3306',        # MySQL 포트 (기본값은 3306)
+        'OPTIONS': {
+            'charset': 'utf8mb4',  # UTF-8 지원
+        },
     }
 }
+
 
 
 # Password validation

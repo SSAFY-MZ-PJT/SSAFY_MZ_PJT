@@ -144,6 +144,8 @@ DATABASES = {
     }
 }
 
+# account.EmailAddress에서 조건부 제약에 대한 MySQL의 경고 무시
+SILENCED_SYSTEM_CHECKS = ['models.W036']
 
 
 # Password validation

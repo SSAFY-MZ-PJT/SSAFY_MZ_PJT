@@ -31,6 +31,25 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # APP
+    'accounts',
+    'movies',
+    'reviews',
+
+    # DRF
+    'rest_framework',
+    'rest_framework.authtoken',
+
+    # REST_AUTH
+    'dj_rest_auth',
+    'allauth',
+    'allauth.account',
+
+    # social login 필요 시 추가
+    'django.contrib.sites',
+    'allauth.socialaccount',
+
+    # 기본 앱
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +57,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+# social login 필요 시
+SITE_ID = 1
+
+# DRF auth settings
+# Token 인증을 기본으로 사용하도록 설정
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+# 사용자 수정
+AUTH_USER_MODEL = 'accounts.User'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -75,8 +109,15 @@ WSGI_APPLICATION = 'CINERIUM.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cinerium',
+        'USER': 'root',
+        'PASSWORD': '1q2w3e4r%',
+        'HOST': 'localhost',   # MySQL 호스트
+        'PORT': '3306',        # MySQL 포트 (기본값은 3306)
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
 

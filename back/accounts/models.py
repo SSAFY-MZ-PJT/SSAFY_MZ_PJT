@@ -17,6 +17,3 @@ class User(AbstractUser):
 # mysql -u root -p
 # DROP DATABASE cinerium;
 # CREATE DATABASE cinerium CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-
-# mysqldump -u root -p --default-character-set=utf8mb4 cinerium > data.sql
-# mysql -u root -p cinerium < data.sql

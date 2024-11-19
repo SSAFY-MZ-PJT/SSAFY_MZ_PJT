@@ -170,9 +170,19 @@ DATABASES = {
         'PORT': '3306',        # MySQL 포트 (기본값은 3306)
         'OPTIONS': {
             'charset': 'utf8mb4',  # UTF-8 지원
+            'connect_timeout': 60,  # Timeout 설정 (초 단위)
         },
     }
 }
+
+# SQLite 코드
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 
 # account.EmailAddress에서 조건부 제약에 대한 MySQL의 경고 무시
 SILENCED_SYSTEM_CHECKS = ['models.W036']

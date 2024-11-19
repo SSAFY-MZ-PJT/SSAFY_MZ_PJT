@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-kg@v0h&3d_znj7k+g5=orb_nw!s^8$-ljmf%_!$toz_91ru_4$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    'allauth.socialaccount.providers.google',
 
     # CORS
     'corsheaders',
@@ -62,9 +64,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+# USER MODEL
+AUTH_USER_MODEL = 'accounts.User'
+
 # social login 필요 시
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+AUCCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_REQUIRED = False
 
 # DRF auth settings
 # Token 인증을 기본으로 사용하도록 설정
@@ -75,12 +82,32 @@ REST_FRAMEWORK = {
     ],
     # permission
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
 }
 
-# USER MODEL
-AUTH_USER_MODEL = 'accounts.User'
+# dj-rest-auth 설정
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
+}
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailsSerializer',
+}
+
+# allauth 설정
+ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
+
+
+# 미디어 파일 설정 (프로필 이미지를 위해 필요)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# 허용할 이미지 파일 형식
+ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
+
+# 최대 업로드 크기 (2MB)
+MAX_UPLOAD_SIZE = 2 * 1024 * 1024
 
 MIDDLEWARE = [
     # auth

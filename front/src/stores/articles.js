@@ -98,5 +98,5 @@ export const useArticleStore = defineStore('article', () => {
       })
   }
   
-  return { articles, API_URL, getArticles, createArticle, signUp, logIn, token, isLogin, logIn }
+  return { }
 }, { persist: true })

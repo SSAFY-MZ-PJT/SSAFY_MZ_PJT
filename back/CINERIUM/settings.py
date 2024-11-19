@@ -28,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
+# API 키
+TMDB_API_KEY = '95fdc7d197e0ebacb14c6073f7a5def1'
+
 
 # Application definition
 

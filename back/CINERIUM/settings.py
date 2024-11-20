@@ -122,10 +122,9 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 
 
-    # 기본 미들웨어
+    # CORS 및 기본 미들웨어
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # CORS
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

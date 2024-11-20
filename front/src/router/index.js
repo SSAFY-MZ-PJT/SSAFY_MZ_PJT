@@ -13,7 +13,7 @@ import MovieDetailView from '../views/movies/MovieDetailView.vue'
 
 import UserupdateView from '../views/account/UserupdateView.vue'
 
-import { useArticleStore } from '../stores/articles'
+import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,7 +25,7 @@ const router = createRouter({
       component: LogInView
     },
     {
-      path: '/signup',
+      path: '/accounts/signup',
       name: 'SignUpView',
       component: SignUpView
     },

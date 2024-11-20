@@ -121,18 +121,20 @@ MIDDLEWARE = [
     # auth
     'allauth.account.middleware.AccountMiddleware',
 
-    # CORS
-    'corsheaders.middleware.CorsMiddleware',
 
     # 기본 미들웨어
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # CORS
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # CORS
 CORS_ALLOWED_ORIGINS = [
@@ -165,28 +167,28 @@ WSGI_APPLICATION = 'CINERIUM.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # MySQL로 설정
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cinerium',  # 데이터베이스 이름
-        'USER': 'root',      # MySQL 사용자 이름
-        'PASSWORD': '1q2w3e4r%',  # MySQL 비밀번호
-        'HOST': 'localhost',   # MySQL 서버 주소 (보통 로컬은 'localhost')
-        'PORT': '3306',        # MySQL 포트 (기본값은 3306)
-        'OPTIONS': {
-            'charset': 'utf8mb4',  # UTF-8 지원
-            'connect_timeout': 60,  # Timeout 설정 (초 단위)
-        },
-    }
-}
-
-# SQLite 코드
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'cinerium',  # 데이터베이스 이름
+#         'USER': 'root',      # MySQL 사용자 이름
+#         'PASSWORD': '1q2w3e4r%',  # MySQL 비밀번호
+#         'HOST': 'localhost',   # MySQL 서버 주소 (보통 로컬은 'localhost')
+#         'PORT': '3306',        # MySQL 포트 (기본값은 3306)
+#         'OPTIONS': {
+#             'charset': 'utf8mb4',  # UTF-8 지원
+#             'connect_timeout': 60,  # Timeout 설정 (초 단위)
+#         },
 #     }
 # }
+
+# SQLite 코드
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 # account.EmailAddress에서 조건부 제약에 대한 MySQL의 경고 무시

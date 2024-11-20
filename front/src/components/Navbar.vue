@@ -43,6 +43,31 @@
         </div>
     </div>
 </nav>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container">
+        <!-- 로고 -->
+        <a class="" href="#">
+        <img src="../assets/Navbaricons/Logo.png" alt="Logo" width="120" class="d-inline-block align-text-top">
+        </a>
+        <!-- 햄버거 버튼 -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- 드롭다운 메뉴 -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            
+            <li class="nav-item">
+            <a class="nav-link" href="/login">로그인</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/signup">회원가입</a>
+            </li>
+        </ul>
+        </div>
+    </div>
+</nav>
    
 </template>
 

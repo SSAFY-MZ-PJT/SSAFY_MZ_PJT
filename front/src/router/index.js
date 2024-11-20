@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import GuidepageView from '../views/GuidepageView.vue'
 
+import SignUpView from '../views/account/SignUpView.vue'
+import LogInView from '../views/account/LogInView.vue'
+
 import ProfileMeView from '../views/profile/ProfileMeView.vue'
 import ProfileView from '../views/profile/ProfileView.vue'
 
@@ -11,11 +14,24 @@ import { useArticleStore } from '../stores/articles'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // account
     {
-      path: '/guidepage',
-      name: 'GuidepageView',
-      component: GuidepageView
+      path: '/login',
+      name: 'LogInView',
+      component: LogInView
     },
+    {
+      path: '/signup',
+      name: 'SignUpView',
+      component: SignUpView
+    },
+    {
+      path: '/userupdate',
+      name: 'UserupdateView',
+      component: UserupdateView
+    },
+
+    // profile
     {
       path: '/profile',
       name: 'ProfileMeView',
@@ -27,12 +43,12 @@ const router = createRouter({
       name: 'ProfileView',
       component: ProfileView
     },
+    
     {
-      path: '/userupdate',
-      name: 'UserupdateView',
-      component: UserupdateView
+      path: '/guidepage',
+      name: 'GuidepageView',
+      component: GuidepageView
     },
-   
   ]
 })
 

@@ -10,7 +10,7 @@ from reviews.models import Review
 class CustomRegisterSerializer(RegisterSerializer):
     email = serializers.EmailField(required=True)  # 이메일 필수
     favorite_genres = serializers.PrimaryKeyRelatedField(
-        queryset=Genre.objects.all(), many=True, required=True  # 좋아하는 장르 필수
+        queryset=Genre.objects.all(), many=True, required=False  # 좋아하는 장르 필수
     )
 
     def save(self, request):

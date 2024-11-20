@@ -13,6 +13,11 @@ import MovieDetailView from '../views/movies/MovieDetailView.vue'
 
 import UserupdateView from '../views/account/UserupdateView.vue'
 
+import BoardView from '../views/reviews/BoardView.vue'
+import BoardDetailView from '../views/reviews/BoardDetailView.vue'
+import ReviewDetailView from '../views/reviews/ReviewDetailView.vue'
+import ReviewCreateView from '../views/reviews/ReviewCreateView.vue'
+
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
@@ -20,17 +25,17 @@ const router = createRouter({
   routes: [
     // account
     {
-      path: '/login',
+      path: '/account/login',
       name: 'LogInView',
       component: LogInView
     },
     {
-      path: '/accounts/signup',
+      path: '/account/signup',
       name: 'SignUpView',
       component: SignUpView
     },
     {
-      path: '/userupdate',
+      path: '/account/userupdate',
       name: 'UserupdateView',
       component: UserupdateView
     },
@@ -43,14 +48,14 @@ const router = createRouter({
     },
     {
       // path: '/profile/:username',
-      path: '/profileother',
+      path: '/profile/profileother',
       name: 'ProfileView',
       component: ProfileView
     },
 
     // movies
     {
-      path: '/main',
+      path: '/movies/main',
       name: 'MainView',
       component: MainView
     },
@@ -67,6 +72,29 @@ const router = createRouter({
       component: MovieDetailView
     },
     
+    // reviews
+    {
+      path: '/reviews/board',
+      name: 'BoardView',
+      component: BoardView
+    },
+    {
+      // path: '/reviews/board/:movie.id',
+      path: '/reviews/boarddetail',
+      name: 'BoardDetailView',
+      component: BoardDetailView
+    },
+    {
+      // path: '/reviews/:review.id',
+      path: '/reviews/1',
+      name: 'ReviewDetailView',
+      component: ReviewDetailView
+    },
+    {
+      path: '/reviews/create',
+      name: 'ReviewCreateView',
+      component: ReviewCreateView
+    },
     
     {
       path: '/guidepage',

@@ -9,16 +9,21 @@
                     <a href="#" class="text-dark text-decoration-none">이달의 영화 추천</a>
                   </li>
                   <li class="col-md-4 list-inline-item mb-3">
-                    <a href="/guidepage" class="text-dark text-decoration-none">Help</a>
+                    <router-link :to="{name:'GuidepageView'}" class="text-dark text-decoration-none">
+                      Help
+                    </router-link>  
                   </li>
                   <li class="col-md-4 list-inline-item mb-3">
                     <a href="#" class="text-dark text-decoration-none">유저들의 영화 추천</a>
                   </li>
                   <li class="col-md-4 list-inline-item mb-3">
-                    <a href="#" class="text-dark text-decoration-none">GitHub</a>
+                    <a href="https://github.com/SSAFY-MZ-PJT/SSAFY_MZ_PJT" class="text-dark text-decoration-none">GitHub</a>
                   </li>
                   <li class="col-md-4 list-inline-item mb-3">
                     <a href="#" class="text-dark text-decoration-none">게시판</a>
+                    <!-- <router-link :to="{name:''}" class="text-dark text-decoration-none">
+                      게시판
+                    </router-link>  -->
                   </li>
                 </ul>
               </div>
@@ -43,6 +48,9 @@
   </template>
   
   <script setup>
+
+import { RouterLink } from 'vue-router';
+
   </script>
   
 <style >

@@ -75,7 +75,7 @@
             </p>
           </div>
           <div class="text-center py-5">
-            <button class="btn btn-outline-success btn-lg">Create an account</button>
+            <button @click="goToSignUp" class="btn btn-outline-success btn-lg">Create an account</button>
           </div>
         </div>
 
@@ -85,6 +85,14 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goToSignUp = () => {
+  router.push({ name: 'SignUpView' });
+};
+
 </script>
 
 <style scoped>

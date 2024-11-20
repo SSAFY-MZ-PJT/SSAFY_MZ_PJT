@@ -2,45 +2,55 @@
 
 from rest_framework import serializers
 from .models import Movie, Director, Actor, Genre
+from reviews.models import Review
 
-# Genre Serializer
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         fields = ['id', 'name']
 
 
-# Director Serializer
 class DirectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Director
         fields = ['id', 'name', 'photo_url']
 
 
-# Actor Serializer
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
         fields = ['id', 'name', 'photo_url']
 
 
-# Movie Serializer
+class ReviewListSerializer(serializers.ModelSerializer):
+    """
+    영화에 연결된 리뷰 간략한 정보를 포함하는 Serializer
+    """
+    class Meta:
+        model = Review
+        fields = ['id', 'title', 'content', 'created_at', 'updated_at', 'user']  # 필요한 필드만 포함
+
+
 class MovieSerializer(serializers.ModelSerializer):
-    genres = GenreSerializer(many=True, read_only=True)  # Nested Serializer for genres
-    director = DirectorSerializer(read_only=True)       # Nested Serializer for director
-    actors = ActorSerializer(many=True, read_only=True) # Nested Serializer for actors
+    director = DirectorSerializer(read_only=True)  # 감독 정보
+    actors = ActorSerializer(many=True, read_only=True)  # 배우 정보
+    genres = GenreSerializer(many=True, read_only=True)  # 장르 정보
+    reviews = ReviewListSerializer(many=True, read_only=True)  # 연결된 리뷰 간략 정보
 
     class Meta:
         model = Movie
         fields = [
-            'id', 
-            'title', 
-            'genres', 
-            'release_date', 
-            'poster_image_url', 
-            'plot', 
-            'director', 
-            'actors', 
-            'is_now_playing', 
-            'is_popular'
+            'id',
+            'title',
+            'genres',
+            'release_date',
+            'poster_image_url',
+            'plot',
+            'director',
+            'actors',
+            'rating',
+            'is_now_playing',
+            'is_popular',
+            'reviews',  # 영화와 연결된 리뷰
         ]
+

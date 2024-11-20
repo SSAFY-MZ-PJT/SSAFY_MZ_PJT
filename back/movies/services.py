@@ -67,6 +67,7 @@ def save_movie_to_db(movie_data):
             'release_date': movie_data.get('release_date'),
             'poster_image_url': f"https://image.tmdb.org/t/p/w500{movie_data.get('poster_path')}" if movie_data.get('poster_path') else None,
             'plot': movie_data.get('overview'),
+            'rating': movie_data.get('vote_average'),
             'director': director,
         }
     )

@@ -72,9 +72,14 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # social login 필요 시
 SITE_ID = 1
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-AUCCOUNT_AUTHENTICATION_METHOD = 'username'
-ACCOUNT_EMAIL_REQUIRED = False
+
+# 이메일 인증
+# ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+# ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+# ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_EMAIL_VERIFICATION = "none"  # 이메일 인증 비활성화
+ACCOUNT_EMAIL_REQUIRED = False       # 이메일 입력 비활성화 (필수 아님)
 
 # DRF auth settings
 # Token 인증을 기본으로 사용하도록 설정

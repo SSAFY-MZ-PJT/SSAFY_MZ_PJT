@@ -80,7 +80,7 @@
               </div>
               <img src="../icons/movie_p.webp" class="card-img-top no-rounded" alt="Card Image">
               <div class="card-body">
-                <h5 class="card-title">Card Title 1</h5>
+                <h5 class="fw-bold">Card Title 1</h5>
                 <div class="d-flex align-items-center">
                   <img src="@/assets/Reviewicons/star.png" alt="star" width="20" class="me-2">
                   <p class="mb-0">수정 필요</p>
@@ -153,36 +153,35 @@ padding: 5px;
 font-weight: bold;
 }
 
+/* 그 페이지 넘기는거 */
+  /* 페이지 이동 기본 스타일 */
+  .pagination .page-link {
+    color: #254E01; /* 페이지 링크 기본 색상 */
+    transition: background-color 0.3s ease, color 0.3s ease; /* 부드러운 전환 효과 */
+  }
 
-/* 페이지 이동 기본 스타일 */
-.pagination .page-link {
-  color: #084e0d; /* 페이지 링크 기본 색상 */
-  padding: 10px 15px; /* 버튼 크기 조정 */
-  transition: background-color 0.3s ease, color 0.3s ease; /* 부드러운 전환 효과 */
-}
+  /* 포커스 및 클릭 상태 수정 */
+  .pagination .page-link:focus,
+  .pagination .page-link:active {
+    outline: none; /* 포커스 테두리 제거 */
+    box-shadow: none; /* 기본 그림자 제거 */
+    background-color: #ffffff; /* 클릭 시 배경색 회색 대신 연한 초록색 */
+    color: #254E01; /* 클릭 시 글자색 초록색 */
+    font-weight: bold;
+  }
 
-/* 포커스 및 클릭 상태 수정 */
-.pagination .page-link:focus,
-.pagination .page-link:active {
-  outline: none; /* 포커스 테두리 제거 */
-  box-shadow: none; /* 기본 그림자 제거 */
-  background-color: #ffffff; /* 클릭 시 배경색 회색 대신 연한 초록색 */
-  color: #084e0d; /* 클릭 시 글자색 초록색 */
-  font-weight: bold;
-}
+  /* 호버 상태 */
+  .pagination .page-link:hover {
+    background-color: #254E01; /* 호버 시 배경색 */
+    color: #ffffff; /* 호버 시 텍스트 색상 */
+  }
 
-/* 호버 상태 */
-.pagination .page-link:hover {
-  background-color: #084e0d; /* 호버 시 배경색 */
-  color: #ffffff; /* 호버 시 텍스트 색상 */
-}
-
-/* 활성화된 페이지 */
-.pagination .page-item.active .page-link {
-  background-color: #063808; /* 활성 페이지 배경색 */
-  color: #ffffff; /* 활성 페이지 텍스트 색상 */
-  border: none; /* 테두리 제거 */
-}
+  /* 활성화된 페이지 */
+  .pagination .page-item.active .page-link {
+    background-color: #254E01; /* 활성 페이지 배경색 */
+    color: #ffffff; /* 활성 페이지 텍스트 색상 */
+    border: none; /* 테두리 제거 */
+  }
 
 
 /* 리뷰, 토론 카드 컴포 */

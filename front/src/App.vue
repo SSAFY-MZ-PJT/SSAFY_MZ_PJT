@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <Navbar />
-
     <main>
       <RouterView />
     </main>
@@ -13,6 +12,7 @@
 <script setup>
 import Footer from '@/components/Footer.vue';
 import Navbar from '@/components/Navbar.vue';
+import Search from '@/components/Search.vue';
 </script>
 
 <style scoped>

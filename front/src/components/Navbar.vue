@@ -16,7 +16,7 @@
         <ul class="navbar-nav ms-auto">
             
             <li class="nav-item">
-            <a class="nav-link" href="#">Watch</a>
+            <a class="nav-link" href="/main">Watch</a>
             </li>
             <li class="nav-item">
             <a class="nav-link" href="#">Community</a>

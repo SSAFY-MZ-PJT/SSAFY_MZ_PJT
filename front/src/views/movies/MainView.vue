@@ -8,9 +8,12 @@
 
       <!-- Monthly Recommendation -->
       <div class="d-flex justify-content-between align-items-center">
-        <a href="/movies" class="text-decoration-none text-dark d-flex align-items-center">
+        <router-link
+          :to="{ name: 'RecommendDetailView' }"
+          class="text-decoration-none text-dark d-flex align-items-center monthly-recommendation"
+        >
           <h4 class="text-start fw-bold mb-0 mx-4">• 이달의 추천 영화 →</h4>
-        </a>
+        </router-link>
       </div>
       <p class="text-muted mb-5 mx-5">Movies just for you</p>
 
@@ -26,7 +29,7 @@
                 :src="movie.image"
                 class="card-img-top poster-image"
                 :alt="movie.title"
-                style="height: 250px; object-fit: cover;"
+            
               />
               <!-- Favorite Button -->
               <button
@@ -197,5 +200,11 @@ const playTrailer = (url) => {
   background-color: #c4302b !important;
   color: #ffffff !important;
   border-color: #c4302b !important;
+}
+
+/* Monthly Recommendation */
+.monthly-recommendation:hover h4 {
+  font-size: 1.7rem; /* Increase font size on hover */
+  transition: font-size 0.3s ease; /* Smooth transition */
 }
 </style>

@@ -45,7 +45,7 @@
     <div class="text-center mt-3">
       <p class="small">
         계정이 없으신가요? 
-        <router-link to="/signup" class="signup-link">회원가입을 진행해주세요.</router-link>
+        <router-link :to="{name:'SignUpView'}" class="signup-link">회원가입을 진행해주세요.</router-link>
       </p>
     </div>
   </div>

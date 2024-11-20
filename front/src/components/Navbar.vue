@@ -4,22 +4,26 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <div class="container">
         <!-- 로고 -->
-        <a class="" href="#">
-        <img src="../assets/Navbaricons/Logo.png" alt="Logo" width="120" class="d-inline-block align-text-top">
-        </a>
+        <router-link :to="{name:'GuidepageView'}">
+            <img src="../assets/Navbaricons/Logo.png" alt="Logo" width="120" class="d-inline-block align-text-top">     
+        </router-link> 
         <!-- 햄버거 버튼 -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
         <!-- 드롭다운 메뉴 -->
         <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-            
+        <ul class="navbar-nav ms-auto"> 
             <li class="nav-item">
-            <a class="nav-link" href="/main">Watch</a>
+                <router-link class="nav-link" :to="{name:'MainView'}">
+                    Watch
+                </router-link> 
             </li>
             <li class="nav-item">
-            <a class="nav-link" href="#">Community</a>
+                <a href="#" class="nav-link">Reviews</a>
+                <!-- <router-link class="nav-link" :to="{name:''}">
+                    Reviews
+                </router-link>  -->
             </li>
             <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="/profile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -28,14 +32,20 @@
             </a>
             <ul class="dropdown-menu">
                 <li class="dropdown-item">
-                    <a class="nav-link" href="/profile">Profile</a>
+                    <router-link class="nav-link" :to="{name:'ProfileMeView'}">
+                        Profile
+                    </router-link> 
                 </li>
                 <li class="dropdown-item">
-                    <a class="nav-link" href="/userupdate">Upate</a>
+                    <router-link class="nav-link" :to="{name:'UserupdateView'}">
+                        Upate
+                    </router-link> 
                 </li>
                 <li><hr class="dropdown-divider"></li>
                 <li class="dropdown-item">
-                    <a class="nav-link" href="/profileother">Logout</a>
+                    <router-link class="nav-link" :to="{name:'UserupdateView'}">
+                        Logout
+                    </router-link> 
                 </li>
             </ul>
             </li>
@@ -47,22 +57,25 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <div class="container">
         <!-- 로고 -->
-        <a class="" href="#">
-        <img src="../assets/Navbaricons/Logo.png" alt="Logo" width="120" class="d-inline-block align-text-top">
-        </a>
+        <router-link :to="{name:'GuidepageView'}">
+            <img src="../assets/Navbaricons/Logo.png" alt="Logo" width="120" class="d-inline-block align-text-top">     
+        </router-link> 
         <!-- 햄버거 버튼 -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
         <!-- 드롭다운 메뉴 -->
         <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-            
+        <ul class="navbar-nav ms-auto">   
             <li class="nav-item">
-            <a class="nav-link" href="/login">로그인</a>
+                <router-link class="nav-link" :to="{name:'LogInView'}">
+                    로그인
+                </router-link> 
             </li>
             <li class="nav-item">
-            <a class="nav-link" href="/accounts/signup">회원가입</a>
+                <router-link class="nav-link" :to="{name:'SignUpView'}">
+                    회원가입
+                </router-link> 
             </li>
         </ul>
         </div>

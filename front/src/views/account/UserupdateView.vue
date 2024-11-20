@@ -204,25 +204,25 @@ const defaultProfileImage = "/src/assets/Reviewicons/user.png";
 
 // 장르 데이터
 const genres = [
-  { id: 28, name: "액션", color: "#FFB3BA", textColor: "#C4001A" },      // 진한 빨강
-  { id: 12, name: "모험", color: "#FFDFBA", textColor: "#C46200" },      // 진한 오렌지
-  { id: 16, name: "애니메이션", color: "#FFFFBA", textColor: "#C4C400" },// 진한 노랑
-  { id: 35, name: "코미디", color: "#BAFFC9", textColor: "#007F24" },    // 진한 민트
-  { id: 80, name: "범죄", color: "#BAE1FF", textColor: "#005495" },      // 진한 파랑
-  { id: 99, name: "다큐멘터리", color: "#D5AAFF", textColor: "#490089" },// 진한 바이올렛
-  { id: 18, name: "드라마", color: "#FFCCF9", textColor: "#C4005D" },    // 진한 핑크
-  { id: 10751, name: "가족", color: "#F3FFE3", textColor: "#4A7300" },   // 진한 연두색
-  { id: 14, name: "판타지", color: "#FFDEFA", textColor: "#A6528B" },    // 진한 라일락
-  { id: 36, name: "역사", color: "#E0BBE4", textColor: "#5B0080" },      // 진한 퍼플
-  { id: 27, name: "공포", color: "#FFABAB", textColor: "#8B0000" },      // 진한 빨강
-  { id: 10402, name: "음악", color: "#B2F4FF", textColor: "#00617E" },   // 진한 블루
-  { id: 9648, name: "미스터리", color: "#D3F8E2", textColor: "#005F3F" },// 진한 민트
-  { id: 10749, name: "로맨스", color: "#FFB7CE", textColor: "#9E1947" }, // 진한 핑크 레드
-  { id: 878, name: "SF", color: "#D4F1F4", textColor: "#004D5E" },       // 진한 청록
-  { id: 10770, name: "TV 영화", color: "#FBE4FF", textColor: "#8A2DA9" },// 진한 보라
-  { id: 53, name: "스릴러", color: "#F8D4E4", textColor: "#591532" },    // 진한 로즈핑크
-  { id: 10752, name: "전쟁", color: "#D5D8DC", textColor: "#404040" },   // 진한 그레이
-  { id: 37, name: "서부", color: "#F5E6CC", textColor: "#8A5E29" },      // 진한 베이지
+  { id: 28, name: "액션", color: "#FFB3BA", textColor: "#8B0000" },
+  { id: 12, name: "모험", color: "#FFDFBA", textColor: "#A84300" },
+  { id: 16, name: "애니메이션", color: "#FFFFBA", textColor: "#8B8B00" },
+  { id: 35, name: "코미디", color: "#BAFFC9", textColor: "#004C16" },
+  { id: 80, name: "범죄", color: "#BAE1FF", textColor: "#003B6F" },
+  { id: 99, name: "다큐멘터리", color: "#D5AAFF", textColor: "#350062" },
+  { id: 18, name: "드라마", color: "#FFCCF9", textColor: "#8B003A" },
+  { id: 10751, name: "가족", color: "#F3FFE3", textColor: "#344C00" },
+  { id: 14, name: "판타지", color: "#FFDEFA", textColor: "#7A3973" },
+  { id: 36, name: "역사", color: "#E0BBE4", textColor: "#3C004C" },
+  { id: 27, name: "공포", color: "#FFABAB", textColor: "#600000" },
+  { id: 10402, name: "음악", color: "#B2F4FF", textColor: "#004254" },
+  { id: 9648, name: "미스터리", color: "#D3F8E2", textColor: "#004025" },
+  { id: 10749, name: "로맨스", color: "#FFB7CE", textColor: "#72122E" },
+  { id: 878, name: "SF", color: "#D4F1F4", textColor: "#00383F" },
+  { id: 10770, name: "TV 영화", color: "#FBE4FF", textColor: "#5D0074" },
+  { id: 53, name: "스릴러", color: "#F8D4E4", textColor: "#3B0E22" },
+  { id: 10752, name: "전쟁", color: "#D5D8DC", textColor: "#303030" },
+  { id: 37, name: "서부", color: "#F5E6CC", textColor: "#5C401F" },
 ];
 
 

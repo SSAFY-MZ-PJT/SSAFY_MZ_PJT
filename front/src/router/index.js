@@ -7,6 +7,10 @@ import LogInView from '../views/account/LogInView.vue'
 import ProfileMeView from '../views/profile/ProfileMeView.vue'
 import ProfileView from '../views/profile/ProfileView.vue'
 
+import MainView from '../views/movies/MainView.vue'
+import RecommendDetailView from '../views/movies/RecommendDetailView.vue'
+import MovieDetailView from '../views/movies/MovieDetailView.vue'
+
 import UserupdateView from '../views/account/UserupdateView.vue'
 
 import { useArticleStore } from '../stores/articles'
@@ -43,6 +47,26 @@ const router = createRouter({
       name: 'ProfileView',
       component: ProfileView
     },
+
+    // movies
+    {
+      path: '/main',
+      name: 'MainView',
+      component: MainView
+    },
+    {
+      // path: '/movies:(어떤 추천인가에 따라 이름지정)',
+      path:'/movies',
+      name: 'RecommendDetailView',
+      component: RecommendDetailView
+    },
+    {
+      // path: '/movies:movies.id',
+      path:'/010307',
+      name: 'MovieDetailView',
+      component: MovieDetailView
+    },
+    
     
     {
       path: '/guidepage',

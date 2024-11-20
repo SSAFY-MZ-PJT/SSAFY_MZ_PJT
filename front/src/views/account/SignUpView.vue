@@ -17,65 +17,83 @@
           />
         </div>
       </div>
+      
+      <!-- Password -->
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label for="password" class="form-label">비밀번호</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            v-model="formData.password"
+            placeholder="비밀번호를 입력하세요"
+            required
+          />
+        </div>
+      </div>
+      <div v-if="!passwordIsValid && formData.password" class="text-danger mb-3">
+        비밀번호는 8자리 이상, 특수문자, 숫자를 포함해야 합니다.
+      </div>
 
+      <!-- Confirm Password -->
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            class="form-control"
+            v-model="confirmPassword"
+            placeholder="비밀번호를 다시 입력하세요"
+            required
+          />
+        </div>
+      </div>
+      <div v-if="passwordMismatch" class="text-danger mb-3">
+        비밀번호가 일치하지 않습니다.
+      </div>
       <!-- Email -->
       <div class="row mb-3">
-      <div class="col-md-12">
-        <label for="email" class="form-label">이메일</label>
-        <div class="input-group">
-          <input
-            type="text"
-            id="emailId"
-            class="form-control"
-            v-model="emailId"
-            placeholder="이메일 아이디"
-            required
-          />
-          <span class="input-group-text">@</span>
-          <select
-            class="form-select"
-            v-model="selectedDomain"
-            @change="updateEmailDomain"
-          >
-            <option value="">직접 입력</option>
-            <option value="naver.com">naver.com</option>
-            <option value="gmail.com">gmail.com</option>
-            <option value="kakao.com">kakao.com</option>
-            <option value="daum.net">daum.net</option>
-            <option value="nate.com">nate.com</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="row mb-3" v-if="selectedDomain === ''">
-      <div class="col-md-12">
-        <input
-          type="text"
-          class="form-control"
-          v-model="customDomain"
-          placeholder="도메인 직접 입력"
-          @input="updateEmail"
-        />
-      </div>
-    </div>
-
-      <!-- Email Verification -->
-      <div class="row mb-3" v-show="emailVerificationSent">
         <div class="col-md-12">
-          <label for="emailVerification" class="form-label">이메일 인증 코드</label>
-          <input
-            type="text"
-            id="emailVerification"
-            class="form-control"
-            v-model="formData.emailVerificationCode"
-            placeholder="이메일로 받은 인증 코드를 입력하세요"
-            required
-          />
-          <button type="button" class="btn custom-button mt-2" @click="verifyEmail">
-            인증 확인
-          </button>
+          <label for="email" class="form-label">이메일</label>
+          <div class="input-group">
+            <input
+              type="text"
+              id="emailId"
+              class="form-control"
+              v-model="emailId"
+              placeholder="이메일 아이디"
+              required
+            />
+            <span class="input-group-text">@</span>
+            <select
+              class="form-select"
+              v-model="selectedDomain"
+              @change="updateEmailDomain"
+            >
+              <option value="">직접 입력</option>
+              <option value="naver.com">naver.com</option>
+              <option value="gmail.com">gmail.com</option>
+              <option value="kakao.com">kakao.com</option>
+              <option value="daum.net">daum.net</option>
+              <option value="nate.com">nate.com</option>
+            </select>
+          </div>
         </div>
       </div>
+      <div class="row mb-3" v-if="selectedDomain === ''">
+        <div class="col-md-12">
+          <input
+            type="text"
+            class="form-control"
+            v-model="customDomain"
+            placeholder="도메인 직접 입력"
+            @input="updateEmail"
+          />
+        </div>
+      </div>
+
 
       <!-- 한줄 소개 -->
       <div class="row mb-3">
@@ -94,46 +112,49 @@
 
       <!-- 장르 선택 -->
       <div class="row mb-4">
-      <div class="col-md-12">
-        <label for="genres" class="form-label">선호 장르 (최소 2개 이상 선택)</label>
-        <div class="d-flex flex-wrap">
-          <button
-            v-for="genre in genres"
-            :key="genre.id"
-            type="button"
-            class="btn custom-button me-2 mb-2"
-            @click="toggleGenre(genre.name)"
-            :class="{ 'selected': formData.selectedGenres.includes(genre.name) }"
-          >
-            {{ genre.name }}
-          </button>
-        </div>
-        <!-- 선택된 장르 -->
-        <div v-if="formData.selectedGenres.length" class="mt-3">
-          <h6>선택된 장르:</h6>
-          <div class="selected-genres">
-            <span
-              v-for="(genre, index) in formData.selectedGenres"
-              :key="index"
-              class="selected-genre-badge me-2"
-              @click="toggleGenre(genre)"
+        <div class="col-md-12">
+          <label for="genres" class="form-label">선호 장르 (최소 2개 이상 선택)</label>
+          <div class="d-flex flex-wrap">
+            <button
+              v-for="genre in genres"
+              :key="genre.id"
+              type="button"
+              class="btn custom-button me-2 mb-2"
+              @click="toggleGenre(genre.name)"
+              :class="{ 'selected': formData.selectedGenres.includes(genre.name) }"
             >
-              {{ genre }}
-              <button
-                type="button"
-                class="btn-close btn-close-white ms-2"
-                aria-label="Remove"
-                @click.stop="toggleGenre(genre)"
-              ></button>
-            </span>
+              {{ genre.name }}
+            </button>
+          </div>
+
+          <!-- 선택된 장르 -->
+          <div v-if="formData.selectedGenres.length" class="mt-3">
+            <h6>선택된 장르:</h6>
+            <div class="selected-genres">
+              <span
+                v-for="(genre, index) in formData.selectedGenres"
+                :key="index"
+                class="selected-genre-badge me-2"
+                :style="{
+                  backgroundColor: genres.find(g => g.name === genre)?.color,
+                  color: genres.find(g => g.name === genre)?.textColor
+                }"
+                @click="toggleGenre(genre)"
+              >
+                {{ genre }}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+        </div>
 
       <!-- 버튼 -->
       <div class="text-center">
-        <button type="submit" class="btn custom-button" :disabled="!isFormValid">
+        <button
+          type="submit"
+          class="btn custom-button"
+          :disabled="!isFormValid || passwordMismatch || !passwordIsValid"
+        >
           회원가입
         </button>
       </div>
@@ -142,11 +163,12 @@
 </template>
 
 <script setup>
-import { reactive, computed, ref, onMounted, watch } from "vue";
+import { reactive, computed, ref, watch } from "vue";
 
 const formData = reactive({
   username: "",
   email: "",
+  password: "",
   emailVerificationCode: "",
   aboutMe: "",
   selectedGenres: [],
@@ -155,6 +177,8 @@ const formData = reactive({
 const emailId = ref("");
 const selectedDomain = ref("");
 const customDomain = ref("");
+const confirmPassword = ref("");
+
 const updateEmailDomain = () => {
   if (selectedDomain.value) {
     formData.email = `${emailId.value}@${selectedDomain.value}`;
@@ -171,26 +195,27 @@ watch(emailId, updateEmailDomain);
 watch(customDomain, updateEmail);
 
 const genres = [
-  { id: 28, name: "액션" },
-  { id: 12, name: "모험" },
-  { id: 16, name: "애니메이션" },
-  { id: 35, name: "코미디" },
-  { id: 80, name: "범죄" },
-  { id: 99, name: "다큐멘터리" },
-  { id: 18, name: "드라마" },
-  { id: 10751, name: "가족" },
-  { id: 14, name: "판타지" },
-  { id: 36, name: "역사" },
-  { id: 27, name: "공포" },
-  { id: 10402, name: "음악" },
-  { id: 9648, name: "미스터리" },
-  { id: 10749, name: "로맨스" },
-  { id: 878, name: "SF" },
-  { id: 10770, name: "TV 영화" },
-  { id: 53, name: "스릴러" },
-  { id: 10752, name: "전쟁" },
-  { id: 37, name: "서부" },
+  { id: 28, name: "액션", color: "#FFB3BA", textColor: "#C4001A" },      // 진한 빨강
+  { id: 12, name: "모험", color: "#FFDFBA", textColor: "#C46200" },      // 진한 오렌지
+  { id: 16, name: "애니메이션", color: "#FFFFBA", textColor: "#C4C400" },// 진한 노랑
+  { id: 35, name: "코미디", color: "#BAFFC9", textColor: "#007F24" },    // 진한 민트
+  { id: 80, name: "범죄", color: "#BAE1FF", textColor: "#005495" },      // 진한 파랑
+  { id: 99, name: "다큐멘터리", color: "#D5AAFF", textColor: "#490089" },// 진한 바이올렛
+  { id: 18, name: "드라마", color: "#FFCCF9", textColor: "#C4005D" },    // 진한 핑크
+  { id: 10751, name: "가족", color: "#F3FFE3", textColor: "#4A7300" },   // 진한 연두색
+  { id: 14, name: "판타지", color: "#FFDEFA", textColor: "#A6528B" },    // 진한 라일락
+  { id: 36, name: "역사", color: "#E0BBE4", textColor: "#5B0080" },      // 진한 퍼플
+  { id: 27, name: "공포", color: "#FFABAB", textColor: "#8B0000" },      // 진한 빨강
+  { id: 10402, name: "음악", color: "#B2F4FF", textColor: "#00617E" },   // 진한 블루
+  { id: 9648, name: "미스터리", color: "#D3F8E2", textColor: "#005F3F" },// 진한 민트
+  { id: 10749, name: "로맨스", color: "#FFB7CE", textColor: "#9E1947" }, // 진한 핑크 레드
+  { id: 878, name: "SF", color: "#D4F1F4", textColor: "#004D5E" },       // 진한 청록
+  { id: 10770, name: "TV 영화", color: "#FBE4FF", textColor: "#8A2DA9" },// 진한 보라
+  { id: 53, name: "스릴러", color: "#F8D4E4", textColor: "#591532" },    // 진한 로즈핑크
+  { id: 10752, name: "전쟁", color: "#D5D8DC", textColor: "#404040" },   // 진한 그레이
+  { id: 37, name: "서부", color: "#F5E6CC", textColor: "#8A5E29" },      // 진한 베이지
 ];
+
 
 const toggleGenre = (genre) => {
   const index = formData.selectedGenres.indexOf(genre);
@@ -205,27 +230,33 @@ const isFormValid = computed(() => {
   return (
     formData.username &&
     formData.email &&
-    formData.email.includes('@') &&
-    (!emailVerificationSent.value || formData.emailVerificationCode) &&
+    formData.email.includes("@") &&
     formData.selectedGenres.length >= 2
   );
 });
 
+const passwordIsValid = computed(() => {
+  const regex = /^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  return regex.test(formData.password);
+});
+
+const passwordMismatch = computed(() => {
+  return formData.password !== confirmPassword.value;
+});
+
 const registerUser = async () => {
-  if (isFormValid.value) {
+  if (isFormValid.value && !passwordMismatch.value && passwordIsValid.value) {
     try {
-      // Django 백엔드로 회원가입 요청을 보내는 로직
-      const response = await fetch('/api/register/', {
-        method: 'POST',
+      const response = await fetch("/api/register/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
         alert("회원가입이 완료되었습니다!");
-        // 회원가입 성공 후 처리 (예: 로그인 페이지로 리다이렉트)
       } else {
         const errorData = await response.json();
         alert(`회원가입 실패: ${errorData.message}`);
@@ -236,36 +267,6 @@ const registerUser = async () => {
     }
   }
 };
-
-const verifyEmail = async () => {
-  try {
-    // Django 백엔드로 이메일 인증 요청을 보내는 로직
-    const response = await fetch('/api/verify-email/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: formData.email,
-        verificationCode: formData.emailVerificationCode,
-      }),
-    });
-
-    if (response.ok) {
-      alert("이메일이 성공적으로 인증되었습니다.");
-      emailVerificationSent.value = false;
-    } else {
-      alert("이메일 인증에 실패했습니다. 다시 시도해주세요.");
-    }
-  } catch (error) {
-    console.error("이메일 인증 중 오류 발생:", error);
-    alert("이메일 인증 중 오류가 발생했습니다. 다시 시도해주세요.");
-  }
-};
-
-onMounted(() => {
-  console.log('Component mounted');
-});
 </script>
 
 <style scoped>
@@ -287,6 +288,7 @@ textarea {
   resize: none;
 }
 
+/* 버튼 스타일 */
 .custom-button {
   background-color: #ffffff;
   color: #254E01 !important;
@@ -308,13 +310,11 @@ textarea {
 .selected-genre-badge {
   display: inline-flex;
   align-items: center;
-  background-color: #95b973;
-  color: #ffffff;
   border-radius: 10px;
   padding: 4px 10px;
   font-size: 0.8rem;
   margin-bottom: 7px;
-  cursor: pointer;
+  cursor: pointer; /* 클릭 가능하다는 표시 */
   transition: background-color 0.3s ease;
 }
 

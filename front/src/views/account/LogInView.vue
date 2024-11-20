@@ -42,7 +42,7 @@
     </form>
 
     <!-- 회원가입 링크 -->
-    <div class="text-center mt-5">
+    <div class="text-center mt-3">
       <p class="small">
         계정이 없으신가요? 
         <router-link to="/signup" class="signup-link">회원가입을 진행해주세요.</router-link>
@@ -84,6 +84,8 @@ const login = async () => {
   margin: auto;
 }
 
+
+/* 버튼 스타일 */
 .custom-button {
   background-color: #ffffff;
   color: #254E01 !important;
@@ -97,6 +99,8 @@ const login = async () => {
   border-color: #254E01 !important;
 }
 
+
+/* 링크 스타일 */
 .signup-link {
   color: #254E01;
   text-decoration: none;

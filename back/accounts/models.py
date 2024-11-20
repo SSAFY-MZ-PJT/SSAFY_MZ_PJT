@@ -16,7 +16,3 @@ class User(AbstractUser):
 # mysql -u root -p
 # DROP DATABASE cinerium;
 # CREATE DATABASE cinerium CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-
-# {
-#     "key": "3fe235139f37c1cd542d2311191f16e17a5775df"
-# }

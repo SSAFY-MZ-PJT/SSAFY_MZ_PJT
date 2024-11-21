@@ -18,6 +18,9 @@ import BoardDetailView from '../views/reviews/BoardDetailView.vue'
 import ReviewDetailView from '../views/reviews/ReviewDetailView.vue'
 import ReviewCreateView from '../views/reviews/ReviewCreateView.vue'
 
+import CreateDiscussionView from '../views/discussion/CreateDiscussionView.vue'
+import TalkAiView from '../views/discussion/TalkAiView.vue'
+
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
@@ -94,6 +97,17 @@ const router = createRouter({
       path: '/reviews/create',
       name: 'ReviewCreateView',
       component: ReviewCreateView
+    },
+    // discussion
+    {
+      path: '/craetediscussion',
+      name: 'CreateDiscussionView.vue',
+      component: CreateDiscussionView
+    },
+    {
+      path: '/talkai',
+      name: 'TalkAiView',
+      component: TalkAiView
     },
     
     {

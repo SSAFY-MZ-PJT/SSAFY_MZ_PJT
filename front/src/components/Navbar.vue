@@ -5,6 +5,7 @@
     <div class="container">
         <!-- 로고 -->
         <router-link :to="{name:'GuidepageView'}">
+            예시
             <img src="../assets/Navbaricons/Logo.png" alt="Logo" width="120" class="d-inline-block align-text-top">     
         </router-link> 
         <!-- 햄버거 버튼 -->
@@ -15,15 +16,39 @@
         <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto"> 
             <li class="nav-item">
+                <a href="/010307" class="nav-link">영화 상세</a>
+            </li>
+            <li class="nav-item">
+                <a href="/reviews/create" class="nav-link">리뷰생성</a>
+            </li>
+            <li class="nav-item">
+                <a href="/reviews/1" class="nav-link">리뷰 상세</a>
+            </li>
+            <li class="nav-item">
+                <a href="/craetediscussion" class="nav-link">토론 만들기</a>
+            </li>
+            <li class="nav-item">
+                <router-link class="nav-link" :to="{name:'LogInView'}">
+                    로그인
+                </router-link> 
+            </li>
+            <li class="nav-item">
+                <router-link class="nav-link" :to="{name:'SignUpView'}">
+                    회원가입
+                </router-link> 
+            </li>
+            <li class="nav-item">
                 <router-link class="nav-link" :to="{name:'MainView'}">
                     Watch
                 </router-link> 
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">Reviews</a>
-                <!-- <router-link class="nav-link" :to="{name:''}">
+                <router-link class="nav-link" :to="{name:'BoardView'}">
                     Reviews
-                </router-link>  -->
+                </router-link> 
+            </li>
+            <li class="nav-item">
+                <a href="/reviews/boarddetail" class="nav-link">리뷰 상세</a>
             </li>
             <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="/profile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -50,11 +75,65 @@
             </ul>
             </li>
         </ul>
+        
+        </div>
+    </div>
+</nav>
+<!-- 조건문으로 로그인 안한 유저면 다르게 보여줘야함. -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white" v-if="false">
+    <div class="container">
+        <!-- 로고 -->
+        <router-link :to="{name:'GuidepageView'}">
+            <img src="../assets/Navbaricons/Logo.png" alt="Logo" width="120" class="d-inline-block align-text-top">     
+        </router-link> 
+        <!-- 햄버거 버튼 -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- 드롭다운 메뉴 -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto"> 
+            <li class="nav-item">
+                <router-link class="nav-link" :to="{name:'MainView'}">
+                    Watch
+                </router-link> 
+            </li>
+            <li class="nav-item">
+                <router-link class="nav-link" :to="{name:'BoardView'}">
+                    Reviews
+                </router-link> 
+            </li>
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/profile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="../assets/Navbaricons/user.png" alt="User" width="30" height="30">
+                User
+            </a>
+            <ul class="dropdown-menu">
+                <li class="dropdown-item">
+                    <router-link class="nav-link" :to="{name:'ProfileMeView'}">
+                        Profile
+                    </router-link> 
+                </li>
+                <li class="dropdown-item">
+                    <router-link class="nav-link" :to="{name:'UserupdateView'}">
+                        Upate
+                    </router-link> 
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li class="dropdown-item">
+                    <router-link class="nav-link" :to="{name:'UserupdateView'}">
+                        Logout
+                    </router-link> 
+                </li>
+            </ul>
+            </li>
+        </ul>
+        
         </div>
     </div>
 </nav>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white">
+<nav class="navbar navbar-expand-lg navbar-light bg-white" v-if="false">
     <div class="container">
         <!-- 로고 -->
         <router-link :to="{name:'GuidepageView'}">

@@ -2,27 +2,15 @@
      <div class="search-bar-container">
           <div class="container">
             <p class="text-center">Welcome to Cinerium</p>
-            <p class="text-center pb-3">Recommendations</p>
+            <p class="text-center pb-3">Decorate the forest with your personality</p>
             <div class="input-group">
-              <input 
-                type="text" 
-                class="form-control" 
-                placeholder="Find the best movies to watch..." 
-                aria-label="Search"
-                aria-describedby="search-button">
-              <button 
-                class="btn" 
-                type="button" 
-                id="search-button">
-                Search
-              </button>
             </div>
           </div>
         </div>
 </template>
 
 <script setup>
-
+  
 </script>
 
 <style scoped>

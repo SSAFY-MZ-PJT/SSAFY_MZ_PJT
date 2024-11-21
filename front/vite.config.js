@@ -12,5 +12,12 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        implementation: require('sass'), // Dart Sass를 명시적으로 지정
+      },
+    }
   }
 })

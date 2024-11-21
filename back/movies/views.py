@@ -102,7 +102,7 @@ def movie_detail(request, movie_pk):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST', 'DELETE'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def movie_like(request, movie_pk):
     """
@@ -110,12 +110,11 @@ def movie_like(request, movie_pk):
     """
     movie = get_object_or_404(Movie, pk=movie_pk)
 
-    if request.method == 'POST':
+    if request.user in movie.likes.all():
+        # 좋아요 취소
+        movie.likes.remove(request.user)
+        return Response({"message": "영화 좋아요 취소 완료"}, status=status.HTTP_200_OK)
+    else:
         # 좋아요 추가
         movie.likes.add(request.user)
         return Response({"message": "영화 좋아요 완료"}, status=status.HTTP_200_OK)
-
-    elif request.method == 'DELETE':
-        # 좋아요 취소
-        movie.likes.remove(request.user)
-        return Response({"message": "영화 좋아요 취소 완료"}, status=status.HTTP_204_NO_CONTENT)

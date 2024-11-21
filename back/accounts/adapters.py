@@ -32,6 +32,10 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         user.save()
         return user
     
+    def format_email_subject(self, subject):
+        # 이메일 제목 앞의 [example.com]을 제거
+        return subject
+    
     def delete_user(self, request, user):
         """
         회원탈퇴 처리를 위한 메서드

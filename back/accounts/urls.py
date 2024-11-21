@@ -6,13 +6,6 @@ from . import views
 app_name = 'accounts'
 
 urlpatterns = [
-    # 기본 Auth 엔드포인트
-    path('', include('dj_rest_auth.urls')),  # 로그인/로그아웃
-        # 로그인: dj-rest-auth/login/
-        # 로그아웃: dj-rest-auth/logout/
-        # 비밀번호변경: dj-rest-auth/password/change/
-    path('signup/', include('dj_rest_auth.registration.urls')),  # 회원가입
-    
     # Custom 엔드포인트
     path('<int:user_pk>/', views.user_detail, name='user_detail'), # 회원 정보 조회, 회원 탈퇴, 회원 정보 수정
     # path('<int:user_pk>/password/', views.change_password, name='change_password'), # 기본 url로 가능할지

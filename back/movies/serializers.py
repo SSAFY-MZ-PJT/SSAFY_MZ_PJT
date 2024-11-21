@@ -32,10 +32,9 @@ class ReviewListSerializer(serializers.ModelSerializer):
 
 
 class MovieSerializer(serializers.ModelSerializer):
-    director = DirectorSerializer(read_only=True)  # 감독 정보
-    actors = ActorSerializer(many=True, read_only=True)  # 배우 정보
-    genres = GenreSerializer(many=True, read_only=True)  # 장르 정보
-    reviews = ReviewListSerializer(many=True, read_only=True)  # 연결된 리뷰 간략 정보
+    director = DirectorSerializer(read_only=True)
+    actors = ActorSerializer(many=True, read_only=True)
+    genres = GenreSerializer(many=True, read_only=True)
 
     class Meta:
         model = Movie
@@ -49,8 +48,15 @@ class MovieSerializer(serializers.ModelSerializer):
             'director',
             'actors',
             'rating',
+            'adult',
+            'budget',
+            'revenue',
+            'popularity',
+            'runtime',
+            'tagline',
+            'vote_count',
             'is_now_playing',
             'is_popular',
-            'reviews',  # 영화와 연결된 리뷰
         ]
+
 

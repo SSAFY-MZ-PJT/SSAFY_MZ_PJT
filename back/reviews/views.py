@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
-from .serializers import ReviewListSerializer, ReviewSerializer, CommentSerializer
+from .serializers import ReviewListSerializer, ReviewSerializer, CommentSerializer, ReplySerializer
 from .models import Review, Comment
 from movies.models import Movie
 
@@ -43,7 +43,6 @@ def movie_review_list_create(request, movie_pk):
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=request.user, movie=movie)  # 유저와 영화를 연결하여 저장
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
         
 
 @api_view(['GET', 'DELETE', 'PUT'])
@@ -73,25 +72,22 @@ def review_detail(request, review_pk):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-def comment_create(request, review_pk):
-    """
-    댓글 작성
-    """
-    review = get_object_or_404(Review, pk=review_pk)  # 특정 리뷰 확인
+def comment_list_create(request, review_pk):
+    review = get_object_or_404(Review, pk=review_pk)
 
-    # 요청 데이터에 user 및 review 정보 추가
-    data = request.data.copy()
-    data['review'] = review.pk
-    data['user'] = request.user.pk
+    if request.method == 'GET':
+        comments = review.comments.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    serializer = CommentSerializer(data=data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'POST':
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user, review=review)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 @api_view(['DELETE', 'PUT'])
@@ -118,15 +114,58 @@ def comment_detail(request, review_pk, comment_pk):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def reply_list_create(request, review_pk, comment_pk):
+    comment = get_object_or_404(Comment, pk=comment_pk, review_id=review_pk)
+
+    if request.method == 'GET':
+        replies = comment.replies.all()
+        serializer = ReplySerializer(replies, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'POST':
+        serializer = ReplySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user, comment=comment)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         
 
-@api_view(['POST', 'DELETE'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def review_like(request, review_pk):
+    """
+    리뷰 좋아요 및 좋아요 취소
+    """
     review = get_object_or_404(Review, pk=review_pk)
-    if request.method == 'POST':
-        review.likes.add(request.user)
-        return Response({"message": "좋아요 완료"}, status=status.HTTP_200_OK)
-    elif request.method == 'DELETE':
+
+    if request.user in review.likes.all():
+        # 좋아요 취소
         review.likes.remove(request.user)
-        return Response({"message": "좋아요 취소"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "리뷰 좋아요 취소 완료"}, status=status.HTTP_200_OK)
+    else:
+        # 좋아요 추가
+        review.likes.add(request.user)
+        return Response({"message": "리뷰 좋아요 완료"}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def comment_like(request, comment_pk):
+    """
+    댓글 좋아요 및 좋아요 취소
+    """
+    comment = get_object_or_404(Comment, pk=comment_pk)
+
+    if request.user in comment.likes.all():
+        # 좋아요 취소
+        comment.likes.remove(request.user)
+        return Response({"message": "댓글 좋아요 취소 완료"}, status=status.HTTP_200_OK)
+    else:
+        # 좋아요 추가
+        comment.likes.add(request.user)
+        return Response({"message": "댓글 좋아요 완료"}, status=status.HTTP_200_OK)

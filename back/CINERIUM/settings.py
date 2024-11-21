@@ -70,16 +70,36 @@ INSTALLED_APPS = [
 # USER MODEL
 AUTH_USER_MODEL = 'accounts.User'
 
+
+# 이메일 인증
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # 이메일 인증 필수
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True      # 이메일 인증 URL 클릭 시 바로 인증
+ACCOUNT_EMAIL_REQUIRED = True           # 이메일 입력 필수
+
+# 이메일 인증에 필요한 기본 이메일 설정
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"  # SMTP 백엔드 사용
+EMAIL_HOST = "smtp.gmail.com"  # 이메일 호스트 (예: Gmail)
+EMAIL_PORT = 587               # 이메일 포트
+EMAIL_USE_TLS = True           # TLS 사용
+EMAIL_HOST_USER = "rublin322@gmail.com"  # 발송 이메일 계정
+EMAIL_HOST_PASSWORD = "qloq swrq luxe vhjy"  # 발송 이메일 비밀번호
+DEFAULT_FROM_EMAIL = "rublin322@gmail.com"  # 기본 발신자 이메일
+
 # social login 필요 시
 SITE_ID = 1
 
-# 이메일 인증
-# ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-# ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-# ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'movies/'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/accounts/login/'
 
-ACCOUNT_EMAIL_VERIFICATION = "none"  # 이메일 인증 비활성화
-ACCOUNT_EMAIL_REQUIRED = False       # 이메일 입력 비활성화 (필수 아님)
+LOGIN_URL = '/accounts/login/'  # 기본 로그인 URL
+LOGOUT_URL = '/accounts/logout/'  # 기본 로그아웃 URL
+LOGIN_REDIRECT_URL = '/movies/'  # 로그인 후 리디렉션 경로
+LOGOUT_REDIRECT_URL = '/movies/'  # 로그아웃 후 리디렉션 경로
+
+ACCOUNT_ADAPTER = "accounts.adapters.CustomAccountAdapter"
+FRONTEND_URL = "http://127.0.0.1:5173"  # 이메일 인증 시 리디렉션할 프론트엔드 URL
+
 
 # DRF auth settings
 # Token 인증을 기본으로 사용하도록 설정
@@ -146,7 +166,7 @@ ROOT_URLCONF = 'CINERIUM.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -216,9 +236,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 

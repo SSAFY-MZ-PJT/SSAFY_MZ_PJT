@@ -25,6 +25,7 @@
 
 
 ## 🌳ERD
+![ERD_Cinerium (1)](https://github.com/user-attachments/assets/b9a726b4-4257-4064-978b-a399e6e75873)
 
 
 ## 🌵영화 추천 알고리즘 설명

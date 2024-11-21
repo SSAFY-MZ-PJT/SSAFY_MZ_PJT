@@ -44,3 +44,22 @@ class Command(BaseCommand):
 # ]
 
 # python manage.py fetch_movies <genre_id> --pages <number_of_pages>
+# python manage.py fetch_movies 28 --pages 1
+# python manage.py fetch_movies 12 --pages 1
+# python manage.py fetch_movies 16 --pages 1
+# python manage.py fetch_movies 35 --pages 1
+# python manage.py fetch_movies 80 --pages 1
+# python manage.py fetch_movies 99 --pages 1
+# python manage.py fetch_movies 18 --pages 1
+# python manage.py fetch_movies 10751 --pages 1
+# python manage.py fetch_movies 14 --pages 1
+# python manage.py fetch_movies 36 --pages 1
+# python manage.py fetch_movies 27 --pages 1
+# python manage.py fetch_movies 10402 --pages 1
+# python manage.py fetch_movies 9648 --pages 1
+# python manage.py fetch_movies 10749 --pages 1
+# python manage.py fetch_movies 878 --pages 1
+# python manage.py fetch_movies 10770 --pages 1
+# python manage.py fetch_movies 53 --pages 1
+# python manage.py fetch_movies 10752 --pages 1
+# python manage.py fetch_movies 37 --pages 1

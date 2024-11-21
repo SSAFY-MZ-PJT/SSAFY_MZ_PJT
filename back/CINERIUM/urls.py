@@ -21,8 +21,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('dj_rest_auth.urls')),  # 로그인/로그아웃
+    path('accounts/signup/', include('dj_rest_auth.registration.urls')),  # 회원가입
     path('accounts/', include('accounts.urls')),
     path('movies/', include('movies.urls')),
     path('reviews/', include('reviews.urls')),
     path('chats/', include('chats.urls')),
+    path('accounts/', include('allauth.urls')),  # allauth 기본 URL 패턴 추가
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

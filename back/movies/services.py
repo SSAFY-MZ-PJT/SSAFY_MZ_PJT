@@ -40,8 +40,8 @@ def save_movie_to_db(movie_data):
             director, _ = Director.objects.get_or_create(
                 tmdb_id=crew_member['id'],  # TMDB ID 저장
                 defaults={
-                'name': crew_member['name'],
-                'photo_url': f"https://image.tmdb.org/t/p/w500{crew_member['profile_path']}" if crew_member.get('profile_path') else None
+                    'name': crew_member['name'],
+                    'photo_url': f"https://image.tmdb.org/t/p/w500{crew_member['profile_path']}" if crew_member.get('profile_path') else None
                 }
             )
             break
@@ -61,13 +61,19 @@ def save_movie_to_db(movie_data):
     # 영화 데이터 저장
     movie, created = Movie.objects.get_or_create(
         tmdb_id=movie_data['id'],  # TMDB ID 저장
-        title=movie_data['title'],
         defaults={
             'title': movie_data.get('title'),
             'release_date': movie_data.get('release_date'),
             'poster_image_url': f"https://image.tmdb.org/t/p/w500{movie_data.get('poster_path')}" if movie_data.get('poster_path') else None,
             'plot': movie_data.get('overview'),
             'rating': movie_data.get('vote_average'),
+            'adult': movie_data.get('adult'),
+            'budget': movie_data.get('budget'),
+            'revenue': movie_data.get('revenue'),
+            'popularity': movie_data.get('popularity'),
+            'runtime': movie_data.get('runtime'),
+            'tagline': movie_data.get('tagline'),
+            'vote_count': movie_data.get('vote_count'),
             'director': director,
         }
     )
@@ -77,6 +83,7 @@ def save_movie_to_db(movie_data):
         movie.actors.set(actors)
 
     movie.save()
+
 
 
 def save_now_playing_movies(pages=1):

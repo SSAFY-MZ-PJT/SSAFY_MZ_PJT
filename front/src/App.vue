@@ -33,3 +33,15 @@ footer {
 }
 
 </style>
+
+
+<style>
+
+* {
+  font-family: "Noto Serif KR", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  }
+
+</style>

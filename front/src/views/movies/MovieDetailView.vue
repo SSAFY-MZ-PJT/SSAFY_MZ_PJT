@@ -11,7 +11,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <h1 class="fw-bold">{{ movie.title }}</h1>
-              <p class="text-muted" style="color: #002C0C;">{{ movie.year }} • {{ movie.rating }} • {{ movie.runtime }}</p>
+              <p class="text-muted">{{ movie.year }} • {{ movie.rating }} • {{ movie.runtime }}</p>
             </div>
             <!-- Watchlist Button -->
             <button class="btn custom-button">
@@ -27,19 +27,24 @@
           </div>
 
           <!-- Plot -->
-          <p class="lead" style="color: #002C0C;">{{ movie.plot }}</p>
+          <p class="lead">{{ movie.plot }}</p>
 
           <!-- Crew -->
           <div class="mt-4">
-            <h6 class="mb-3" style="color: #797979;">
-              <strong>Directors:</strong> &nbsp;&nbsp;<span style="color: #002C0C;">{{ movie.directors.join(" • ") }}</span>
+            <h6 class="mb-3">
+              <strong>Directors:</strong>&nbsp;&nbsp;<span>{{ movie.directors.join(" • ") }}</span>
             </h6>
-            <h6 class="mb-3" style="color: #797979;">
-              <strong>Writers:</strong> &nbsp;&nbsp;<span style="color: #002C0C;">{{ movie.writers.join(" • ") }}</span>
+            <h6 class="mb-3">
+              <strong>Writers:</strong>&nbsp;&nbsp;<span>{{ movie.writers.join(" • ") }}</span>
             </h6>
-            <h6 class="mb-3" style="color: #797979;">
-              <strong>Stars:</strong> &nbsp;&nbsp;<span style="color: #002C0C;">{{ movie.stars.join(" • ") }}</span>
+            <h6 class="mb-3">
+              <strong>Stars:</strong>&nbsp;&nbsp;<span>{{ movie.stars.join(" • ") }}</span>
             </h6>
+          </div>
+
+          <!-- Tagline -->
+          <div v-if="movie.tagline" class="tagline mt-4">
+            "{{ movie.tagline }}"
           </div>
         </div>
       </div>
@@ -143,6 +148,7 @@ const movie = reactive({
   directors: ["Denis Villeneuve"],
   writers: ["Frank Herbert", "Jon Spaihts", "Eric Roth"],
   stars: ["Timothée Chalamet", "Zendaya", "Rebecca Ferguson"],
+  tagline: "Beyond Fear, Destiny Awaits", // 추가된 tagline 데이터
   cast: [
     { name: "Timothée Chalamet", role: "Paul Atreides", image: "https://via.placeholder.com/100" },
     { name: "Zendaya", role: "Chani", image: "https://via.placeholder.com/100" },
@@ -216,6 +222,15 @@ const toggleLike = (id) => {
 
 .card-text {
   font-size: 0.9rem;
+}
+
+.tagline {
+  font-size: 1.5rem;
+  font-style: italic;
+  color: #4a4a4a;
+  border-left: 5px solid #254E01;
+  padding-left: 15px;
+  margin-top: 20px;
 }
 
 /* 버튼들 */

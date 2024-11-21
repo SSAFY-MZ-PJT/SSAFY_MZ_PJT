@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="pt-5 mx-4"> 
     <!-- 내 프로필 -->
-    <div>
-      <div class="container mt-5">
+    <div class="pt-5">
+      <div class="container mt-5 justify-content-center">
         <!-- 프로필 헤더 -->
-        <div class="row align-items-center mb-4">
+        <div class="row mb-4">
           <!-- 왼쪽: 프로필 이미지 및 정보 -->
           <div class="col-md-6 d-flex align-items-center">
             <img src="@/assets/Navbaricons/user.png" alt="Profile Picture" class="rounded-circle me-5" width="120">
@@ -15,44 +15,43 @@
           </div>
           <!-- 오른쪽: 작성글, 팔로워 수, 팔로잉 수 -->
           <div class="col-md-6">
-            <div class="d-flex align-items-center justify-content-center h-100 border-separator">
+            <div class="d-flex align-items-center justify-content-end h-100 border-separator">
               <div class="px-3 text-center border-end">
                 <a class="text-decoration-none text-dark" @click="showPosts">
-                  <h4 class="fw-bold">50</h4>
+                  <p class="fw-bold fs-4">50</p>
                   <p class="text-muted">Posts</p>
                 </a>
               </div>
               <div class="px-3 text-center border-start border-end">
                 <a class="text-decoration-none text-dark" @click="showFollowersFollowing('followers')">
-                  <h4 class="fw-bold">200</h4>
+                  <p class="fw-bold fs-4">200</p>
                   <p class="text-muted">Followers</p>
                 </a>
               </div>
               <div class="px-3 text-center border-start">
                 <a class="text-decoration-none text-dark" @click="showFollowersFollowing('following')">
-                  <h4 class="fw-bold">180</h4>
+                  <p class="fw-bold fs-4">180</p>
                   <p class="text-muted">Following</p>
                 </a>
               </div>
             </div>
           </div>
         </div>
-        <!-- 버튼 컨테이너 -->
-        <div class="button-container mt-4 d-flex justify-content-center">
-          <button class="btn me-3">새로운 토론 생성</button>
-          <button class="btn">새로운 리뷰 생성</button>
-        </div>
       </div>
     </div>
-
+    
     <hr class="responsive-hr mb-5 mt-5">
-
+    
     <!-- FFS 컴포넌트 (팔로워/팔로잉) -->
     <FFS v-if="viewMode !== 'default'" :viewMode="viewMode" />
-
+    
     <!-- 토론, 리뷰 섹션 -->
     <div v-if="viewMode === 'default'">
-      <h1 class="text-center fw-bold mb-5">Recent Discussion</h1>
+      <h1 class="text-center fw-bold mb-3">Recent Discussion</h1>
+      <!-- 버튼 컨테이너 -->
+      <div class="button-container mb-5 d-flex justify-content-center">
+        <button class="btn">새로운 토론 생성</button>
+      </div>
       <ul class="nav nav-underline justify-content-center custom-nav">
         <li class="nav-item">
           <a class="nav-link custom-link" href="#">최신순</a>
@@ -143,7 +142,18 @@ const showPosts = () => {
 </script>
     
 <style scoped>
-    
+/* 클릭 가능한 텍스트 스타일 */
+a.text-decoration-none.text-dark {
+  cursor: pointer; /* 마우스를 가져가면 클릭 가능 표시 */
+  transition: transform 0.5s ease, color 0.5s ease; /* 부드러운 전환 효과 */
+}
+
+a.text-decoration-none.text-dark:hover {
+  font-size: 1.2rem !important; /* 글씨 크기 확대 */
+  color: #084e0d; /* 색상 변경 */
+}
+
+
 .profile-header img {
 border: 3px solid #ddd;
 padding: 5px;
@@ -280,6 +290,8 @@ button:hover {
   background-color: #254E01 !important;
   color: #ffffff !important;
   border-color: #254E01 !important;
+  transform: scale(1.05);
 }
+
   
 </style>

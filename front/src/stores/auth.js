@@ -7,8 +7,11 @@ export const useAuthStore = defineStore('auth', () => {
   // state
   const isLoading = ref(false)
   const error = ref(null)
+  const isAuthenticated = ref(false); // 반드시 ref로 선언
+  const token = ref(localStorage.getItem('accessToken'));
+  const user = ref(null);
 
-  // actions
+  // 회원가입s
   async function registerUser(payload) {
     isLoading.value = true
     error.value = null
@@ -73,7 +76,10 @@ export const useAuthStore = defineStore('auth', () => {
       // 로그인 성공 시 처리
       localStorage.setItem('accessToken', token); // `key`로 저장
       console.log('토큰 저장 완료:', localStorage.getItem('accessToken'));
+      isAuthenticated.value = true; // 여기서 true로 설정
+
     } catch (error) {
+      isAuthenticated.value =false; // 여기서 true로 설정
       console.error('로그인 실패:', error.response?.data || error.message);
       throw error;
     }
@@ -87,9 +93,8 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null; // 유저 정보 초기화
   };
   
-  const isAuthenticated = ref(false); // 반드시 ref로 선언
-  const token = ref(null);
 
+  // 인증자 확인
   const restoreAuthState = () => {
     const savedToken = localStorage.getItem('accessToken');
     if (savedToken) {
@@ -102,6 +107,29 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
+  // // fetchUser 함수 단순화
+  // const fetchUser = async () => {
+  //   try {
+  //     if (!token.value) {
+  //       throw new Error('토큰이 없습니다. 로그인 상태를 확인하세요.');
+  //     }
+
+  //     const response = await axios.get('http://localhost:8000/accounts/user/', {
+  //       headers: {
+  //         Authorization: `Token ${token.value}`,
+  //       },
+  //     });
+
+  //     user.value = response.data; // 사용자 정보 저장
+  //     isAuthenticated.value = true;
+  //     console.log('사용자 정보 가져오기 성공:', response.data);
+  //   } catch (err) {
+  //     console.error('사용자 정보 가져오기 실패:', err.response?.data || err.message);
+  //     user.value = null;
+  //     isAuthenticated.value = false;
+  //   }
+  // };
+
   // expose managed state as return value
   return {
     isLoading,
@@ -111,5 +139,6 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     isAuthenticated,
     restoreAuthState,
+    // fetchUser
   }
 },{persist:true})

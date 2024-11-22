@@ -20,6 +20,7 @@ import ReviewCreateView from '../views/reviews/ReviewCreateView.vue'
 
 import CreateDiscussionView from '../views/discussion/CreateDiscussionView.vue'
 import TalkAiView from '../views/discussion/TalkAiView.vue'
+import EmailVerificationView from '../views/account/EmailVerificationView.vue'
 
 import { useAuthStore } from '../stores/auth'
 
@@ -27,6 +28,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     // account
+    {
+        path: '/email-verification',
+        name: 'EmailVerification',
+        component: EmailVerificationView
+    },
     {
       path: '/account/login',
       name: 'LogInView',

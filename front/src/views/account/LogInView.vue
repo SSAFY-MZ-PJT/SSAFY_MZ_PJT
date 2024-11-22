@@ -74,7 +74,7 @@ const login = async () => {
     
     // 로그인 성공 시 처리
     // 예: 홈 페이지로 리다이렉트
-    router.push('/');
+    router.push({'name':'MainView'});
   } catch (error) {
     console.error('로그인 실패:', error);
     alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');

@@ -1,6 +1,7 @@
 # accounts/adapters.py
 
 from allauth.account.adapter import DefaultAccountAdapter
+from django.conf import settings
 
 class CustomAccountAdapter(DefaultAccountAdapter):
     """
@@ -31,6 +32,10 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         # 최종 DB 저장
         user.save()
         return user
+    
+    def get_email_confirmation_url(self, request, emailconfirmation):
+            # Vue.js 프론트엔드 URL + 인증 키
+            return f"{settings.FRONTEND_URL}/email-verification?key={emailconfirmation.key}"
     
     def format_email_subject(self, subject):
         # 이메일 제목 앞의 [example.com]을 제거
@@ -64,3 +69,7 @@ class CustomAccountAdapter(DefaultAccountAdapter):
             return True
         except Exception as e:
             return False
+        
+  
+
+    

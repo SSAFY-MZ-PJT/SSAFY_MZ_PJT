@@ -69,15 +69,17 @@ const formData = reactive({
   password: '',
 });
 
-const login = async () => {
+const login = async function () {
   try {
-    await authStore.login(formData.email, formData.password);
-    router.push({ name: 'MainView' });
-  } catch (err) {
-    console.error('로그인 실패:', err);
+    await authStore.logIn({
+      email: formData.email,
+      password: formData.password,
+    });
+    router.push({ name: 'MainView' }); // 로그인 성공 시 리디렉션
+  } catch {
     alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
   }
-};
+}
 </script>
 
 <style scoped>

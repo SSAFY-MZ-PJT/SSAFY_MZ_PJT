@@ -117,28 +117,41 @@ const router = createRouter({
     },
     
     {
-      path: '/guidepage',
+      path: '/',
       name: 'GuidepageView',
       component: GuidepageView
     },
   ]
 })
 
-// router.beforeEach((to, from) => {
-//   const store = useArticleStore()
-//   // 만약 이동하는 목적지가 메인 페이지이면서
-//   // 현재 로그인 상태가 아니라면 로그인 페이지로 보냄
-//   if (to.name === 'ArticleView' && !store.isLogin) {
-//     window.alert('로그인이 필요합니다.')
-//     return { name: 'LogInView' }
-//   }
+// router.beforeEach
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
 
-//   // 만약 로그인 사용자가 회원가입 또는 로그인 페이지로 이동하려고 하면
-//   // 메인 페이지로 보냄
-//   if ((to.name === 'SignUpView' || to.name === 'LogInView') && (store.isLogin)) {
-//     window.alert('이미 로그인 되어있습니다.')
-//     return { name: 'ArticleView' }
-//   }
-// })
+  // 인증된 사용자만 접근 가능한 페이지
+  const authRequiredRoutes = [
+    'ProfileMeView',
+    'ProfileView',
+    'MainView',
+    'BoardView',
+    'ReviewCreateView',
+  ];
+
+  // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
+  if (authRequiredRoutes.includes(to.name) && !authStore.isAuthenticated) {
+    alert('Cinerium 서비스 이용을 위해선 로그인이 필요합니다.');
+    return next({ name: 'LogInView' });
+  }
+
+  // 이미 로그인한 사용자가 로그인/회원가입 페이지로 가려고 하면 메인 페이지로 리다이렉트
+  if (['LogInView', 'SignUpView'].includes(to.name) && authStore.isAuthenticated) {
+    alert('이미 로그인되어 있습니다.');
+    return next({ name: 'MainView' });
+  }
+
+  // 기본적으로 모든 라우트 이동 허용
+  next();
+});
+
 
 export default router

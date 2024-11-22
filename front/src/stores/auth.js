@@ -67,22 +67,49 @@ export const useAuthStore = defineStore('auth', () => {
         }
       );
       console.log('로그인 완료', response.data);
+
+      const token = response.data.key; // `key`가 토큰 값인 것으로 확인
   
       // 로그인 성공 시 처리
-      // 예: 토큰 저장, 상태 업데이트
-      localStorage.setItem('accessToken', response.data.token);
+      localStorage.setItem('accessToken', token); // `key`로 저장
+      console.log('토큰 저장 완료:', localStorage.getItem('accessToken'));
     } catch (error) {
       console.error('로그인 실패:', error.response?.data || error.message);
       throw error;
     }
   }
+
+  // 로그아웃
+  const logout = () => {
+    localStorage.removeItem('accessToken'); // 토큰 삭제
+    delete axios.defaults.headers.common['Authorization']; // 헤더 초기화
+    isAuthenticated.value = false; // 상태 초기화
+    user.value = null; // 유저 정보 초기화
+  };
   
+  const isAuthenticated = ref(false); // 반드시 ref로 선언
+  const token = ref(null);
+
+  const restoreAuthState = () => {
+    const savedToken = localStorage.getItem('accessToken');
+    if (savedToken) {
+      token.value = savedToken;
+      axios.defaults.headers.common['Authorization'] = `Token ${savedToken}`;
+      isAuthenticated.value = true; // 반응형 상태 업데이트
+    } else {
+      token.value = null;
+      isAuthenticated.value = false;
+    }
+  };
 
   // expose managed state as return value
   return {
     isLoading,
     error,
     registerUser,
-    logIn
+    logIn,
+    logout,
+    isAuthenticated,
+    restoreAuthState,
   }
 },{persist:true})

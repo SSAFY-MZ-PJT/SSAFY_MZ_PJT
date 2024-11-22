@@ -32,7 +32,7 @@
           />
         </div>
       </div>
-      <div v-if="!passwordIsValid && formData.password" class="text-danger mb-3">
+      <div v-if="!passwordIsValid && formData.password1" class="text-danger mb-3">
         비밀번호는 8자리 이상, 특수문자, 숫자를 포함해야 합니다.
       </div>
 
@@ -166,6 +166,10 @@
 import axios from "axios";
 import { reactive, computed, ref, watch } from "vue";
 import { useAuthStore } from '@/stores/auth'  // store import
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
 
 const authStore = useAuthStore()
 
@@ -259,7 +263,7 @@ const registerUser = async () => {
       
       if (success) {
         // 회원가입 성공 시 로그인 페이지로 이동
-        router.push('/login')
+        router.push({ name: 'LogInView' });
       }
     } catch (error) {
       console.error("회원가입 중 오류 발생:", error)

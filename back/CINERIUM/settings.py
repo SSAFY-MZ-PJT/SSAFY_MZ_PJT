@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -76,6 +75,9 @@ AUTH_USER_MODEL = 'accounts.User'
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # 이메일 인증 필수
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True      # 이메일 인증 URL 클릭 시 바로 인증
 ACCOUNT_EMAIL_REQUIRED = True           # 이메일 입력 필수
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # 이메일로 로그인
+ACCOUNT_USERNAME_REQUIRED = False       # username 불필수
+ACCOUNT_UNIQUE_EMAIL = True            # 이메일 중복 방지
 
 # 이메일 인증에 필요한 기본 이메일 설정
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -101,6 +103,11 @@ LOGOUT_REDIRECT_URL = '/movies/'  # 로그아웃 후 리디렉션 경로
 ACCOUNT_ADAPTER = "accounts.adapters.CustomAccountAdapter"
 FRONTEND_URL = "http://localhost:5173"  # 이메일 인증 시 리디렉션할 프론트엔드 URL
 
+# 인증 백엔드 설정
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # DRF auth settings
 # Token 인증을 기본으로 사용하도록 설정
@@ -274,5 +281,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-

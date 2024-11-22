@@ -51,10 +51,38 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  //로그인
+  const logIn = async function(payload) {
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/accounts/login/',
+        {
+          email: payload.email,  // 서버에서 기대하는 키 이름 확인
+          password: payload.password,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',  // JSON 형식으로 명시
+          },
+        }
+      );
+      console.log('로그인 완료', response.data);
+  
+      // 로그인 성공 시 처리
+      // 예: 토큰 저장, 상태 업데이트
+      localStorage.setItem('accessToken', response.data.token);
+    } catch (error) {
+      console.error('로그인 실패:', error.response?.data || error.message);
+      throw error;
+    }
+  }
+  
+
   // expose managed state as return value
   return {
     isLoading,
     error,
-    registerUser
+    registerUser,
+    logIn
   }
-})
+},{persist:true})

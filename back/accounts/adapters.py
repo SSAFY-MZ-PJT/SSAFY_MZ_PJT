@@ -33,10 +33,6 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         user.save()
         return user
     
-    def get_email_confirmation_url(self, request, emailconfirmation):
-            # Vue.js 프론트엔드 URL + 인증 키
-            return f"{settings.FRONTEND_URL}/email-verification?key={emailconfirmation.key}"
-    
     def format_email_subject(self, subject):
         # 이메일 제목 앞의 [example.com]을 제거
         return subject
@@ -70,6 +66,9 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         except Exception as e:
             return False
         
+    def get_email_confirmation_url(self, request, emailconfirmation):
+            # Vue.js 프론트엔드 URL + 인증 키
+            return f"{settings.FRONTEND_URL}/email-verification?key={emailconfirmation.key}"
   
 
     

@@ -38,7 +38,7 @@ class CustomLoginSerializer(LoginSerializer):
     def validate(self, attrs):
         user = super().validate(attrs)
         if not self.user.is_active:
-            raise serializers.ValidationError("이메일 인증이 완료되지 않았습니다.")
+            raise serializers.ValidationError("이메일 인증이 필요합니다.")
         return user
 
 

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -98,7 +99,7 @@ LOGIN_REDIRECT_URL = '/movies/'  # 로그인 후 리디렉션 경로
 LOGOUT_REDIRECT_URL = '/movies/'  # 로그아웃 후 리디렉션 경로
 
 ACCOUNT_ADAPTER = "accounts.adapters.CustomAccountAdapter"
-FRONTEND_URL = "http://127.0.0.1:5173"  # 이메일 인증 시 리디렉션할 프론트엔드 URL
+FRONTEND_URL = "http://localhost:5173"  # 이메일 인증 시 리디렉션할 프론트엔드 URL
 
 
 # DRF auth settings
@@ -160,6 +161,25 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5173',
     'http://localhost:5173',
 ]
+
+# 인증 정보 포함 허용
+CORS_ALLOW_CREDENTIALS = True
+
+# CSRF 설정
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:5173',
+    'http://localhost:5173',
+]
+
+
+
+# HTTPS를 통해서만 쿠키 전송
+# CSRF_COOKIE_SECURE = True  # 프로덕션 환경
+CSRF_COOKIE_SECURE = False # 개발 환경
+CSRF_COOKIE_SAMESITE = 'Lax'  # 또는 'None'
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_HTTPONLY = False
+
 
 ROOT_URLCONF = 'CINERIUM.urls'
 
@@ -254,3 +274,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+

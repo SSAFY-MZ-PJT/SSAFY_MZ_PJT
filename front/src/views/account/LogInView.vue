@@ -1,3 +1,4 @@
+<!-- loginview -->
 <template>
   <div>
     <DecoBox />
@@ -57,9 +58,11 @@
 <script setup>
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
-import DecoBox from "@/components/DecoBox.vue";
+import DecoBox from '@/components/DecoBox.vue';
+import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const formData = reactive({
   email: '',
@@ -68,15 +71,10 @@ const formData = reactive({
 
 const login = async () => {
   try {
-    // 여기에 실제 로그인 로직을 구현합니다.
-    // 예를 들어, API 호출을 통해 서버에 로그인 요청을 보냅니다.
-    console.log('로그인 시도:', formData);
-    
-    // 로그인 성공 시 처리
-    // 예: 홈 페이지로 리다이렉트
-    router.push('/');
-  } catch (error) {
-    console.error('로그인 실패:', error);
+    await authStore.login(formData.email, formData.password);
+    router.push({ name: 'MainView' });
+  } catch (err) {
+    console.error('로그인 실패:', err);
     alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
   }
 };

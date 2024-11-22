@@ -26,7 +26,7 @@
             type="password"
             id="password"
             class="form-control"
-            v-model="formData.password"
+            v-model="formData.password1"
             placeholder="비밀번호를 입력하세요"
             required
           />
@@ -44,7 +44,7 @@
             type="password"
             id="confirmPassword"
             class="form-control"
-            v-model="confirmPassword"
+            v-model="formData.password2"
             placeholder="비밀번호를 다시 입력하세요"
             required
           />
@@ -163,12 +163,17 @@
 </template>
 
 <script setup>
+import axios from "axios";
 import { reactive, computed, ref, watch } from "vue";
+import { useAuthStore } from '@/stores/auth'  // store import
+
+const authStore = useAuthStore()
 
 const formData = reactive({
   username: "",
   email: "",
-  password: "",
+  password1: "",
+  password2: "",
   emailVerificationCode: "",
   aboutMe: "",
   selectedGenres: [],
@@ -238,34 +243,29 @@ const isFormValid = computed(() => {
 
 const passwordIsValid = computed(() => {
   const regex = /^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-  return regex.test(formData.password);
+  return regex.test(formData.password1);
 });
 
 const passwordMismatch = computed(() => {
-  return formData.password !== confirmPassword.value;
+  return formData.password1 !== formData.password2;
 });
+
 
 const registerUser = async () => {
   if (isFormValid.value && !passwordMismatch.value && passwordIsValid.value) {
     try {
-      const response = await fetch("/api/register/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        alert("회원가입이 완료되었습니다!");
-      } else {
-        const errorData = await response.json();
-        alert(`회원가입 실패: ${errorData.message}`);
+      console.log(formData)
+      const success = await authStore.registerUser(formData)
+      
+      if (success) {
+        // 회원가입 성공 시 로그인 페이지로 이동
+        router.push('/login')
       }
     } catch (error) {
-      console.error("회원가입 중 오류 발생:", error);
-      alert("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
+      console.error("회원가입 중 오류 발생:", error)
     }
+  } else {
+    alert("모든 필드를 올바르게 입력해주세요.")
   }
 };
 </script>

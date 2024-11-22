@@ -14,4 +14,7 @@ urlpatterns = [
     path('<int:user_pk>/like/reviews/', views.like_reviews, name='like_reviews'), # 좋아요한 리뷰 조회, 리뷰 좋아요
     path('<int:user_pk>/write/reviews/', views.write_reviews, name='write_reviews'), # 작성한 리뷰 조회
     path('<int:user_pk>/recommended/movies/', views.recommended_movies, name='recommended_movies'), # 추천하는 영화 조회
+    
+    path('confirm-email/', views.email_confirmation, name='account_confirm_email'),   
+    path('csrf/', views.csrf_token, name='csrf_token'),
 ]

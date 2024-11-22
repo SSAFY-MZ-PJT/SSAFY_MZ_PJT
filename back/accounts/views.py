@@ -152,3 +152,53 @@ def recommended_movies(request, user_pk):
     # 직렬화 및 응답 반환
     serializer = MovieSerializer(recommended_movies, many=True)
     return Response(serializer.data, status=200)
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
+@ensure_csrf_cookie
+def csrf_token(request):
+    return JsonResponse({'message': 'CSRF cookie set'})
+
+
+
+from allauth.account.models import EmailConfirmationHMAC
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import AllowAny
+# 이메일 인증 뷰
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])  # 권한 설정
+@authentication_classes([])      # 인증 클래스 비움
+@ensure_csrf_cookie
+def email_confirmation(request):
+    
+    if request.method == 'GET':
+        return Response({'message': 'Ready for email confirmation'})
+        
+    elif request.method == 'POST':
+        try:
+            key = request.data.get('key')
+            if not key:
+                return Response(
+                    {'message': 'Invalid key'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            email_confirmation = EmailConfirmationHMAC.from_key(key)
+            if not email_confirmation:
+                return Response(
+                    {'message': 'Invalid confirmation link'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            email_confirmation.confirm(request)
+            return Response(
+                {'message': 'Email successfully confirmed'},
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            return Response(
+                {'message': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )

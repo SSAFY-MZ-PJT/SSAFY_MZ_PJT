@@ -1,6 +1,7 @@
 # accounts/adapters.py
 
 from allauth.account.adapter import DefaultAccountAdapter
+from django.conf import settings
 
 class CustomAccountAdapter(DefaultAccountAdapter):
     """
@@ -64,3 +65,10 @@ class CustomAccountAdapter(DefaultAccountAdapter):
             return True
         except Exception as e:
             return False
+        
+    def get_email_confirmation_url(self, request, emailconfirmation):
+            # Vue.js 프론트엔드 URL + 인증 키
+            return f"{settings.FRONTEND_URL}/email-verification?key={emailconfirmation.key}"
+  
+
+    

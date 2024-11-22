@@ -75,6 +75,9 @@ AUTH_USER_MODEL = 'accounts.User'
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # 이메일 인증 필수
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True      # 이메일 인증 URL 클릭 시 바로 인증
 ACCOUNT_EMAIL_REQUIRED = True           # 이메일 입력 필수
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # 이메일로 로그인
+ACCOUNT_USERNAME_REQUIRED = False       # username 불필수
+ACCOUNT_UNIQUE_EMAIL = True            # 이메일 중복 방지
 
 # 이메일 인증에 필요한 기본 이메일 설정
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -98,8 +101,13 @@ LOGIN_REDIRECT_URL = '/movies/'  # 로그인 후 리디렉션 경로
 LOGOUT_REDIRECT_URL = '/movies/'  # 로그아웃 후 리디렉션 경로
 
 ACCOUNT_ADAPTER = "accounts.adapters.CustomAccountAdapter"
-FRONTEND_URL = "http://127.0.0.1:5173"  # 이메일 인증 시 리디렉션할 프론트엔드 URL
+FRONTEND_URL = "http://localhost:5173"  # 이메일 인증 시 리디렉션할 프론트엔드 URL
 
+# 인증 백엔드 설정
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # DRF auth settings
 # Token 인증을 기본으로 사용하도록 설정
@@ -160,6 +168,25 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5173',
     'http://localhost:5173',
 ]
+
+# 인증 정보 포함 허용
+CORS_ALLOW_CREDENTIALS = True
+
+# CSRF 설정
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:5173',
+    'http://localhost:5173',
+]
+
+
+
+# HTTPS를 통해서만 쿠키 전송
+# CSRF_COOKIE_SECURE = True  # 프로덕션 환경
+CSRF_COOKIE_SECURE = False # 개발 환경
+CSRF_COOKIE_SAMESITE = 'Lax'  # 또는 'None'
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_HTTPONLY = False
+
 
 ROOT_URLCONF = 'CINERIUM.urls'
 

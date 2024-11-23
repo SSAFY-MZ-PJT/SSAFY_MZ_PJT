@@ -7,7 +7,9 @@ export const useMovieStore = defineStore('movie', {
     nowPlaying: [],
     popular: [],
     recommended: [],
-    currentMovies: [], // 상세 페이지에서 표시할 영화
+    currentMovies: [], // 카테고리별 영화 데이터
+    movieDetails: null, // 영화 상세 데이터
+    similarMovies: [], // 유사한 영화 데이터
     isLoading: false,
     error: null,
   }),
@@ -22,7 +24,7 @@ export const useMovieStore = defineStore('movie', {
         const response = await axios.get('http://localhost:8000/movies/');
         const data = response.data;
 
-        console.log('API 응답 데이터:', response.data); // API 응답 데이터 로그 확인
+        console.log('API 응답 데이터:', data); // API 응답 데이터 로그 확인
         this.nowPlaying = data.now_playing;
         this.popular = data.popular;
         this.recommended = data.recommended;
@@ -60,5 +62,55 @@ export const useMovieStore = defineStore('movie', {
         this.isLoading = false;
       }
     },
+
+    // 장르가 비슷한 영화 데이터 가져오기
+    async fetchSimilarMovies(genres) {
+      this.isLoading = true;
+      this.error = null;
+
+      try {
+        const response = await axios.get('http://localhost:8000/movies/all/');
+        const allMovies = response.data;
+
+        // 장르가 겹치는 정도에 따라 영화 정렬
+        const similarMovies = allMovies
+          .map(movie => ({
+            ...movie,
+            genreMatches: movie.genres.filter(genre => genres.includes(genre.name)).length,
+          }))
+          .sort((a, b) => b.genreMatches - a.genreMatches)
+          .slice(0, 12); // 최대 12개
+
+        this.similarMovies = similarMovies;
+      } catch (err) {
+        this.error = err.response?.data || 'Failed to fetch similar movies';
+        console.error('Error fetching similar movies:', this.error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    // 영화 상세 정보 가져오기
+    async fetchMovieDetails(movieId) {
+      this.isLoading = true;
+      this.error = null;
+
+      try {
+        const response = await axios.get(`http://localhost:8000/movies/${movieId}/`);
+        this.movieDetails = response.data;
+      } catch (err) {
+        this.error = err.response?.data || 'Failed to fetch movie details';
+        console.error('Error fetching movie details:', this.error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+  },
+
+  // 상태를 로컬 스토리지에 저장하도록 설정
+  persist: {
+    key: 'movieStore', // 로컬 스토리지 키
+    storage: window.localStorage, // 상태를 로컬 스토리지에 저장
+    paths: ['nowPlaying', 'popular', 'recommended', 'movieDetails'], // 저장할 상태 지정
   },
 });

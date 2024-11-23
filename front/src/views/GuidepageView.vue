@@ -1,5 +1,6 @@
 <template>
   <div class="guide-page">
+    <!-- Section 1 -->
     <header class="header">
       <div class="container text-center">
         <h1 class="logo">C:nerium</h1>
@@ -25,7 +26,7 @@
 
     <main>
       <section class="content container">
-        <!-- Section 1 -->
+        <!-- Section 2 -->
         <div class="row align-items-center my-5 topdiv">
           <div class="col-md-6">
             <img src="../assets/Guideicons/guideicons1.png" alt="Illustration 1" class="img-fluid">
@@ -37,7 +38,7 @@
           </div>
         </div>
 
-        <!-- Section 2 -->
+        <!-- Section 3 -->
         <div class="row align-items-center my-5 flex-row-reverse topdiv">
           <div class="col-md-6 text-end">
             <img src="../assets/Guideicons/person1.png" alt="Illustration 2" class="img-fluid" width="250">
@@ -49,7 +50,7 @@
           </div>
         </div>
 
-        <!-- Section 3 -->
+        <!-- Section 4 -->
         <div class="row align-items-center my-5 topdiv">
           <div class="col-md-6">
             <img src="../assets/Guideicons/person2.png" alt="Illustration 1" class="img-fluid" width="310">
@@ -61,7 +62,7 @@
           </div>
         </div>
 
-        <!-- Section 4 -->
+        <!-- Section 5 -->
         <div class="row align-items-center my-5 topdiv">
           <div class="col-md-6">
             <img src="../assets/Guideicons/person3.png" alt="Illustration 3" class="img-fluid" width="300">

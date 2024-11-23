@@ -8,7 +8,7 @@ export const useMovieStore = defineStore('movie', {
     popular: [],
     recommended: [],
     currentMovies: [], // 카테고리별 영화 데이터
-    movieDetails: null, // 영화 상세 데이터
+    movieDetails: null,
     similarMovies: [], // 유사한 영화 데이터
     isLoading: false,
     error: null,
@@ -97,6 +97,7 @@ export const useMovieStore = defineStore('movie', {
 
       try {
         const response = await axios.get(`http://localhost:8000/movies/${movieId}/`);
+        console.log("영화 상세 데이터:", response.data);
         this.movieDetails = response.data;
       } catch (err) {
         this.error = err.response?.data || 'Failed to fetch movie details';

@@ -25,56 +25,59 @@
                 :key="movie.id"
               >
                 <!-- Card -->
-                <div class="card h-100 mt-3 me-2">
-                  <div class="position-relative">
-                    <!-- Movie Poster -->
-                    <img
-                      :src="movie.poster_image_url"
-                      class="card-img-top poster-image"
-                      :alt="movie.title"
-                    />
-                    <!-- Favorite Button -->
-                    <button
-                      class="bookmark-btn position-absolute top-0 end-0 btn btn-sm m-1"
-                      @click="toggleFavorite(movie.id)"
-                      :class="{ active: movie.isFavorite }"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        fill="currentColor"
-                        class="bi bi-bookmark"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          d="M2 2v13.5l6-3.5 6 3.5V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1z"
-                          :fill="movie.isFavorite ? '#002C0C' : 'currentColor'"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-
-                  <!-- Card Body -->
-                  <div class="card-body">
-                    <h6 class="card-title text-truncate fw-bold">
-                      {{ movie.title }}
-                    </h6>
-                    <p class="text-muted mb-1">
-                      📅 {{ movie.release_date }} &nbsp;&nbsp;
-                      <span class="text-warning fw-bold">★ {{ movie.rating }}</span>
-                    </p>
-                    <div class="d-flex align-items-center justify-content-between">
-                      <!-- Trailer Button -->
+                <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id } }" class="card-link">
+            
+                  <div class="card h-100 mt-3 me-2">
+                    <div class="position-relative">
+                      <!-- Movie Poster -->
+                      <img
+                        :src="movie.poster_image_url"
+                        class="card-img-top poster-image"
+                        :alt="movie.title"
+                      />
+                      <!-- Favorite Button -->
                       <button
-                        class="btn custom-button btn-sm"
-                        @click="playTrailer(movie.trailerUrl)"
+                        class="bookmark-btn position-absolute top-0 end-0 btn btn-sm m-1"
+                        @click="toggleFavorite(movie.id)"
+                        :class="{ active: movie.isFavorite }"
                       >
-                        ▶ Trailer
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          fill="currentColor"
+                          class="bi bi-bookmark"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M2 2v13.5l6-3.5 6 3.5V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1z"
+                            :fill="movie.isFavorite ? '#002C0C' : 'currentColor'"
+                          />
+                        </svg>
                       </button>
                     </div>
+  
+                    <!-- Card Body -->
+                    <div class="card-body">
+                      <h6 class="card-title text-truncate fw-bold">
+                        {{ movie.title }}
+                      </h6>
+                      <p class="text-muted mb-1">
+                        📅 {{ movie.release_date }} &nbsp;&nbsp;
+                        <span class="text-warning fw-bold">★ {{ movie.rating }}</span>
+                      </p>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <!-- Trailer Button -->
+                        <button
+                          class="btn custom-button btn-sm"
+                          @click="playTrailer(movie.trailerUrl)"
+                        >
+                          ▶ Trailer
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </router-link>
               </div>
             </div>
           </div>

@@ -53,11 +53,17 @@
           <h3 class="fw-bold pt-5">Director</h3>
           <hr />
           <div class="d-flex align-items-start gap-3">
-            <img :src="movieStore.movieDetails.director.image" alt="Director Image" class="img-fluid rounded shadow" width="100" />
+            <img
+              :src="movieStore.movieDetails.director.photo_url"
+              alt="Director Image"
+              class="img-fluid rounded shadow"
+              width="100"
+              height="100"
+            />
             <div>
-              <h5 class="fw-bold">{{ movieStore.movieDetails.director.name }}</h5>
-            </div>
           </div>
+          </div>
+          <h5 class="fw-bold mt-3">{{ movieStore.movieDetails.director.name }}</h5>
         </div>
 
         <!-- Cast Section -->
@@ -65,8 +71,10 @@
           <h3 class="fw-bold pt-5">Cast</h3>
           <hr />
           <div class="d-flex flex-wrap gap-4">
-            <div v-for="cast in movieStore.movieDetails.actors" :key="cast.id" class="text-center">
-              <img :src="cast.image" alt="Cast Image" class="img-fluid shadow" width="100" />
+            <div v-for="cast in movieStore.movieDetails.actors" 
+            :key="cast.id" class="text-center">
+              <img :src="cast.photo_url" alt="Cast Image" 
+              class="img-fluid shadow" width="100" />
               <p class="mt-2 mb-0 fw-bold" style="color: #002c0c;">{{ cast.name }}</p>
               <p class="text-muted small">{{ cast.role || 'Actor' }}</p>
             </div>
@@ -124,7 +132,7 @@
       </div>
 
 
-      <!-- Similar Movies Section -->
+            <!-- Similar Movies Section -->
       <div class="section mt-5">
         <div class="section-header d-flex justify-content-between align-items-center">
           <h3 class="fw-bold">Similar Movies</h3>
@@ -141,42 +149,51 @@
               :key="index"
               :class="{ active: index === currentSlide }"
             >
-              <div class="row justify-content-center">
-                <div
-                  class="col-lg-3 col-md-4 col-sm-6 mb-4"
+              <div class="movie-grid">
+                <MovieCard
                   v-for="movie in chunk"
                   :key="movie.id"
-                >
-                  <MovieCard :movie="movie" />
-                </div>
+                  :movie="movie"
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
-    
+
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useMovieStore } from "@/stores/movie";
 import Search from "@/components/Search.vue";
 import MovieCard from "@/components/MovieCard.vue";
 
+// 상태 및 라우트 설정
 const route = useRoute();
 const movieStore = useMovieStore();
 const currentSlide = ref(0);
 
-const chunkedMovies = (movies, chunkSize = 4) => {
-  const chunks = [];
-  for (let i = 0; i < movies.length; i += chunkSize) {
-    chunks.push(movies.slice(i, i + chunkSize));
+// 데이터 로딩 로직
+const loadMovieData = async (movieId) => {
+  try {
+    await movieStore.fetchMovieDetails(movieId); // 영화 세부 정보 로드
+    const genres = movieStore.movieDetails.genres.map((genre) => genre.name);
+    await movieStore.fetchSimilarMovies(genres); // 비슷한 영화 로드
+  } catch (error) {
+    console.error("Error loading movie data:", error);
   }
-  return chunks;
 };
+
+// 캐러셀 동작
+const chunkedMovies = (movies, chunkSize = 4) =>
+  movies.reduce((result, _, index) => {
+    if (index % chunkSize === 0) result.push(movies.slice(index, index + chunkSize));
+    return result;
+  }, []);
 
 const nextSlide = () => {
   const totalSlides = chunkedMovies(movieStore.similarMovies).length;
@@ -188,17 +205,7 @@ const prevSlide = () => {
   currentSlide.value = (currentSlide.value - 1 + totalSlides) % totalSlides;
 };
 
-
-onMounted(async () => {
-  const movieId = route.params.id;
-  await movieStore.fetchMovieDetails(movieId);
-
-  const genres = movieStore.movieDetails.genres.map(genre => genre.name);
-  await movieStore.fetchSimilarMovies(genres);
-
-  const directorId = movieStore.movieDetails.director.id;
-});
-
+// 좋아요 토글
 const toggleLike = (id) => {
   const review = movieStore.movieDetails.reviews.find((r) => r.id === id);
   if (review) {
@@ -207,24 +214,27 @@ const toggleLike = (id) => {
   }
 };
 
-const formatNumber = (number) => {
-  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(number);
-};
+// 숫자 형식 변환
+const formatNumber = (number) => 
+  new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(number);
+
+// 초기 데이터 로드
+onMounted(() => loadMovieData(route.params.id));
+
+// 라우트 변경 시 데이터 로드
+watch(
+  () => route.params.id,
+  (newId) => loadMovieData(newId)
+);
 </script>
+
 
 <style scoped>
 .carousel-container {
   position: relative;
 }
 
-.carousel {
-  overflow: hidden;
-  display: flex;
-  position: relative;
-}
-
 .carousel-slide {
-  flex: 0 0 100%;
   display: none;
 }
 
@@ -232,15 +242,40 @@ const formatNumber = (number) => {
   display: block;
 }
 
+.movie-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+/* 큰 화면: 4개 */
+@media (min-width: 1200px) {
+  .movie-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* 중간 화면: 2개 */
+@media (max-width: 1199px) and (min-width: 768px) {
+  .movie-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 작은 화면: 1개 */
+@media (max-width: 767px) {
+  .movie-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
 .controls {
   display: flex;
   gap: 10px;
 }
 
-/* 제목과 버튼을 같은 줄에 배치 */
 .section-header {
   display: flex;
-  justify-content: space-between; /* 제목 왼쪽, 버튼 오른쪽 */
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -264,8 +299,6 @@ const formatNumber = (number) => {
   background: rgba(0, 0, 0, 0.6);
 }
 
-
-/* 스타일 유지 */
 .container {
   max-width: 1200px;
 }
@@ -273,6 +306,7 @@ const formatNumber = (number) => {
   max-width: 100%;
   height: auto;
   border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .badge {
   font-size: 0.9rem;

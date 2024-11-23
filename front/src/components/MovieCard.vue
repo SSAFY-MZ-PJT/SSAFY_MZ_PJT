@@ -1,4 +1,5 @@
 <template>
+  <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id } }" class="card-link">
     <div class="card h-100">
       <div class="position-relative">
         <!-- Movie Poster -->
@@ -44,6 +45,7 @@
         </div>
       </div>
     </div>
+  </router-link>
   </template>
   
   <script setup>
@@ -119,5 +121,12 @@
     color: #ffffff !important;
     border-color: #c4302b !important;
   }
-  </style>
+  .card-link {
+  text-decoration: none; /* 밑줄 제거 */
+  }
+
+  .card-link:hover {
+    text-decoration: none; /* 호버 상태에서도 밑줄 제거 */
+  }
+</style>
   

@@ -78,6 +78,7 @@ const router = createRouter({
       path: "/movies/:id",
       name: "MovieDetailView",
       component: MovieDetailView,
+      props: true,
     },
     
     // reviews

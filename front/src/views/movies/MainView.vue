@@ -1,3 +1,4 @@
+<!-- MainView -->
 <template>
   <div>
     <Search />
@@ -239,13 +240,12 @@ onMounted(() => {
   display: block;
 }
 
-/* 반응형 카드 유지 */
 .poster-image {
   width: 100%;
-  height: 375px;
+  aspect-ratio: 2 / 3; /* 2:3 비율 유지 */
   object-fit: cover;
+  max-height: 375px; /* 최대 높이 제한 */
 }
-
 @media (min-width: 1200px) {
   .row .col-lg-3 {
     flex: 0 0 25%; /* 한 줄에 4개 */

@@ -27,7 +27,7 @@
               </a>
               <ul class="dropdown-menu">
                 <li class="dropdown-item">
-                  <router-link class="nav-link" :to="{ name: 'ProfileMeView' }">Profile</router-link>
+                  <router-link class="nav-link" :to="{ name: 'ProfileMeView'}">Profile</router-link>
                 </li>
                 <li class="dropdown-item">
                   <router-link class="nav-link" :to="{ name: 'UserupdateView' }">Update</router-link>
@@ -72,6 +72,7 @@
   <script setup>
   import { useAuthStore } from '@/stores/auth'; // 올바른 경로 확인
   const authStore = useAuthStore();
+  // consloe.log(authStore.username)
   </script>
 
 <style scoped>

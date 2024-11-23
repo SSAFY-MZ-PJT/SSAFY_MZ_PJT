@@ -10,6 +10,7 @@ from .serializers import CustomUserDetailsSerializer, MovieSerializer, ReviewSer
 from movies.models import Movie
 
 
+
 @api_view(['GET', 'DELETE', 'PUT'])
 @permission_classes([IsAuthenticated])
 def user_detail(request, user_pk):

@@ -126,6 +126,10 @@
 <script setup>
 import FFS from '@/components/FFS.vue'; // FFS 컴포넌트 가져오기
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const userId = route.params.userId; // URL에서 userId 추출
 
 // viewMode 상태 관리
 const viewMode = ref('default');

@@ -10,6 +10,8 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = ref(false); // 반드시 ref로 선언
   const token = ref(localStorage.getItem('accessToken'));
   const user = ref(null);
+  // const userId = ref(localStorage.getItem('userId')); // 로그인 후 저장된 userId
+
 
   // 회원가입s
   async function registerUser(payload) {
@@ -70,11 +72,16 @@ export const useAuthStore = defineStore('auth', () => {
         }
       );
       console.log('로그인 완료', response.data);
-
       const token = response.data.key; // `key`가 토큰 값인 것으로 확인
-  
+      // const userId = response.data.userId; // 로그인한 사용자의 ID
+      
       // 로그인 성공 시 처리
       localStorage.setItem('accessToken', token); // `key`로 저장
+      // localStorage.setItem('userId', userId);
+
+      // Axios 기본 헤더에 토큰 추가
+      axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+
       console.log('토큰 저장 완료:', localStorage.getItem('accessToken'));
       isAuthenticated.value = true; // 여기서 true로 설정
 
@@ -107,29 +114,18 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  // // fetchUser 함수 단순화
-  // const fetchUser = async () => {
+  // // // 프로필 정보 가져오기
+  // const fetchUserProfile = async () => {
   //   try {
-  //     if (!token.value) {
-  //       throw new Error('토큰이 없습니다. 로그인 상태를 확인하세요.');
-  //     }
-
-  //     const response = await axios.get('http://localhost:8000/accounts/user/', {
-  //       headers: {
-  //         Authorization: `Token ${token.value}`,
-  //       },
-  //     });
-
-  //     user.value = response.data; // 사용자 정보 저장
-  //     isAuthenticated.value = true;
-  //     console.log('사용자 정보 가져오기 성공:', response.data);
-  //   } catch (err) {
-  //     console.error('사용자 정보 가져오기 실패:', err.response?.data || err.message);
-  //     user.value = null;
-  //     isAuthenticated.value = false;
+  //     const userId = localStorage.getItem('userId'); // 저장된 userId 가져오기
+  //     const response = await axios.get(`http://localhost:8000/accounts/${userId}/`);
+  //     return response.data; // 사용자 프로필 데이터 반환
+  //   } catch (error) {
+  //     console.error("사용자 프로필 가져오기 실패:", error);
+  //     throw error;
   //   }
   // };
-
+  
   // expose managed state as return value
   return {
     isLoading,
@@ -139,6 +135,5 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     isAuthenticated,
     restoreAuthState,
-    // fetchUser
   }
 },{persist:true})

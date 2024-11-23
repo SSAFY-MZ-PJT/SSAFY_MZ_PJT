@@ -40,6 +40,13 @@ class CustomLoginSerializer(LoginSerializer):
         if not self.user.is_active:
             raise serializers.ValidationError("이메일 인증이 필요합니다.")
         return user
+    
+    # def to_representation(self, instance):
+    #     # 기본 응답 데이터에 userId 추가
+    #     print("CustomLoginSerializer to_representation 호출됨")  # 디버깅 메시지
+    #     data = super().to_representation(instance)
+    #     data['userId'] = self.user.pk  # 로그인한 사용자의 ID 추가
+    #     return data
 
 
 

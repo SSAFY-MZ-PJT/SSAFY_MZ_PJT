@@ -1,61 +1,64 @@
 <template>
-    <div class="container mt-5">
-        <div class="row">
-            <!-- Followers -->
-            <div class="col-md-6">
-            <h3 class="fw-bold">followers</h3>
-            <ul class="list-unstyled mt-4">
-                <li class="d-flex align-items-center mb-3">
-                <img src="../icons/user.png" alt="Profile Picture" class="rounded-circle me-3" width="50">
-                <div>
-                    <h6 class="mb-0 fw-bold">Jung</h6>
-                    <small class="text-muted">삶은 계란이다.</small>
-                </div>
-                </li>
-                <li class="d-flex align-items-center mb-3">
-                <img src="../icons/user.png" alt="Profile Picture" class="rounded-circle me-3" width="50">
-                <div>
-                    <h6 class="mb-0 fw-bold">송후엽</h6>
-                    <small class="text-muted">삶은 계란이다....그렇다.. 삶은 계란...</small>
-                </div>
-                </li>
-                <!-- 추가 항목은 동일한 형식으로 추가 -->
-            </ul>
-            </div>
-        
-            <!-- Following -->
-            <div class="col-md-6">
-            <h3 class="fw-bold">following</h3>
-            <ul class="list-unstyled mt-4">
-                <li class="d-flex align-items-center justify-content-between mb-3">
-                <div class="d-flex align-items-center">
-                    <img src="../icons/user.png" alt="Profile Picture" class="rounded-circle me-3" width="50">
-                    <div>
-                    <h6 class="mb-0 fw-bold">jung</h6>
-                    <small class="text-muted">삶은 계란이다.</small>
-                    </div>
-                </div>
-                <button class="btn btn-success btn-sm">following</button>
-                </li>
-                <li class="d-flex align-items-center justify-content-between mb-3">
-                <div class="d-flex align-items-center">
-                    <img src="../icons/user.png" alt="Profile Picture" class="rounded-circle me-3" width="50">
-                    <div>
-                    <h6 class="mb-0 fw-bold">kinf</h6>
-                    <small class="text-muted">cineruimyn</small>
-                    </div>
-                </div>
-                <button class="btn btn-outline-success btn-sm">follow</button>
-                </li>
-                <!-- 추가 항목은 동일한 형식으로 추가 -->
-            </ul>
-            </div>
+  <div class="container mt-5">
+    <h3 class="fw-bold text-center">{{ viewMode === 'followers' ? 'Followers' : 'Following' }}</h3>
+    <ul class="list-unstyled mt-4">
+      <li
+        v-for="user in displayedList"
+        :key="user.id"
+        class="d-flex align-items-center justify-content-between mb-3"
+      >
+        <div class="d-flex align-items-center">
+          <img
+            src="../icons/user.png"
+            alt="Profile Picture"
+            class="rounded-circle me-3"
+            width="50"
+          />
+          <div>
+            <h6 class="mb-0 fw-bold">{{ user.name }}</h6>
+            <small class="text-muted">{{ user.bio }}</small>
+          </div>
         </div>
-    </div>
+        <button
+          v-if="viewMode === 'following'"
+          class="btn btn-sm"
+          :class="user.isFollowing ? 'btn-success' : 'btn-outline-success'"
+          @click="toggleFollow(user)"
+        >
+          {{ user.isFollowing ? 'UnFollow' : 'Follow' }}
+        </button>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script setup>
+import { ref, computed } from 'vue';
 
+const props = defineProps({
+  viewMode: {
+    type: String,
+    required: true,
+  },
+});
+
+const followers = ref([
+  { id: 1, name: 'Jung', bio: '삶은 계란이다.' },
+  { id: 2, name: '송후엽', bio: '삶은 계란이다....그렇다.. 삶은 계란...' },
+]);
+
+const following = ref([
+  { id: 1, name: 'Jung', bio: '삶은 계란이다.', isFollowing: true },
+  { id: 2, name: 'kinf', bio: 'cineruimyn', isFollowing: false },
+]);
+
+const displayedList = computed(() => {
+  return props.viewMode === 'followers' ? followers.value : following.value;
+});
+
+const toggleFollow = (user) => {
+  user.isFollowing = !user.isFollowing;
+};
 </script>
 
 <style scoped>

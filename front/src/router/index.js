@@ -64,21 +64,20 @@ const router = createRouter({
 
     // movies
     {
-      path: '/movies/main',
-      name: 'MainView',
-      component: MainView
+      path: "/movies/main",
+      name: "MainView",
+      component: MainView,
     },
     {
-      // path: '/movies:(어떤 추천인가에 따라 이름지정)',
-      path:'/movies',
-      name: 'RecommendDetailView',
-      component: RecommendDetailView
+      path: "/movies/:category",
+      name: "RecommendDetailView",
+      component: RecommendDetailView,
+      props: true,
     },
     {
-      // path: '/movies:movies.id',
-      path:'/010307',
-      name: 'MovieDetailView',
-      component: MovieDetailView
+      path: "/movies/:id",
+      name: "MovieDetailView",
+      component: MovieDetailView,
     },
     
     // reviews

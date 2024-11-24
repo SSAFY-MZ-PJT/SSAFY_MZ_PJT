@@ -6,7 +6,7 @@
     <title>Welcome to CINERIUM!</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Noto Serif KR", serif;
             background-color: #f4f4f9;
             margin: 0;
             padding: 0;
@@ -23,22 +23,22 @@
             background-color: #ffffff;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: center;
+            overflow: hidden;
         }
 
         .email-header {
-            background-color: #2d89ef;
+            background-color: #00380C;
             color: white;
-            border-radius: 8px 8px 0 0;
             padding: 20px;
             font-size: 24px;
             font-weight: bold;
+            text-align: center;
         }
 
         .email-body {
             padding: 20px;
             line-height: 1.6;
+            text-align: center;
         }
 
         .email-body p {
@@ -48,30 +48,48 @@
         .email-link {
             display: inline-block;
             margin: 20px 0;
-            padding: 10px 20px;
-            background-color: #2d89ef;
-            color: white;
+            padding: 12px 25px;
+            background-color: #254E01;
+            color: white !important; /* 텍스트 색상 강제 적용 */
             text-decoration: none;
             font-size: 18px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
-
+        
         .email-link:hover {
-            background-color: #1a65c1;
+            background-color: #00380C;
+            transform: translateY(-3px);
+        }
+        
+        .email-link:visited {
+            color: white !important; /* 방문한 링크 색상 강제 적용 */
         }
 
         .email-footer {
-            margin-top: 20px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            text-align: center;
             font-size: 12px;
             color: #777;
+            border-top: 1px solid #eee;
+        }
+
+        .email-footer a {
+            color: #00380C;
+            text-decoration: none;
+        }
+
+        .email-footer a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="email-container">
         <div class="email-header">
-            🎥 Welcome to CINERIUM! 🎥
+            🌲 Welcome to CINERIUM! 🌲
         </div>
         <div class="email-body">
             <br>
@@ -85,10 +103,9 @@
             <p>또는 아래 URL을 브라우저에 복사하여 붙여넣으세요:</p>
             <p><strong>{{ activate_url }}</strong></p>
             <br>
-            <br>
         </div>
         <div class="email-footer">
-            &copy; 2024 CINERIUM. All rights reserved. | Powered by MZ Team
+            &copy; 2024 CINERIUM. All rights reserved. | Powered by <a href="#">MZ Team</a>
         </div>
     </div>
 </body>

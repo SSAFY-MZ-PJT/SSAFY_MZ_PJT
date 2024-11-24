@@ -274,7 +274,7 @@ const registerUser = async () => {
 
       const success = await authStore.registerUser(payload);
       if (success) {
-        router.push({ name: 'LogInView' }); // 회원가입 성공 시 로그인 페이지로 이동
+        router.push({ name: 'GuidepageView' }); // 회원가입 성공 시 로그인 페이지로 이동
       }
     } catch (error) {
       console.error("회원가입 중 오류 발생:", error);

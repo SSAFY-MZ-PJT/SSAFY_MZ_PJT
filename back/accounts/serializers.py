@@ -4,7 +4,7 @@ from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from dj_rest_auth.serializers import LoginSerializer
 from movies.models import Genre
-from shared.serializers import SimpleMovieSerializer, SimpleReviewSerializer
+from shared.serializers import SimpleUserSerializer, SimpleMovieSerializer, SimpleReviewSerializer
 from movies.serializers import GenreSerializer
 from django.contrib.auth import get_user_model
 
@@ -86,8 +86,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    followers = serializers.StringRelatedField(many=True, read_only=True)
-    followings = serializers.StringRelatedField(many=True, read_only=True)
+    followers = SimpleUserSerializer(many=True, read_only=True)  # 간단한 Serializer 사용
+    followings = SimpleUserSerializer(many=True, read_only=True)
     favorite_genres = GenreSerializer(many=True, read_only=True)
 
     # 역참조 관계
@@ -101,3 +101,4 @@ class UserSerializer(serializers.ModelSerializer):
             'id', 'username', 'email', 'profile_image', 'followers', 'followings',
             'introduction', 'favorite_genres', 'liked_movies', 'liked_reviews', 'reviews'
         )
+

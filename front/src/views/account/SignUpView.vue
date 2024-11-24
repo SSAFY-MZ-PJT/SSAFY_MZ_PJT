@@ -100,11 +100,11 @@
       <!-- 한줄 소개 -->
       <div class="row mb-3">
         <div class="col-md-12">
-          <label for="aboutMe" class="form-label">한줄 소개 (선택사항)</label>
+          <label for="introduction" class="form-label">한줄 소개 (선택사항)</label>
           <textarea
-            id="aboutMe"
+            id="introduction"
             class="form-control"
-            v-model="formData.aboutMe"
+            v-model="formData.introduction"
             placeholder="한줄 소개를 작성하세요 (최대 50자)"
             maxlength="50"
             rows="3"
@@ -181,7 +181,7 @@ const formData = reactive({
   password1: "",
   password2: "",
   emailVerificationCode: "",
-  aboutMe: "",
+  introduction: "",
   selectedGenres: [],
 });
 

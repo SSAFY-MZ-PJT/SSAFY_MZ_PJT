@@ -12,7 +12,7 @@
             <img :src="profile.profile_image || defaultProfileImage" alt="Profile Picture" class="rounded-circle me-5" width="120" />
             <div>
               <h2 class="fw-bold">{{ profile.username }}</h2>
-              <p class="text-muted">{{ profile.introduce || "No introduction provided." }}</p>
+              <p class="text-muted">{{ profile.introduction || "No introduction provided." }}</p>
             </div>
           </div>
           <!-- 오른쪽: 작성글, 팔로워 수, 팔로잉 수 -->
@@ -182,7 +182,7 @@ const sortDiscussions = (sortType) => {
 const profile = ref({
   username: "",
   profile_image: "",
-  introduce: "",
+  introduction: "",
   reviews: [],
   liked_movies: [],
   followers: [],

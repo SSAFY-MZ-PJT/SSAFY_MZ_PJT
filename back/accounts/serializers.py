@@ -16,11 +16,11 @@ class CustomRegisterSerializer(RegisterSerializer):
     favorite_genres = serializers.PrimaryKeyRelatedField(
         queryset=Genre.objects.all(), many=True, required=True
     )  # 필수
-    introduce = serializers.CharField(required=False, allow_blank=True)  # 선택
+    introduction = serializers.CharField(required=False, allow_blank=True, default="")  # 선택
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'favorite_genres', 'introduce']
+        fields = ['username', 'email', 'password1', 'password2', 'favorite_genres', 'introduction']
 
     def validate_favorite_genres(self, value):
         if not value:
@@ -31,7 +31,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         user = super().save(request)
         user.username = self.validated_data.get('username')
         user.email = self.validated_data.get('email')
-        user.introduce = self.validated_data.get('introduce', "")
+        user.introduction = self.validated_data.get('introduction', "")
         user.save()
         user.favorite_genres.set(self.validated_data.get('favorite_genres'))  # ManyToMany 저장
         return user
@@ -53,17 +53,17 @@ class CustomLoginSerializer(LoginSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     """
     회원정보 수정 Serializer
-    - 수정 가능 필드: profile_image, introduce, favorite_genres
+    - 수정 가능 필드: profile_image, introduction, favorite_genres
     """
     profile_image = serializers.ImageField(required=False)
-    introduce = serializers.CharField(required=False, allow_blank=True)
+    introduction = serializers.CharField(required=False, allow_blank=True)
     favorite_genres = serializers.PrimaryKeyRelatedField(
         queryset=Genre.objects.all(), many=True, required=False
     )
 
     class Meta:
         model = User
-        fields = ['profile_image', 'introduce', 'favorite_genres']
+        fields = ['profile_image', 'introduction', 'favorite_genres']
 
     def update(self, instance, validated_data):
         """
@@ -74,8 +74,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             instance.profile_image = validated_data['profile_image']
 
         # 소개글 업데이트
-        if 'introduce' in validated_data:
-            instance.introduce = validated_data['introduce']
+        if 'introduction' in validated_data:
+            instance.introduction = validated_data['introduction']
 
         # 선호 장르 업데이트
         if 'favorite_genres' in validated_data:
@@ -99,5 +99,5 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id', 'username', 'email', 'profile_image', 'followers', 'followings',
-            'favorite_genres', 'liked_movies', 'liked_reviews', 'reviews'
+            'introduction', 'favorite_genres', 'liked_movies', 'liked_reviews', 'reviews'
         )

@@ -17,10 +17,6 @@ export default defineConfig({
     }
   },
   css: {
-    preprocessorOptions: {
-      scss: {
-        implementation: require('sass'), // Dart Sass를 명시적으로 지정
-      },
-    }
+    
   }
 })

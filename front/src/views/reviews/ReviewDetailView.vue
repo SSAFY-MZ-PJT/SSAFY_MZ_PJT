@@ -225,7 +225,7 @@ const addReply = (id) => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .container {
   max-width: 1000px;
 }

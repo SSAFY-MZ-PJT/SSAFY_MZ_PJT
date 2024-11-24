@@ -1,3 +1,5 @@
+<!-- src/views/account/EmailVerificationView.vue -->
+
 <template>
     <div class="flex min-h-[50vh] items-center justify-center bg-gray-50 py-8 px-4">
       <div class="w-full max-w-sm">
@@ -70,45 +72,46 @@ const getCsrfToken = () => {
   return document.cookie
     .split('; ')
     .find(row => row.startsWith('csrftoken='))
-    ?.split('=')[1]
-}
+    ?.split('=')[1];
+};
 
-// CSRF 토큰을 얻는 함수
+// CSRF 토큰 요청 함수
 const fetchCsrfToken = async () => {
   try {
-    await api.get('/accounts/csrf/')
-    const token = getCsrfToken()
-    // CSRF 토큰을 기본 헤더에 설정
-    api.defaults.headers.common['X-CSRFToken'] = token
-    return token
+    // CSRF 토큰을 요청 (GET 요청)
+    const response = await api.get('/csrf/');
+    const token = getCsrfToken();
+    api.defaults.headers.common['X-CSRFToken'] = token;
+    return token;
   } catch (error) {
-    console.error('CSRF 토큰 얻기 실패:', error)
-    throw error
+    console.error('CSRF 토큰 얻기 실패:', error);
+    throw error;
   }
-}
+};
 
 const verifyEmail = async (key) => {
   try {
-    // CSRF 토큰 얻기
-    await fetchCsrfToken()
-    
-    // 이메일 인증 요청
-    const response = await api.post('/accounts/confirm-email/', { key })
+    console.log('이메일 인증 요청 데이터:', { key });
+
+    const response = await api.post('/confirm-email/', { key });
+    console.log('이메일 인증 응답 데이터:', response.data);
 
     if (response.status === 200 || response.status === 201) {
-      verificationStatus.value = 'success'
+      verificationStatus.value = 'success';
       setTimeout(() => {
-        router.push({ name: 'LogInView' })
-      }, 3000)
+        router.push({ name: 'LogInView' });
+      }, 3000);
     }
   } catch (error) {
-    console.error('이메일 인증 실패:', error)
-    verificationStatus.value = 'error'
-    errorMessage.value = error.response?.data?.message || '이메일 인증에 실패했습니다.'
+    console.error('이메일 인증 실패:', error);
+    verificationStatus.value = 'error';
+    errorMessage.value = error.response?.data?.message || '이메일 인증에 실패했습니다.';
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
+
+
 
 onMounted(async () => {
   const key = route.query.key

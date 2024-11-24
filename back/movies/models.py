@@ -4,7 +4,7 @@ from django.db import models
 from django.conf import settings
 
 class Director(models.Model):
-    tmdb_id = models.IntegerField(unique=True, null=True, blank=True)  # TMDB ID 추가
+    tmdb_id = models.IntegerField(unique=True, null=True, blank=True)
     name = models.CharField(max_length=255)
     photo_url = models.URLField(blank=True, null=True)
 
@@ -13,7 +13,7 @@ class Director(models.Model):
 
 
 class Actor(models.Model):
-    tmdb_id = models.IntegerField(unique=True, null=True, blank=True)  # TMDB ID 추가
+    tmdb_id = models.IntegerField(unique=True, null=True, blank=True)
     name = models.CharField(max_length=255)
     photo_url = models.URLField(blank=True, null=True)
 
@@ -30,24 +30,26 @@ class Genre(models.Model):
 
 class Movie(models.Model):
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_movies", blank=True)
-    actors = models.ManyToManyField(Actor, related_name="movies")  # M:N 관계
-    genres = models.ManyToManyField(Genre, related_name="movies")  # M:N 관계
+    actors = models.ManyToManyField(Actor, related_name="movies")
+    genres = models.ManyToManyField(Genre, related_name="movies")
     director = models.ForeignKey(Director, on_delete=models.SET_NULL, null=True, related_name="movies")
-    tmdb_id = models.IntegerField(unique=True, null=True, blank=True)  # TMDB ID
+    tmdb_id = models.IntegerField(unique=True, null=True, blank=True)
     title = models.CharField(max_length=255)
-    release_date = models.DateField(blank=True, null=True)
-    poster_image_url = models.URLField(blank=True, null=True)
-    plot = models.TextField(blank=True, null=True)
-    rating = models.FloatField(default=0, null=True, blank=True)  # 영화 평점
-    adult = models.BooleanField(default=False, blank=True, null=True)
-    budget = models.IntegerField(default=0, blank=True, null=True)
-    revenue = models.IntegerField(default=0, blank=True, null=True)
-    popularity = models.FloatField(default=0, blank=True, null=True)
-    runtime = models.IntegerField(default=0, blank=True, null=True)
-    tagline = models.TextField(blank=True, null=True)
-    vote_count = models.IntegerField(default=0, blank=True, null=True)
-    is_now_playing = models.BooleanField(default=False)  # 현재 상영 중인지
-    is_popular = models.BooleanField(default=False)      # 인기 영화인지
+    release_date = models.DateField(null=True, blank=True)
+    poster_image_url = models.URLField(null=True, blank=True)
+    plot = models.TextField(blank=True, default="")
+    rating = models.FloatField(default=0)
+    adult = models.BooleanField(default=False)
+    budget = models.IntegerField(default=0)
+    revenue = models.IntegerField(default=0)
+    popularity = models.FloatField(default=0)
+    runtime = models.IntegerField(default=0)
+    tagline = models.TextField(default="", blank=True)
+    vote_count = models.IntegerField(default=0)
+    is_now_playing = models.BooleanField(default=False)
+    is_popular = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
+
+

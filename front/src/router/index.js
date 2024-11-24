@@ -1,3 +1,5 @@
+// src/router/index.js
+
 import { createRouter, createWebHistory } from 'vue-router'
 import GuidepageView from '../views/GuidepageView.vue'
 
@@ -56,8 +58,8 @@ const router = createRouter({
       component: ProfileMeView
     },
     {
-      // path: '/profile/:username',
-      path: '/profile/profileother',
+      path: '/profile/:username',
+      // path: '/profile/profileother',
       name: 'ProfileView',
       component: ProfileView
     },
@@ -73,9 +75,13 @@ const router = createRouter({
       name: "RecommendDetailView",
       component: RecommendDetailView,
       props: true,
+      beforeEnter: (to, from, next) => {
+        if (isNaN(to.params.category)) next(); // category가 숫자가 아니면 이동 허용
+        else next(false); // 숫자인 경우는 MovieDetailView로 이동
+      },
     },
     {
-      path: "/movies/:id",
+      path: "/movies/:id(\\d+)", // 숫자만 허용
       name: "MovieDetailView",
       component: MovieDetailView,
       props: true,
@@ -85,19 +91,21 @@ const router = createRouter({
     {
       path: '/reviews/board',
       name: 'BoardView',
-      component: BoardView
+      component: BoardView,
     },
     {
-      // path: '/reviews/board/:movie.id',
-      path: '/reviews/boarddetail',
+      path: '/reviews/board/:movie.id',
+      // path: '/reviews/boarddetail',
       name: 'BoardDetailView',
-      component: BoardDetailView
+      component: BoardDetailView,
+      props: true,
     },
     {
-      // path: '/reviews/:review.id',
-      path: '/reviews/1',
+      path: '/reviews/:review.id',
+      // path: '/reviews/1',
       name: 'ReviewDetailView',
-      component: ReviewDetailView
+      component: ReviewDetailView,
+      props: true,
     },
     {
       path: '/reviews/create',
@@ -107,7 +115,7 @@ const router = createRouter({
     // discussion
     {
       path: '/craetediscussion',
-      name: 'CreateDiscussionView.vue',
+      name: 'CreateDiscussionView',
       component: CreateDiscussionView
     },
     {

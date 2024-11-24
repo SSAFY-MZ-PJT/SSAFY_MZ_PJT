@@ -15,7 +15,7 @@ class Review(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(10)],
         null=True,
         blank=True
-    )  # 1~10 사이의 정수
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -24,7 +24,7 @@ class Review(models.Model):
     
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments")
-    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name="comments") # 댓글은 특정 리뷰에 연결
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name="comments")
     content = models.TextField()
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_comments", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -33,7 +33,7 @@ class Comment(models.Model):
 
 class Reply(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="replies")
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="replies")  # 대댓글은 특정 댓글에 연결
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="replies")
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

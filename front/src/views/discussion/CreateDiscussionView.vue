@@ -88,7 +88,7 @@
         <!-- 캐릭터 선택 -->
         <div class="character-selection text-center">
           <h4 class="fw-bold">Choose a Character to Start Discussion</h4>
-          <div class="character-grid">
+          <div class="character-grid mt-5">
             <div
               v-for="character in characters"
               :key="character.id"
@@ -276,16 +276,16 @@ const startDiscussion = () => {
   position: relative;
   width: 200px;
   text-align: center;
-  background: #f9f9f9;
+  background: #ffffff;
   border: 2px solid transparent;
   border-radius: 15px;
   padding: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .character-card:hover {
+  background: #f7f7f7;
   transform: translateY(-10px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }

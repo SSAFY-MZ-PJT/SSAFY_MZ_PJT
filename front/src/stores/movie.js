@@ -25,9 +25,9 @@ export const useMovieStore = defineStore('movie', {
         const data = response.data;
 
         console.log('API 응답 데이터:', data); // API 응답 데이터 로그 확인
-        this.nowPlaying = data.now_playing;
-        this.popular = data.popular;
-        this.recommended = data.recommended;
+        this.nowPlaying = data.now_playing || []; // 현재 상영 중인 영화
+        this.popular = data.popular || []; // 인기 영화
+        this.recommended = data.recommended || []; // 추천 영화
       } catch (err) {
         this.error = err.response?.data || 'Failed to fetch movies';
         console.error('Error fetching movies:', this.error);
@@ -48,7 +48,7 @@ export const useMovieStore = defineStore('movie', {
         } else if (category === 'popular') {
           url = 'http://localhost:8000/movies/popular/';
         } else if (category === 'recommended') {
-          url = 'http://localhost:8000/movies/all/';
+          url = 'http://localhost:8000/movies/recommended/';
         } else {
           throw new Error('Invalid category');
         }

@@ -1,14 +1,18 @@
+<!-- ReviewDetailView -->
 <template>
   <div>
     <DecoBox />
     <div class="mx-4">
-      <div class="container pt-5">
+      <div v-if="isLoading" class="text-center my-5">
+        <p>Loading review details...</p>
+      </div>
+      <div v-else class="container pt-5">
         <!-- Review Post -->
         <div class="review-post mb-5">
           <!-- Title and Details -->
           <h1 class="fw-bold mb-3">{{ review.title }}</h1>
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <p class="text-muted mb-0">{{ review.date }}</p>
+            <p class="text-muted mb-0">{{ formatDate(review.created_at) }}</p>
             <div class="d-flex align-items-center">
               <span class="rating-badge">
                 <span>★</span> {{ review.rating }}/10
@@ -54,51 +58,16 @@
               <img :src="comment.profileImage" alt="User Profile" class="rounded-circle me-3" width="50" />
               <div>
                 <div class="d-flex justify-content-between align-items-center">
-                  <h6 class="mb-1 fw-bold">{{ comment.author }}</h6>
-                  <small class="text-muted">{{ comment.date }}</small>
+                  <h6 class="mb-1 fw-bold">{{ comment.user }}</h6>
+                  <small class="text-muted">{{ formatDate(comment.created_at) }}</small>
                 </div>
-                <p class="mb-2">{{ comment.text }}</p>
+                <p class="mb-2">{{ comment.content }}</p>
                 <div class="d-flex align-items-center">
                   <button class="btn none-button btn-sm me-2" @click="toggleCommentLike(comment.id)">
                     <i :class="comment.liked ? 'bi bi-hand-thumbs-up-fill like-icon' : 'bi bi-hand-thumbs-up like-icon'"></i>
                     <span class="like-count"> • {{ comment.likes }}</span>
                   </button>
                   <a href="#" class="text-muted reply-btn" @click.prevent="toggleReply(comment.id)">Reply</a>
-                </div>
-
-                <!-- Reply Form -->
-                <div v-if="comment.showReplyForm" class="reply-form mt-3">
-                  <div class="d-flex align-items-center">
-                    <img
-                      :src="userProfileImage"
-                      alt="Reply Profile Picture"
-                      class="rounded-circle me-3"
-                      width="40"
-                    />
-                    <input
-                      type="text"
-                      v-model="replyText"
-                      class="form-control me-2"
-                      placeholder="Add a reply..."
-                    />
-                    <button class="btn custom-button btn-sm" @click="addReply(comment.id)">Post</button>
-                  </div>
-                </div>
-
-                <!-- Replies -->
-                <div v-if="comment.replies.length" class="replies mt-3">
-                  <div
-                    v-for="reply in comment.replies"
-                    :key="reply.id"
-                    class="d-flex align-items-start mb-2"
-                  >
-                    <img :src="reply.profileImage" alt="Reply Profile" class="rounded-circle me-3" width="40" />
-                    <div>
-                      <h6 class="mb-1 fw-bold">{{ reply.author }}</h6>
-                      <p class="mb-0">{{ reply.text }}</p>
-                      <small class="text-muted">{{ reply.date }}</small>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -111,119 +80,107 @@
 
 <script setup>
 import DecoBox from "@/components/DecoBox.vue";
-import { ref } from "vue";
+import { ref, onMounted, cloneVNode } from "vue";
+import { useRoute } from "vue-router";
+import axios from "axios";
 
-// Sample data for the review post
-const review = {
-  title: "One Of The Greatest Sequel Ever Made, Dune: Part Two Was Easily The Best Films Of The Year So Far",
-  date: "20 Feb 2024",
-  rating: 10,
-  content:
-    "In the quiet embrace of ink and page, a story unfolded, timeless and sage, through the lens of a filmmaker's artistry, its essence soared, a masterpiece for all to see.sd",
-};
+// API URL 설정
+const BASE_URL = "http://localhost:8000";
 
-// Like state for the review
-const likes = ref(100);
+// 라우터 사용
+const route = useRoute();
+
+// 데이터 상태
+const review = ref({});
+const comments = ref([]);
+const isLoading = ref(true);
+const likes = ref(0);
 const liked = ref(false);
+const newComment = ref("");
+const sortedComments = ref([]);
 
-const toggleLike = () => {
-  liked.value = !liked.value;
-  likes.value += liked.value ? 1 : -1;
+// 날짜 포맷 함수
+const formatDate = (date) => {
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return new Date(date).toLocaleDateString(undefined, options);
 };
 
-// User profile image
-const userProfileImage = "https://via.placeholder.com/50";
+// 리뷰 상세 정보 및 댓글 가져오기
+const fetchReviewDetails = async () => {
+  const reviewId = route.params.id;
+  try {
+    const [reviewResponse, commentsResponse] = await Promise.all([
+      axios.get(`${BASE_URL}/reviews/${reviewId}/`),
+      axios.get(`${BASE_URL}/reviews/${reviewId}/comments/`),
+    ]);
 
-// Comments data
-const comments = ref([
-  {
-    id: 1,
-    author: "Courtney Henry",
-    profileImage: "https://via.placeholder.com/50",
-    date: "20h ago",
-    text: "Ut ultricies ultrices interdum dolor sodales. Vitae feugiat vitae vitae quis id consectetur.",
-    likes: 12,
-    liked: false,
-    showReplyForm: false,
-    replies: [],
-  },
-  {
-    id: 2,
-    author: "Ronald Richards",
-    profileImage: "https://via.placeholder.com/50",
-    date: "6h ago",
-    text: "Lorem fringilla pretium magna purus orci faucibus morbi.",
-    likes: 8,
-    liked: false,
-    showReplyForm: false,
-    replies: [],
-  },
-]);
-
-const newComment = ref("");
-const replyText = ref("");
-
-// Add a new comment
-const addComment = () => {
-  if (newComment.value.trim()) {
-    comments.value.push({
-      id: Date.now(),
-      author: "You",
-      profileImage: userProfileImage,
-      date: "Just now",
-      text: newComment.value,
-      likes: 0,
-      liked: false,
-      showReplyForm: false,
-      replies: [],
-    });
-    newComment.value = "";
+    console.log(reviewResponse.data)
+    review.value = reviewResponse.data;
+    comments.value = commentsResponse.data;
+    likes.value = review.value.likes_count;
+    liked.value = review.value.liked || false;
+    sortedComments.value = [...comments.value];
+  } catch (error) {
+    console.error("Error fetching review details:", error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
-// Sort comments
-const sortedComments = ref(comments.value);
+// 좋아요 토글
+const toggleLike = async () => {
+  try {
+    await axios.post(`${BASE_URL}/reviews/like/${review.value.id}/`);
+    liked.value = !liked.value;
+    likes.value += liked.value ? 1 : -1;
+  } catch (error) {
+    console.error("Error toggling like:", error);
+  }
+};
+
+// 댓글 추가
+const addComment = async () => {
+  if (newComment.value.trim()) {
+    try {
+      const response = await axios.post(`${BASE_URL}/reviews/${review.value.id}/comments/`, {
+        content: newComment.value,
+      });
+      comments.value.push(response.data);
+      sortedComments.value = [...comments.value];
+      newComment.value = "";
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  }
+};
+
+// 댓글 정렬
 const sortComments = (type) => {
   if (type === "recent") {
-    sortedComments.value = [...comments.value].sort((a, b) => b.id - a.id);
+    sortedComments.value = [...comments.value].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   } else if (type === "likes") {
     sortedComments.value = [...comments.value].sort((a, b) => b.likes - a.likes);
   }
 };
 
-// Toggle like for a comment
-const toggleCommentLike = (id) => {
-  const comment = comments.value.find((comment) => comment.id === id);
-  if (comment) {
-    comment.liked = !comment.liked;
-    comment.likes += comment.liked ? 1 : -1;
+// 댓글 좋아요 토글
+const toggleCommentLike = async (commentId) => {
+  try {
+    await axios.post(`${BASE_URL}/reviews/like/${commentId}/`);
+    const comment = comments.value.find((c) => c.id === commentId);
+    if (comment) {
+      comment.liked = !comment.liked;
+      comment.likes += comment.liked ? 1 : -1;
+    }
+  } catch (error) {
+    console.error("Error toggling like for comment:", error);
   }
 };
 
-// Show reply form for a comment
-const toggleReply = (id) => {
-  const comment = comments.value.find((comment) => comment.id === id);
-  if (comment) {
-    comment.showReplyForm = !comment.showReplyForm;
-  }
-};
-
-// Add a reply to a comment
-const addReply = (id) => {
-  const comment = comments.value.find((comment) => comment.id === id);
-  if (comment && replyText.value.trim()) {
-    comment.replies.push({
-      id: Date.now(),
-      author: "You",
-      profileImage: userProfileImage,
-      date: "Just now",
-      text: replyText.value,
-    });
-    replyText.value = "";
-    comment.showReplyForm = false;
-  }
-};
+// 컴포넌트 마운트 시 리뷰와 댓글 로드
+onMounted(fetchReviewDetails);
 </script>
+
 
 <style lang="scss" scoped>
 .container {

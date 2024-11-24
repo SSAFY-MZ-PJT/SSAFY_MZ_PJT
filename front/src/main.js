@@ -1,3 +1,4 @@
+// main.js
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedState from 'pinia-plugin-persistedstate'; // 플러그인 추가

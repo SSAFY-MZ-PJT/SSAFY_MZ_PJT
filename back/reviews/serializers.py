@@ -42,7 +42,7 @@ class ReviewListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'title', 'content', 'created_at', 'updated_at', 'user', 'likes_count']
+        fields = ['id', 'title', 'content','rating','created_at', 'updated_at', 'user', 'likes_count']
 
     def get_likes_count(self, obj):
         return obj.likes.count()  # 좋아요 수 반환
@@ -51,6 +51,8 @@ class ReviewListSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     movie = MovieBriefSerializer(read_only=True)  # 연결된 영화 간략 정보
     comments = CommentSerializer(many=True, read_only=True)  # 댓글 및 대댓글 정보 포함
+    user = serializers.StringRelatedField(read_only=True)  # user를 읽기 전용으로 설정
+    likes_count = serializers.SerializerMethodField()  # 좋아요 수 추가
 
     class Meta:
         model = Review
@@ -63,5 +65,7 @@ class ReviewSerializer(serializers.ModelSerializer):
             'updated_at',
             'movie',
             'comments',
-            'user'
+            'user',
+            'likes_count',
         ]
+    

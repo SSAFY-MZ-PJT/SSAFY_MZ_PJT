@@ -1,7 +1,7 @@
 <template>
     <div class="flex min-h-[50vh] items-center justify-center bg-gray-50 py-8 px-4">
       <div class="w-full max-w-sm">
-        <div class="bg-white px-6 py-5 shadow-sm rounded-lg">
+        <div class="bg-white px-6 py-5 rounded-lg">
           <!-- 로딩 상태 -->
           <div v-if="isLoading" class="text-center">
             <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-500"></div>

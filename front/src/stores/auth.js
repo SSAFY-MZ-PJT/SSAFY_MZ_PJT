@@ -1,7 +1,9 @@
 // stores/auth.js
+
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import api from '@/api';
 
 export const useAuthStore = defineStore('auth', () => {
   // state
@@ -13,7 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
   // const userId = ref(localStorage.getItem('userId')); // 로그인 후 저장된 userId
 
 
-  // 회원가입s
+  // 회원가입
   async function registerUser(payload) {
     isLoading.value = true
     error.value = null

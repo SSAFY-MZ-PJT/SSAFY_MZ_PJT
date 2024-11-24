@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
-from .serializers import ReviewListSerializer, ReviewSerializer, CommentSerializer, ReplySerializer
+from .serializers import ReviewSerializer, CommentSerializer, ReplySerializer
 from .models import Review, Comment
 from movies.models import Movie
 
@@ -21,7 +21,7 @@ def all_review_list(request):
     전체 리뷰 조회
     """
     reviews = Review.objects.all()
-    serializer = ReviewListSerializer(reviews, many=True)
+    serializer = ReviewSerializer(reviews, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -35,7 +35,7 @@ def movie_review_list_create(request, movie_pk):
 
     if request.method == 'GET':
         reviews = movie.reviews.all()  # 특정 영화에 연결된 리뷰
-        serializer = ReviewListSerializer(reviews, many=True)
+        serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':

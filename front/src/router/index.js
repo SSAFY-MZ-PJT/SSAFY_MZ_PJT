@@ -101,8 +101,7 @@ const router = createRouter({
       props: true,
     },
     {
-      path: '/reviews/:review.id',
-      // path: '/reviews/1',
+      path: '/reviews/:id',
       name: 'ReviewDetailView',
       component: ReviewDetailView,
       props: true,

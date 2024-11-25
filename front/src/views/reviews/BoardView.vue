@@ -1,241 +1,199 @@
+<!-- BoardView -->
 <template>
   <div>
     <Search />
     <div class="mx-4">
-      <!-- v-for로 영화 표시 -->
-      <div class="container mt-5">
-        <ul class="nav nav-underline justify-content-end custom-nav mt-5 pb-4">
-          <li class="nav-item">
-            <a class="nav-link custom-link" href="#">최신순</a>
-          </li>
-          <li class="nav-item mx-2 text-muted">/</li>
-          <li class="nav-item">
-            <a class="nav-link custom-link" href="#">별점순</a>
-          </li>
-        </ul>
-        <div
-          v-for="movie in paginatedMovies"
-          :key="movie.id"
-          class="mb-5"
-        >
-          <!-- 상단 정보 -->
-          <div class="movie-info d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <h1 class="fw-bold">{{ movie.title }}</h1>
-              <p class="text-muted">
-                {{ movie.year }} • {{ movie.rating }} • {{ movie.runtime }}
-              </p>
-            </div>
-            <div class="d-flex align-items-center">
-              <button class="btn custom-button">+ Add to Watchlist</button>
-            </div>
-          </div>
-  
-          <!-- 중앙 포스터 및 리뷰 -->
-          <div class="row">
-            <!-- 영화 포스터 -->
-            <div class="col-md-4">
-              <img :src="movie.poster" alt="Movie Poster" class="img-fluid rounded shadow" />
-            </div>
-            <!-- 리뷰 리스트 -->
-            <div class="col-md-8">
-              <div
-                class="review-card p-3 mb-4"
-                v-for="(review, index) in movie.reviews.slice(0, 2)"
-                :key="index"
-                :style="{ backgroundColor: getReviewBgColor(review.rating) }"
-              >
-                <div class="d-flex align-items-center mb-2">
-                  <span class="rating-badge">
-                    <span>★</span> {{ review.rating }}/10
-                  </span>
-                  <h5 class="mb-0 ms-3">{{ review.title }}</h5>
+      <!-- 로딩 및 에러 처리 -->
+      <div v-if="isLoading" class="text-center my-5 fs-2">
+        <p>Loading movies and reviews...</p>
+      </div>
+      <div v-else-if="error" class="text-center my-5 text-danger">
+        <p>{{ error }}</p>
+      </div>
+      <div v-else>
+        <!-- 영화 리스트 -->
+        <div class="container mt-5">
+          <div v-for="movie in paginatedMovies" :key="movie.id" class="mb-5">
+            <!-- 영화 정보 -->
+            <div class="movie-info d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <router-link
+                  :to="{ name: 'BoardDetailView', params: { movieId: movie.id } }"
+                  class="styled-link"
+                >
+                  <p class="fw-bold">{{ movie.title }}</p>
+                </router-link>
+                  <p class="text-muted">
+                    {{ movie.release_date }} • {{ movie.rating }} • {{ movie.runtime }} mins
+                  </p>
                 </div>
-                <p class="text-muted mb-1">Date: {{ review.date }}</p>
-                <p>{{ review.content }}</p>
                 <div class="d-flex align-items-center">
-                  <i
-                    :class="review.liked ? 'bi bi-hand-thumbs-up-fill like-icon' : 'bi bi-hand-thumbs-up like-icon'"
-                    @click="toggleLike(movie.id, review.id)"
-                  ></i>
-                  <span class="like-count ms-2">• {{ review.likes }} likes</span>
+                  <button class="btn custom-button">+ Add to Watchlist</button>
                 </div>
               </div>
-              <!-- 하단 화살표 -->
-              <div class="text-center mt-4">
-                <button class="btn btn-outline-secondary" @click="goToAllReviews">
-                  <i class="bi bi-chevron-down"></i>
-                </button>
+              
+              <!-- 영화 포스터와 리뷰 -->
+              <div class="row align-items-stretch">
+                <div class="col-md-4">
+                  <img
+                    :src="movie.poster_image_url"
+                    alt="Movie Poster"
+                    class="img-fluid rounded shadow h-100 clickable-poster"
+                    @click="navigateToMovie(movie.id)"
+                  />
+                </div>
+                <div class="col-md-8 d-flex flex-column">
+                  <div
+                    v-for="(review, index) in movie.representativeReviews"
+                    :key="index"
+                    class="review-card flex-grow-1 mb-2 d-flex flex-column justify-content-between"
+                    :style="{ backgroundColor: getReviewBgColor(review.rating) }"
+                    @click="navigateToReview(review.id)"
+                    >
+                    <div>
+                      <div class="d-flex align-items-center mb-2">
+                        <span class="rating-badge">
+                          <span>★</span>
+                          {{ review.rating ? `${review.rating}/10` : "N/A" }}
+                        </span>
+                        <h5 class="mb-0 ms-3">{{ review.title }}</h5>
+                      </div>
+                      <p class="text-muted mb-1">Date • {{ formatDate(review.created_at) }}</p>
+                      <p>{{ review.content }}</p>
+                    </div>
+                    <div class="d-flex align-items-center mt-auto">
+                      <i
+                        :class="review.liked ? 'bi bi-hand-thumbs-up-fill like-icon' : 'bi bi-hand-thumbs-up like-icon'"
+                        @click="toggleLike(movie.id, review.id)"
+                      ></i>
+                      <span class="like-count ms-2">• {{ review.likes }} likes</span>
+                    </div>
+                  </div>
+                </div>
               </div>
+
             </div>
           </div>
-        </div>
-  
-  
-  
+
         <!-- 페이지 이동 바 -->
-        <nav aria-label="Page navigation">
-          <ul class="pagination justify-content-center">
-            <!-- 이전 페이지 버튼 -->
-            <li class="page-item" :class="{ disabled: currentPage === 1 }">
-              <a class="page-link" href="#" aria-label="Previous" @click.prevent="changePage(currentPage - 1)">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <!-- 페이지 번호 -->
-            <li
-              class="page-item"
-              v-for="page in totalPages"
-              :key="page"
-              :class="{ active: currentPage === page }"
-            >
-              <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
-            </li>
-            <!-- 다음 페이지 버튼 -->
-            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-              <a class="page-link" href="#" aria-label="Next" @click.prevent="changePage(currentPage + 1)">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <div class="mt-5 pt-4">
+          <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+              <!-- 5개 이전으로 이동 -->
+              <li class="page-item" :class="{ disabled: currentPage <= 5 }">
+                <a
+                  class="page-link"
+                  href="#"
+                  @click.prevent="changePage(currentPage - 5)"
+                >
+                  &laquo; Prev 5
+                </a>
+              </li>
+
+              <!-- 이전 페이지 -->
+              <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                <a
+                  class="page-link"
+                  href="#"
+                  @click.prevent="changePage(currentPage - 1)"
+                >
+                  &laquo;
+                </a>
+              </li>
+
+              <!-- 현재 보이는 페이지 그룹 -->
+              <li
+                class="page-item"
+                v-for="page in visiblePages"
+                :key="page"
+                :class="{ active: page === currentPage }"
+              >
+                <a
+                  class="page-link"
+                  href="#"
+                  @click.prevent="changePage(page)"
+                >
+                  {{ page }}
+                </a>
+              </li>
+
+              <!-- 다음 페이지 -->
+              <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                <a
+                  class="page-link"
+                  href="#"
+                  @click.prevent="changePage(currentPage + 1)"
+                >
+                  &raquo;
+                </a>
+              </li>
+
+              <!-- 5개 이후로 이동 -->
+              <li
+                class="page-item"
+                :class="{ disabled: currentPage > totalPages - 5 }"
+              >
+                <a
+                  class="page-link"
+                  href="#"
+                  @click.prevent="changePage(currentPage + 5)"
+                >
+                  Next 5 &raquo;
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import Search from "@/components/Search.vue";
+import { useReviewStore } from "@/stores/review";
+import { useRouter } from "vue-router"
 
-// 더미 데이터
-const movies = reactive([
-  {
-    id: 1,
-    title: "Spider-Man: Across the Spider-Verse",
-    year: 2024,
-    runtime: "2h 10m",
-    rating: "PG-13",
-    poster: "https://via.placeholder.com/300x400",
-    reviews: [
-      {
-        id: 1,
-        rating: 10,
-        title: "Amazing Sequel!",
-        date: "20 Feb 2024",
-        content: "A truly groundbreaking movie that redefines animation.",
-        likes: 320,
-        liked: false,
-      },
-      {
-        id: 3,
-        rating: 1,
-        title: "Amazing Sequel!",
-        date: "20 Feb 2024",
-        content: "A truly groundbreaking movie that redefines animation.",
-        likes: 320,
-        liked: false,
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Interstellar",
-    year: 2014,
-    runtime: "2h 49m",
-    rating: "PG-13",
-    poster: "https://via.placeholder.com/300x400",
-    reviews: [
-      {
-        id: 1,
-        rating: 9,
-        title: "A Sci-Fi Masterpiece",
-        date: "15 Feb 2014",
-        content: "Christopher Nolan at his best.",
-        likes: 540,
-        liked: false,
-      },
-      {
-        id: 4,
-        rating: 5,
-        title: "A Sci-Fi Masterpiece",
-        date: "15 Feb 2014",
-        content: "Christopher Nolan at his best.",
-        likes: 540,
-        liked: false,
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Interstellar",
-    year: 2014,
-    runtime: "2h 49m",
-    rating: "PG-13",
-    poster: "https://via.placeholder.com/300x400",
-    reviews: [
-      {
-        id: 1,
-        rating: 9,
-        title: "A Sci-Fi Masterpiece",
-        date: "15 Feb 2014",
-        content: "Christopher Nolan at his best.",
-        likes: 540,
-        liked: false,
-      },
-      {
-        id: 4,
-        rating: 5,
-        title: "A Sci-Fi Masterpiece",
-        date: "15 Feb 2014",
-        content: "Christopher Nolan at his best.",
-        likes: 540,
-        liked: false,
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Interstellar",
-    year: 2014,
-    runtime: "2h 49m",
-    rating: "PG-13",
-    poster: "https://via.placeholder.com/300x400",
-    reviews: [
-      {
-        id: 1,
-        rating: 9,
-        title: "A Sci-Fi Masterpiece",
-        date: "15 Feb 2014",
-        content: "Christopher Nolan at his best.",
-        likes: 540,
-        liked: false,
-      },
-      {
-        id: 4,
-        rating: 5,
-        title: "A Sci-Fi Masterpiece",
-        date: "15 Feb 2014",
-        content: "Christopher Nolan at his best.",
-        likes: 540,
-        liked: false,
-      },
-    ],
-  },
-  // Add more movie objects as needed
-]);
+const router = useRouter()
 
-// 페이지네이션 데이터
-const currentPage = reactive({ value: 1 });
+const reviewStore = useReviewStore();
+const isLoading = ref(true);
+const error = ref(null);
+const movies = ref([]);
+const currentPage = ref(1);
 const itemsPerPage = 3;
 
-const totalPages = computed(() => Math.ceil(movies.length / itemsPerPage));
+// 평점에 따라 배경 색깔 변화
+const getReviewBgColor = (rating) => {
+  if (rating >= 8) return "#E3E8DE";
+  if (rating >= 5) return "#F2F4F0";
+  return "#FAFAFA";
+};
 
+// 대표 리뷰 계산
+const calculateRepresentativeReviews = (reviews) => {
+  if (!reviews || reviews.length === 0) return [];
+  const highestRated = [...reviews].sort((a, b) => b.rating - a.rating)[0];
+  const lowestRated = [...reviews].sort((a, b) => a.rating - b.rating)[0];
+  return [highestRated, lowestRated];
+};
+
+// 페이지네이션 처리
+const totalPages = computed(() => Math.ceil(movies.value.length / itemsPerPage));
 const paginatedMovies = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return movies.slice(start, end);
+  return movies.value.slice(start, end);
 });
+
+const visiblePages = computed(() => {
+  const start = Math.floor((currentPage.value - 1) / 5) * 5 + 1;
+  const end = Math.min(start + 4, totalPages.value);
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+});
+
 
 const changePage = (page) => {
   if (page >= 1 && page <= totalPages.value) {
@@ -243,24 +201,57 @@ const changePage = (page) => {
   }
 };
 
-const getReviewBgColor = (rating) => {
-  if (rating >= 8) return "#E3E8DE";
-  if (rating >= 5) return "#F2F4F0";
-  return "#FAFAFA";
+// 날짜 포맷 함수
+const formatDate = (isoDate) => {
+  const date = new Date(isoDate);
+  return date.toISOString().split("T")[0]; // "YYYY-MM-DD" 포맷
 };
 
-const toggleLike = (movieId, reviewId) => {
-  const movie = movies.find((m) => m.id === movieId);
-  const review = movie.reviews.find((r) => r.id === reviewId);
-  if (review) {
-    review.liked = !review.liked;
-    review.likes += review.liked ? 1 : -1;
+// 좋아요 토글
+const toggleLike = async (movieId, reviewId) => {
+  try {
+    await reviewStore.toggleLike(reviewId);
+    const movie = movies.value.find((m) => m.id === movieId);
+    const review = movie.representativeReviews.find((r) => r.id === reviewId);
+    if (review) {
+      review.liked = !review.liked;
+      review.likes += review.liked ? 1 : -1;
+    }
+  } catch (err) {
+    console.error("Failed to toggle like:", err);
   }
 };
 
-const goToAllReviews = (movieId) => {
-  window.location.href = `/movies/${movieId}/reviews`;
+// 데이터 로드
+const loadMoviesAndReviews = async () => {
+  try {
+    isLoading.value = true;
+    error.value = null;
+
+    const fetchedMovies = await reviewStore.fetchMoviesWithReviews();
+
+    const limitedMovies = fetchedMovies.slice(0, 50); // 100개만 가져오기
+    movies.value = limitedMovies.map((movie) => ({
+      ...movie,
+      representativeReviews: calculateRepresentativeReviews(movie.reviews),
+    }));
+  } catch (err) {
+    error.value = "Failed to load movies or reviews.";
+    console.error(err);
+  } finally {
+    isLoading.value = false;
+  }
 };
+
+const navigateToReview = (reviewId) => {
+  router.push({ name: 'ReviewDetailView', params: { id: reviewId } });
+};
+
+const navigateToMovie = (movieId) => {
+  router.push({ name: 'BoardDetailView', params: { movieId } });
+};
+
+onMounted(loadMoviesAndReviews);
 </script>
 
 <style scoped>
@@ -295,11 +286,6 @@ const goToAllReviews = (movieId) => {
   max-width: 1200px;
   padding-left: 15px;
   padding-right: 15px;
-}
-
-.review-card {
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 img {
@@ -381,4 +367,62 @@ button:hover {
   color: #ffffff;
   border: none;
 }
+
+/* 라우터 링크 스타일 */
+.styled-link {
+  font-size: 30px;
+  text-decoration: none;
+  color: #000000; /* 기본 텍스트 색상 */
+  background-clip: text; /* 배경 이미지를 텍스트에만 클립 */
+  -webkit-background-clip: text; /* 웹킷 브라우저 호환 */
+  transition: background-position 0.5s ease, font-size 0.3s ease, color 0.3s ease;
+}
+
+/* 호버 효과 */
+.styled-link:hover {
+  text-decoration: none;
+  background-position: 100% 0; /* 배경 위치 변경 효과 */
+  font-size: 2rem; /* 글씨 크기 증가 */
+  background-image: linear-gradient(90deg, #254e01, #8bc34a); /* 그라데이션 */
+}
+
+
+.row.align-items-stretch {
+  display: flex;
+  align-items: stretch;
+}
+
+.col-md-4 img {
+  object-fit: cover;
+  height: 100%; /* 포스터가 항상 세로를 꽉 채우도록 */
+}
+
+.col-md-8 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 리뷰가 고르게 분배되도록 */
+}
+
+.review-card {
+  flex: 1;
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  cursor: pointer;
+}
+
+.review-card:hover {
+  transform: scale(1.05); 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+}
+
+
+.clickable-poster {
+  cursor: pointer;
+}
+
+
 </style>
+

@@ -148,7 +148,11 @@ MIDDLEWARE = [
 ]
 
 ######## 이건 뭐지??
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_ENGINE = "django.contrib.sessions.backends.db"  # 기본 세션 엔진
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = False  # HTTPS 환경에서는 True로 설정
+SESSION_SAVE_EVERY_REQUEST = True  # 모든 요청에서 세션 갱신
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # 브라우저 닫아도 세션 유지
 
 # CORS
 CORS_ALLOWED_ORIGINS = [

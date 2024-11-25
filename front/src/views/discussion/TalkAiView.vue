@@ -1,70 +1,103 @@
 <!-- src/views/discussion/TalkAiView.vue -->
 
 <template>
-    <div class="mt-5 md-5">
-      <div class="chat-page">
-        <div class="chat-header">
-          <!-- <h2 class="fw-bold">{{ discussion.title }}</h2>
-          <p class="text-muted">Discussing: <strong>{{ movie.title }}</strong></p> -->
-        </div>
-  
-        <!-- Chat Messages -->
-        <div class="chat-container">
-          <div
-            v-for="message in messages"
-            :key="message.id"
-            class="message"
-            :class="{ 'from-user': message.sender === 'user', 'from-character': message.sender === 'character' }"
-          >
-            <div class="message-avatar" v-if="message.sender === 'character'">
-              <img
-                :src="selectedCharacter.image"
-                :alt="selectedCharacter.name"
-                class="avatar"
-              />
-            </div>
-            <div class="message-content">
-              <p class="sender-name">
-                {{ message.sender === "character" ? selectedCharacter.name : "You" }}
-              </p>
-              <p class="message-text">{{ message.text }}</p>
-            </div>
-            <div class="message-avatar" v-if="message.sender === 'user'">
-              <img
-                src="https://via.placeholder.com/50"
-                alt="User Avatar"
-                class="avatar"
-              />
-            </div>
-          </div>
-        </div>
-  
-        <!-- Message Input -->
-        <div class="chat-input-container">
-          <input
-            type="text"
-            v-model="newMessage"
-            placeholder="Type your message here..."
-            class="chat-input"
-            @keyup.enter="sendMessage"
+  <div class="chat-page">
+    <!-- Chat Messages -->
+    <div class="chat-container">
+      <div
+        v-for="message in messages"
+        :key="message.id"
+        class="message"
+        :class="{ 'from-user': message.sender === 'user', 'from-character': message.sender === 'character' }"
+      >
+        <div class="message-avatar" v-if="message.sender === 'character'">
+          <img
+            :src="characterImage"
+            :alt="characterName"
+            class="avatar"
           />
-          <button class="btn custom-button" @click="sendMessage">Send</button>
+        </div>
+        <div class="message-content">
+          <p class="sender-name">
+            {{ message.sender === "character" ? characterName : "You" }}
+          </p>
+          <p class="message-text">{{ message.text }}</p>
+        </div>
+        <div class="message-avatar" v-if="message.sender === 'user'">
+          <img
+            src="https://via.placeholder.com/50"
+            alt="User Avatar"
+            class="avatar"
+          />
         </div>
       </div>
     </div>
-  </template>
-  
-  <script setup>
-import { ref, reactive } from "vue";
+
+    <!-- Message Input -->
+    <div class="chat-input-container">
+      <input
+        type="text"
+        v-model="newMessage"
+        placeholder="Type your message here..."
+        class="chat-input"
+        @keyup.enter="sendMessage"
+      />
+      <button class="btn custom-button" @click="sendMessage">Send</button>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { reactive, ref, onMounted } from "vue";
+
 import axios from "axios";
 
+// Props로 Vue Router에서 전달된 데이터를 받음
+const props = defineProps({
+  characterName: {
+    type: String,
+    required: true,
+  },
+  characterPersonality: {
+    type: String,
+    required: true,
+  },
+});
+console.log("Props received:", props.characterName, props.characterPersonality);
+
+// Chat 상태 관리
 const messages = reactive([]);
 const newMessage = ref("");
 
+// Initialize Chat
+const initializeChat = async () => {
+  try {
+    const response = await axios.post("http://127.0.0.1:8000/chats/", {
+      name: props.characterName,
+      personality: props.characterPersonality,
+    });
+    console.log("Backend response:", response.data);
+    messages.push({
+      id: Date.now(),
+      sender: "character",
+      text: response.data.ai_response,
+    });
+  } catch (error) {
+    console.error("Error initializing chat:", error);
+    console.error("Response from backend:", error.response?.data);
+  }
+};
+
+// Send User Message
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return;
 
-  messages.push({ sender: "You", text: newMessage.value });
+  messages.push({
+    id: Date.now(),
+    sender: "user",
+    text: newMessage.value,
+  });
+
   const userMessage = newMessage.value;
   newMessage.value = "";
 
@@ -72,13 +105,26 @@ const sendMessage = async () => {
     const response = await axios.post("http://127.0.0.1:8000/chats/", {
       message: userMessage,
     });
-
-    messages.push({ sender: "AI", text: response.data.ai_response });
+    messages.push({
+      id: Date.now(),
+      sender: "character",
+      text: response.data.ai_response,
+    });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error sending message:", error);
+    console.error("Response from backend:", error.response?.data);
   }
 };
+
+
+
+
+// Initialize Chat on Component Mount
+onMounted(() => {
+  initializeChat();
+});
 </script>
+
   
   <style scoped>
   .chat-page {

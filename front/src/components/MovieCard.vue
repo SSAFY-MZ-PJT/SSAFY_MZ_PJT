@@ -1,18 +1,17 @@
 <template>
-  <div class="card h-100">
-    <div class="position-relative">
-      <!-- Movie Poster -->
-      <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id } }" class="card-link">
-      <img
-      :src="movie.poster_image_url"
-      class="card-img-top poster-image"
-      :alt="movie.title"
-      />
-      </router-link>
-      <!-- Favorite Button -->
-      <button
-      class="bookmark-btn position-absolute top-0 end-0 btn btn-sm m-1"
-      @click="toggleFavorite(movie.id)"
+  <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id } }" class="card-link">
+    <div class="card h-100">
+      <div class="position-relative">
+        <!-- Movie Poster -->
+        <img
+          :src="movie.poster_image_url"
+          class="card-img-top poster-image"
+          :alt="movie.title"
+        />
+        <!-- Favorite Button -->
+        <button
+          class="bookmark-btn position-absolute top-0 end-0 btn btn-sm m-1"
+          @click="toggleFavorite(movie.id)"
           :class="{ 'active': movie.isFavorite }"
         >
           <svg
@@ -36,16 +35,17 @@
         </h6>
         <p class="text-muted mb-1">
           📅 {{ movie.release_date }} &nbsp;&nbsp;
-          <span class="text-warning fw-bold">★ {{ movie.rating.toFixed(1) }}</span>
+          <span class="text-warning fw-bold">★ {{ movie.rating }}</span>
         </p>
         <div class="d-flex align-items-center justify-content-between">
           <!-- Trailer Button -->
-          <button class="btn custom-button btn-sm" @click.stop="playTrailer(movie.trailer_url)">
+          <button class="btn custom-button btn-sm" @click="playTrailer(movie.trailerUrl)">
             ▶ Trailer
           </button>
         </div>
       </div>
     </div>
+  </router-link>
   </template>
   
   <script setup>

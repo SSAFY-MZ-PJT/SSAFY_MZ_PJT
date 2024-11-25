@@ -28,6 +28,8 @@ class SimpleReviewSerializer(serializers.ModelSerializer):
     """
     간단한 리뷰 Serializer: 역참조 시 사용
     """
+    movie = SimpleMovieSerializer()
+
     class Meta:
         model = Review
         fields = ('id', 'title', 'rating', 'created_at', 'movie',)

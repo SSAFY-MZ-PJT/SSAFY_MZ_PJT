@@ -1,4 +1,3 @@
-<!-- Search.vue -->
 <template>
      <div class="search-bar-container">
           <div class="container">
@@ -10,15 +9,11 @@
                 class="form-control" 
                 placeholder="Find the best movies to watch..." 
                 aria-label="Search"
-                v-model="searchQuery"
-                @keyup.enter="searchMovies"
                 aria-describedby="search-button">
               <button 
                 class="btn" 
                 type="button" 
-                id="search-button"
-                @click="searchMovies"
-                >
+                id="search-button">
                 Search
               </button>
             </div>
@@ -27,22 +22,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
 
-const searchQuery = ref("");
-const router = useRouter();
-
-const searchMovies = () => {
-  if (searchQuery.value.trim()) {
-    router.push({
-      name: "SearchResultView",
-      query: { q: searchQuery.value.trim() },
-    });
-  } else {
-    alert("검색어를 입력해 주세요.");
-  }
-};
 </script>
 
 <style scoped>

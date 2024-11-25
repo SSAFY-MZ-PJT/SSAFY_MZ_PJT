@@ -1,4 +1,3 @@
-<!-- UserupdateView -->
 <template>
   <div class="container mt-5">
     <h2 class="text-center mb-4">프로필 수정</h2>
@@ -29,6 +28,85 @@
     <form @submit.prevent="updateProfile">
       <h4 class="mb-3">기본 정보</h4>
 
+      <!-- Username -->
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label for="username" class="form-label">사용자 이름</label>
+          <input
+            type="text"
+            id="username"
+            class="form-control"
+            v-model="formData.username"
+            placeholder="사용자 이름을 입력하세요"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label for="password" class="form-label">비밀번호</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            v-model="formData.password"
+            placeholder="비밀번호를 입력하세요"
+            required
+          />
+        </div>
+      </div>
+      <div v-if="!passwordIsValid && formData.password" class="text-danger mb-3">
+        비밀번호는 8자리 이상, 특수문자, 숫자를 포함해야 합니다.
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            class="form-control"
+            v-model="confirmPassword"
+            placeholder="비밀번호를 다시 입력하세요"
+            required
+          />
+        </div>
+      </div>
+      <div v-if="passwordMismatch" class="text-danger mb-3">
+        비밀번호가 일치하지 않습니다.
+      </div>
+
+      <!-- Email -->
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label for="email" class="form-label">이메일</label>
+          <div class="input-group">
+            <input
+              type="text"
+              id="emailId"
+              class="form-control"
+              v-model="emailId"
+              placeholder="이메일 아이디"
+              required
+            />
+            <span class="input-group-text">@</span>
+            <select
+              class="form-select"
+              v-model="selectedDomain"
+              @change="updateEmailDomain"
+            >
+              <option value="">직접 입력</option>
+              <option value="naver.com">naver.com</option>
+              <option value="daum.net">daum.net</option>
+              <option value="gmail.com">gmail.com</option>
+              <option value="nate.com">nate.com</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
       <div class="row mb-3" v-if="selectedDomain === ''">
         <div class="col-md-12">
@@ -105,36 +183,26 @@
         </button>
       </div>
     </form>
-
-    <!-- 회원탈퇴 링크 -->
-    <div class="text-center mt-5 pb-5 pt-5">
-      <button
-        class="delete-account-btn"
-        @click="confirmDeleteAccount"
-      >
-        회원탈퇴
-      </button>
-    </div>
-
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
-import axios from "axios";
-import { useRouter } from "vue-router";
+import { ref, reactive, computed, watch } from "vue";
 
-const router = useRouter();
-
+// 폼 데이터
 const formData = reactive({
   username: "",
+  email: "",
   introduction: "",
+  password: "",
   selectedGenres: [],
   profileImage: null,
   profileImageUrl: null,
 });
 
 const defaultProfileImage = "/src/assets/Reviewicons/user.png";
+
+// 장르 데이터
 const genres = [
   { id: 1, name: "액션", color: "#FFB3BA", textColor: "#8B0000" },
   { id: 2, name: "모험", color: "#FFDFBA", textColor: "#A84300" },
@@ -157,6 +225,15 @@ const genres = [
   { id: 19, name: "서부", color: "#F5E6CC", textColor: "#5C401F" },
 ];
 
+
+// 랜덤 파스텔 색상 생성
+const generatePastelColor = () => {
+  const r = Math.floor((Math.random() * 127) + 127);
+  const g = Math.floor((Math.random() * 127) + 127);
+  const b = Math.floor((Math.random() * 127) + 127);
+  return `rgb(${r}, ${g}, ${b})`;
+};
+
 // 장르별 색상 저장
 const genreColors = reactive({});
 
@@ -174,99 +251,27 @@ const toggleGenre = (genre) => {
 };
 
 const isFormValid = computed(() => {
-  return formData.username && formData.selectedGenres.length >= 2;
+  return formData.username && formData.email && formData.selectedGenres.length >= 2;
 });
 
-// 기존 사용자 정보 가져오기
-const fetchUserProfile = async () => {
-  try {
-    const response = await axios.get("http://localhost:8000/accounts/me/", {
-      headers: {
-        Authorization: `Token ${localStorage.getItem("accessToken")}`,
-      },
-    });
-    const userData = response.data;
-
-    // 불러온 사용자 데이터 설정
-    formData.username = userData.username;
-    formData.introduction = userData.introduction;
-    formData.profileImageUrl = userData.profile_image || defaultProfileImage;
-  } catch (error) {
-    console.error("Failed to fetch user profile:", error);
-    alert("사용자 정보를 불러오는 데 실패했습니다.");
-  }
-};
-
-// 업데이트 함수
-const updateProfile = async () => {
-  try {
-    // 사용자 이름을 엔드포인트에 포함하여 요청
-    const endpoint = `http://localhost:8000/accounts/${formData.username}/`;
-
-    const payload = new FormData();
-    payload.append("username", formData.username);
-    payload.append("introduction", formData.introduction);
-    payload.append("selected_genres", JSON.stringify(formData.selectedGenres));
-
-    if (formData.profileImage) {
-      payload.append("profile_image", formData.profileImage);
-    }
-
-    const response = await axios.put(endpoint, payload, {
-      headers: {
-        Authorization: `Token ${localStorage.getItem("accessToken")}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    alert("프로필이 성공적으로 업데이트되었습니다!");
-    router.push({ name: "ProfileMeView" });
-    // 업데이트된 데이터 반영
-    formData.profileImageUrl = response.data.profile_image || defaultProfileImage;
-  } catch (error) {
-    console.error("Failed to update profile:", error);
-    alert("프로필 업데이트에 실패했습니다.");
-  }
-};
-
-
-// 이미지 업로드 처리
-const onFileChange = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    formData.profileImage = file;
-    formData.profileImageUrl = URL.createObjectURL(file);
-  }
-};
-
-// 회원탈퇴 확인 및 처리
-const confirmDeleteAccount = async () => {
-  const isConfirmed = confirm("정말 Cinerium을 떠나시나요? 지금까지 저장된 정보들은 없어지게 됩니다.");
-  if (isConfirmed) {
-    try {
-      const response = await axios.delete(`http://localhost:8000/accounts/${formData.username}/`, {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("accessToken")}`,
-        },
-      });
-      alert("귀하의 개인정보는 안전하게 삭제되었습니다.");
-      // 추가 작업: 로그아웃 처리 또는 페이지 이동
-      localStorage.removeItem("accessToken");
-      window.location.href = "/";
-    } catch (error) {
-      console.error("Failed to delete account:", error);
-      alert("회원탈퇴에 실패했습니다. 다시 시도해주세요.");
-    }
-  }
-};
-
-
-// 초기 데이터 로드
-onMounted(() => {
-  fetchUserProfile();
+const passwordIsValid = computed(() => {
+  const regex = /^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  return regex.test(formData.password);
 });
+
+const passwordMismatch = computed(() => formData.password !== confirmPassword.value);
+
+const confirmPassword = ref("");
+
+const resetForm = () => {
+  formData.username = "";
+  formData.email = "";
+  formData.password = "";
+  formData.introduction = "";
+  formData.selectedGenres = [];
+  Object.keys(genreColors).forEach((key) => delete genreColors[key]);
+};
 </script>
-
 
 <style scoped>
 .container {
@@ -320,19 +325,6 @@ textarea {
   margin-bottom: 7px;
   cursor: pointer; /* 클릭 가능하다는 표시 */
   transition: background-color 0.3s ease;
-}
-
-.delete-account-btn {
-  background: transparent;
-  color: rgb(161, 161, 161);
-  font-style: italic;
-  border: none;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.delete-account-btn:hover {
-  color: red;
 }
 
 </style>

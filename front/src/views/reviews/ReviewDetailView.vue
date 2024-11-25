@@ -52,59 +52,35 @@
             <button class="btn custom-button" @click="addComment">Post</button>
           </div>
 
-          <!-- 댓글 목록 -->
+          <!-- Comments List -->
           <div v-for="comment in sortedComments" :key="comment.id" class="comment-item mb-4">
             <div class="d-flex align-items-start">
-              <img :src="comment.user.profileImage || '@/assets/Navbaricons/user.png'" alt="User Profile" class="rounded-circle me-3" width="50" />
+              <img :src="comment.profileImage" alt="User Profile" class="rounded-circle me-3" width="50" />
               <div>
                 <div class="d-flex justify-content-between align-items-center">
-                  <h6 class="mb-1 fw-bold me-3">{{ comment.user.username }}</h6>
+                  <h6 class="mb-1 fw-bold">{{ comment.user }}</h6>
                   <small class="text-muted">{{ formatDate(comment.created_at) }}</small>
                 </div>
                 <p class="mb-2">{{ comment.content }}</p>
                 <div class="d-flex align-items-center">
-                  <a href="#" class="text-muted reply-btn" @click.prevent="replyInput[comment.id] = !replyInput[comment.id]">Reply</a>
+                  <button class="btn none-button btn-sm me-2" @click="toggleCommentLike(comment.id)">
+                    <i :class="comment.liked ? 'bi bi-hand-thumbs-up-fill like-icon' : 'bi bi-hand-thumbs-up like-icon'"></i>
+                    <span class="like-count"> • {{ comment.likes }}</span>
+                  </button>
+                  <a href="#" class="text-muted reply-btn" @click.prevent="toggleReply(comment.id)">Reply</a>
                 </div>
-
-                <!-- 대댓글 목록 -->
-                <div v-for="reply in comment.replies || []" :key="reply.id" class="reply-item mt-3">
-                  <div class="d-flex align-items-start">
-                    <img :src="reply.user.profileImage || '@/assets/Navbaricons/user.png'" alt="User Profile" class="rounded-circle me-3" width="40" />
-                    <div>
-                      <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="mb-1 fw-bold me-3">{{ reply.user.username }}</h6>
-                        <small class="text-muted">{{ formatDate(reply.created_at) }}</small>
-                      </div>
-                      <p class="mb-2">{{ reply.content }}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 대댓글 입력창 -->
-                <div v-if="replyInput[comment.id]" class="reply-form mt-2 d-flex align-items-center">
-                    <input
-                      type="text"
-                      v-model="replyInput[comment.id]"
-                      class="form-control me-2"
-                      placeholder="Write a reply..."
-                    />
-                    <button class="btn custom-button" @click="addReply(comment.id)">Reply</button>
-                  </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   </div>
-  
 </template>
-
 
 <script setup>
 import DecoBox from "@/components/DecoBox.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, cloneVNode } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 
@@ -117,15 +93,11 @@ const route = useRoute();
 // 데이터 상태
 const review = ref({});
 const comments = ref([]);
-const isLoadingReview = ref(true);
-const isLoadingComments = ref(true);
+const isLoading = ref(true);
 const likes = ref(0);
 const liked = ref(false);
 const newComment = ref("");
 const sortedComments = ref([]);
-
-// 대댓글 상태
-const replyInput = ref({});
 
 // 날짜 포맷 함수
 const formatDate = (date) => {
@@ -133,48 +105,25 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString(undefined, options);
 };
 
-// 리뷰 상세 정보 가져오기 (Review Post용)
+// 리뷰 상세 정보 및 댓글 가져오기
 const fetchReviewDetails = async () => {
-  const reviewId = Number(route.params.id); // 리뷰 ID
-  const movieId = route.params.movieId; // 영화 ID
-
+  const reviewId = route.params.id;
   try {
-    const reviewsResponse = await axios.get(`${BASE_URL}/reviews/${movieId}/`);
-    const allReviews = reviewsResponse.data;
+    const [reviewResponse, commentsResponse] = await Promise.all([
+      axios.get(`${BASE_URL}/reviews/${reviewId}/`),
+      axios.get(`${BASE_URL}/reviews/${reviewId}/comments/`),
+    ]);
 
-    const targetReview = allReviews.find((review) => review.id === reviewId);
-    if (!targetReview) {
-      throw new Error("Review not found.");
-    }
-
-    review.value = targetReview;
-    likes.value = targetReview.likes.length;
-    liked.value = targetReview.likes.some((user) => user.id === 1); // 현재 사용자 ID: 1로 가정
-  } catch (error) {
-    console.error("Error fetching review details:", error);
-    alert("Failed to load review details.");
-  } finally {
-    isLoadingReview.value = false;
-  }
-};
-
-// 댓글 가져오기 (Comments Section용)
-const fetchReviewDetail = async () => {
-  const reviewId = Number(route.params.id); // 리뷰 ID
-
-  try {
-    const commentsResponse = await axios.get(`${BASE_URL}/reviews/${reviewId}/comments/`);
-    comments.value = commentsResponse.data.map((comment) => ({
-      ...comment,
-      user: comment.user || { username: "Unknown", profileImage: "@/assets/Navbaricons/user.png" },
-      profileImage: comment.user.profileImage || "@/assets/Navbaricons/user.png", // 기본 이미지 설정
-    }));
+    console.log(reviewResponse.data)
+    review.value = reviewResponse.data;
+    comments.value = commentsResponse.data;
+    likes.value = review.value.likes_count;
+    liked.value = review.value.liked || false;
     sortedComments.value = [...comments.value];
   } catch (error) {
-    console.error("Error fetching comments:", error);
-    alert("Failed to load comments.");
+    console.error("Error fetching review details:", error);
   } finally {
-    isLoadingComments.value = false;
+    isLoading.value = false;
   }
 };
 
@@ -191,68 +140,17 @@ const toggleLike = async () => {
 
 // 댓글 추가
 const addComment = async () => {
-  if (!newComment.value.trim()) return;
-
-  try {
-    const response = await axios.post(`${BASE_URL}/reviews/${review.value.id}/comments/`, {
-      content: newComment.value,
-    });
-    const newCommentData = {
-      ...response.data,
-      user: response.data.user || { username: "You", profileImage: "@/assets/Navbaricons/user.png" },
-      likes: [],
-    };
-    comments.value.push(newCommentData);
-    sortedComments.value = [...comments.value];
-    newComment.value = "";
-  } catch (error) {
-    console.error("Error adding comment:", error);
-  }
-};
-
-// 대댓글 추가
-const addReply = async (commentId) => {
-  const content = replyInput.value[commentId];
-
-  // content가 문자열인지 확인
-  if (typeof content !== "string" || !content.trim()) {
-    alert("입력하지 않으셨습니다. 다시 한 번 확인해주세요.");
-    return;
-  }
-
-  try {
-    const response = await axios.post(
-      `${BASE_URL}/reviews/${review.value.id}/comments/${commentId}/replies/`,
-      { content }
-    );
-    const targetComment = comments.value.find((c) => c.id === commentId);
-    if (targetComment) {
-      if (!targetComment.replies) targetComment.replies = [];
-      targetComment.replies.push({
-        ...response.data,
-        user: response.data.user || { username: "You", profileImage: "@/assets/Navbaricons/user.png" },
+  if (newComment.value.trim()) {
+    try {
+      const response = await axios.post(`${BASE_URL}/reviews/${review.value.id}/comments/`, {
+        content: newComment.value,
       });
+      comments.value.push(response.data);
+      sortedComments.value = [...comments.value];
+      newComment.value = "";
+    } catch (error) {
+      console.error("Error adding comment:", error);
     }
-    replyInput.value[commentId] = ""; // 입력 필드 초기화
-  } catch (error) {
-    console.error("Error adding reply:", error);
-    alert("Failed to add reply.");
-  }
-};
-
-
-// 댓글 좋아요 토글
-const toggleCommentLike = async (commentId) => {
-  try {
-    await axios.post(`${BASE_URL}/reviews/like/${commentId}/`);
-    const comment = comments.value.find((c) => c.id === commentId);
-    if (comment) {
-      comment.liked = !comment.liked;
-      comment.likes += comment.liked ? 1 : -1;
-    }
-  } catch (error) {
-    console.error("Error toggling like for comment:", error);
-    alert("Failed to toggle like for comment.");
   }
 };
 
@@ -265,14 +163,23 @@ const sortComments = (type) => {
   }
 };
 
+// 댓글 좋아요 토글
+const toggleCommentLike = async (commentId) => {
+  try {
+    await axios.post(`${BASE_URL}/reviews/like/${commentId}/`);
+    const comment = comments.value.find((c) => c.id === commentId);
+    if (comment) {
+      comment.liked = !comment.liked;
+      comment.likes += comment.liked ? 1 : -1;
+    }
+  } catch (error) {
+    console.error("Error toggling like for comment:", error);
+  }
+};
 
-// 컴포넌트 마운트 시 데이터 로드
-onMounted(() => {
-  fetchReviewDetails(); // 리뷰 상세 정보
-  fetchReviewDetail(); // 댓글 정보
-});
+// 컴포넌트 마운트 시 리뷰와 댓글 로드
+onMounted(fetchReviewDetails);
 </script>
-
 
 
 <style scoped>

@@ -1,18 +1,18 @@
 <template>
-    <div class="card h-100">
-      <div class="position-relative">
-        <!-- Movie Poster -->
-        <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id } }" class="card-link">
-        <img
-        :src="movie.poster_image_url"
-        class="card-img-top poster-image"
-        :alt="movie.title"
-        />
-        </router-link>
-        <!-- Favorite Button -->
-        <button
-          class="bookmark-btn position-absolute top-0 end-0 btn btn-sm m-1"
-          @click="toggleFavorite(movie.id)"
+  <div class="card h-100">
+    <div class="position-relative">
+      <!-- Movie Poster -->
+      <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id } }" class="card-link">
+      <img
+      :src="movie.poster_image_url"
+      class="card-img-top poster-image"
+      :alt="movie.title"
+      />
+      </router-link>
+      <!-- Favorite Button -->
+      <button
+      class="bookmark-btn position-absolute top-0 end-0 btn btn-sm m-1"
+      @click="toggleFavorite(movie.id)"
           :class="{ 'active': movie.isFavorite }"
         >
           <svg

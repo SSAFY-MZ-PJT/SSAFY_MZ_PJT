@@ -93,7 +93,7 @@ const router = createRouter({
       component: SearchResultView,
       props: true,
     },
-
+    
     // reviews
     {
       path: '/reviews/board',
@@ -127,11 +127,7 @@ const router = createRouter({
     {
       path: '/talkai',
       name: 'TalkAiView',
-      component: TalkAiView,
-      props: (route) => ({
-        characterName: route.params.characterName,
-        characterPersonality: route.params.characterPersonality,
-      }),
+      component: TalkAiView
     },
     
     {

@@ -25,6 +25,7 @@
                 :key="movie.id"
               >
                 <!-- Card -->
+                
                 <div class="card h-100 mt-3 me-2">
                   <div class="position-relative">
                     <!-- Movie Poster -->
@@ -35,7 +36,6 @@
                       :alt="movie.title"
                       />
                     </router-link>
-                      
                       <!-- Favorite Button -->
                       <button
                         class="bookmark-btn position-absolute top-0 end-0 btn btn-sm m-1"

@@ -105,7 +105,7 @@
         </button>
       </div>
     </form>
-  
+
     <!-- 회원탈퇴 링크 -->
     <div class="text-center mt-5 pb-5 pt-5">
       <button
@@ -115,14 +115,15 @@
         회원탈퇴
       </button>
     </div>
-  </div>
 
+  </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+
 const router = useRouter();
 
 const formData = reactive({
@@ -134,8 +135,6 @@ const formData = reactive({
 });
 
 const defaultProfileImage = "/src/assets/Reviewicons/user.png";
-
-
 const genres = [
   { id: 1, name: "액션", color: "#FFB3BA", textColor: "#8B0000" },
   { id: 2, name: "모험", color: "#FFDFBA", textColor: "#A84300" },
@@ -187,6 +186,7 @@ const fetchUserProfile = async () => {
       },
     });
     const userData = response.data;
+
     // 불러온 사용자 데이터 설정
     formData.username = userData.username;
     formData.introduction = userData.introduction;
@@ -196,24 +196,29 @@ const fetchUserProfile = async () => {
     alert("사용자 정보를 불러오는 데 실패했습니다.");
   }
 };
+
 // 업데이트 함수
 const updateProfile = async () => {
   try {
     // 사용자 이름을 엔드포인트에 포함하여 요청
     const endpoint = `http://localhost:8000/accounts/${formData.username}/`;
+
     const payload = new FormData();
     payload.append("username", formData.username);
     payload.append("introduction", formData.introduction);
     payload.append("selected_genres", JSON.stringify(formData.selectedGenres));
+
     if (formData.profileImage) {
       payload.append("profile_image", formData.profileImage);
     }
+
     const response = await axios.put(endpoint, payload, {
       headers: {
         Authorization: `Token ${localStorage.getItem("accessToken")}`,
         "Content-Type": "multipart/form-data",
       },
     });
+
     alert("프로필이 성공적으로 업데이트되었습니다!");
     router.push({ name: "ProfileMeView" });
     // 업데이트된 데이터 반영
@@ -253,12 +258,15 @@ const confirmDeleteAccount = async () => {
       alert("회원탈퇴에 실패했습니다. 다시 시도해주세요.");
     }
   }
+};
 
-  // 초기 데이터 로드
+
+// 초기 데이터 로드
 onMounted(() => {
   fetchUserProfile();
 });
 </script>
+
 
 <style scoped>
 .container {

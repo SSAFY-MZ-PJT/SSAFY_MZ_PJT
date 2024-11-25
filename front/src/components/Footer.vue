@@ -22,7 +22,7 @@
                   <li class="col-md-4 list-inline-item mb-3">
                     <router-link :to="{name:'BoardView'}" class="text-dark text-decoration-none">
                       게시판
-                    </router-link>
+                    </router-link> 
                   </li>
                 </ul>
               </div>

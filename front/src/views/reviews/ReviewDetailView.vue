@@ -79,6 +79,7 @@
                     </div>
                   </div>
                 </div>
+
                 <!-- 대댓글 입력창 -->
                 <div v-if="replyInput[comment.id]" class="reply-form mt-2 d-flex align-items-center">
                     <input
@@ -97,8 +98,9 @@
       </div>
     </div>
   </div>
-
+  
 </template>
+
 
 <script setup>
 import DecoBox from "@/components/DecoBox.vue";
@@ -117,6 +119,7 @@ const review = ref({});
 const comments = ref([]);
 const isLoadingReview = ref(true);
 const isLoadingComments = ref(true);
+const likes = ref(0);
 const liked = ref(false);
 const newComment = ref("");
 const sortedComments = ref([]);
@@ -134,13 +137,16 @@ const formatDate = (date) => {
 const fetchReviewDetails = async () => {
   const reviewId = Number(route.params.id); // 리뷰 ID
   const movieId = route.params.movieId; // 영화 ID
+
   try {
     const reviewsResponse = await axios.get(`${BASE_URL}/reviews/${movieId}/`);
     const allReviews = reviewsResponse.data;
+
     const targetReview = allReviews.find((review) => review.id === reviewId);
     if (!targetReview) {
       throw new Error("Review not found.");
     }
+
     review.value = targetReview;
     likes.value = targetReview.likes.length;
     liked.value = targetReview.likes.some((user) => user.id === 1); // 현재 사용자 ID: 1로 가정
@@ -151,9 +157,11 @@ const fetchReviewDetails = async () => {
     isLoadingReview.value = false;
   }
 };
+
 // 댓글 가져오기 (Comments Section용)
 const fetchReviewDetail = async () => {
   const reviewId = Number(route.params.id); // 리뷰 ID
+
   try {
     const commentsResponse = await axios.get(`${BASE_URL}/reviews/${reviewId}/comments/`);
     comments.value = commentsResponse.data.map((comment) => ({
@@ -184,6 +192,7 @@ const toggleLike = async () => {
 // 댓글 추가
 const addComment = async () => {
   if (!newComment.value.trim()) return;
+
   try {
     const response = await axios.post(`${BASE_URL}/reviews/${review.value.id}/comments/`, {
       content: newComment.value,
@@ -200,14 +209,17 @@ const addComment = async () => {
     console.error("Error adding comment:", error);
   }
 };
+
 // 대댓글 추가
 const addReply = async (commentId) => {
   const content = replyInput.value[commentId];
+
   // content가 문자열인지 확인
   if (typeof content !== "string" || !content.trim()) {
     alert("입력하지 않으셨습니다. 다시 한 번 확인해주세요.");
     return;
   }
+
   try {
     const response = await axios.post(
       `${BASE_URL}/reviews/${review.value.id}/comments/${commentId}/replies/`,
@@ -228,6 +240,7 @@ const addReply = async (commentId) => {
   }
 };
 
+
 // 댓글 좋아요 토글
 const toggleCommentLike = async (commentId) => {
   try {
@@ -242,6 +255,7 @@ const toggleCommentLike = async (commentId) => {
     alert("Failed to toggle like for comment.");
   }
 };
+
 // 댓글 정렬
 const sortComments = (type) => {
   if (type === "recent") {
@@ -251,12 +265,14 @@ const sortComments = (type) => {
   }
 };
 
+
 // 컴포넌트 마운트 시 데이터 로드
 onMounted(() => {
   fetchReviewDetails(); // 리뷰 상세 정보
   fetchReviewDetail(); // 댓글 정보
 });
 </script>
+
 
 
 <style scoped>

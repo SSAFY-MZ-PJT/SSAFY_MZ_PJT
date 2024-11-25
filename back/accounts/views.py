@@ -104,6 +104,7 @@ def user_detail(request, username):
         if not is_current_user:  # 권한 확인
             return Response({"error": "You can only delete your own account."}, status=status.HTTP_403_FORBIDDEN)
         
+
         # 이메일 관련 정보 삭제 (Allauth)
         EmailAddress.objects.filter(email=user.email).delete()
 

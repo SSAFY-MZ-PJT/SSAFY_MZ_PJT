@@ -1,5 +1,4 @@
-<!-- src/components/Search.vue -->
-
+<!-- Search.vue -->
 <template>
      <div class="search-bar-container">
           <div class="container">

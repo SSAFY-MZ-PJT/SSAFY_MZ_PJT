@@ -35,18 +35,20 @@
                 </a>
               </div>
             </div>
-            <!-- 팔로우 버튼 -->
-            <div class="d-flex justify-content-center mt-3">
-              <button
-                class="btn"
-                :class="isFollowing ? 'btn-secondary' : 'btn-primary'"
-                @click="toggleFollow"
-              >
-                {{ isFollowing ? "Unfollow" : "Follow" }}
-              </button>
-            </div>
           </div>
         </div>
+
+        <!-- 팔로우 버튼 -->
+        <div class="d-flex justify-content-center mt-3">
+          <button
+            class="btn"
+            :class="isFollowing ? 'btn-secondary' : 'btn-primary'"
+            @click="toggleFollow"
+          >
+            {{ isFollowing ? "Unfollow" : "Follow" }}
+          </button>
+        </div>
+
       </div>
     </div>
     

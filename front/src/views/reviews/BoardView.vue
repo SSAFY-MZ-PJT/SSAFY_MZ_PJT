@@ -4,7 +4,7 @@
     <Search />
     <div class="mx-4">
       <!-- 로딩 및 에러 처리 -->
-      <div v-if="isLoading" class="text-center my-5 fs-2">
+      <div v-if="isLoading" class="text-center my-5 fs-2 fs-bold">
         <p>Loading movies and reviews...</p>
       </div>
       <div v-else-if="error" class="text-center my-5 text-danger">
@@ -13,7 +13,7 @@
       <div v-else>
         <!-- 영화 리스트 -->
         <div class="container mt-5">
-          <div v-for="movie in paginatedMovies" :key="movie.id" class="mb-5">
+          <div v-for="movie in movies.slice(0, 50)" :key="movie.id" class="mb-5">
             <!-- 영화 정보 -->
             <div class="movie-info d-flex justify-content-between align-items-center mb-4">
               <div>
@@ -24,7 +24,7 @@
                   <p class="fw-bold">{{ movie.title }}</p>
                 </router-link>
                   <p class="text-muted">
-                    {{ movie.release_date }} • {{ movie.rating }} • {{ movie.runtime }} mins
+                    {{ movie.release_date }} • {{ movie.rating.toFixed(1) }} • {{ movie.runtime }} mins
                   </p>
                 </div>
                 <div class="d-flex align-items-center">
@@ -228,10 +228,14 @@ const loadMoviesAndReviews = async () => {
     isLoading.value = true;
     error.value = null;
 
-    const fetchedMovies = await reviewStore.fetchMoviesWithReviews();
+    // 페이지 번호와 한 번에 가져올 데이터 개수를 요청
+    const fetchedMovies = await reviewStore.fetchMoviesWithReviews({
+      page: currentPage.value,
+      limit: itemsPerPage,
+    });
 
     // 데이터 제한을 프론트엔드에서 적용 시간 남을 때 ㄱㄱ
-    movies.value = fetchedMovies.slice(0, 50).map((movie) => ({
+    movies.value = fetchedMovies.map((movie) => ({
       ...movie,
       representativeReviews: calculateRepresentativeReviews(movie.reviews),
     }));

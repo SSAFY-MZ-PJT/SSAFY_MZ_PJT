@@ -59,3 +59,17 @@ def fetch_movies_by_category(category, pages=1):
         all_movies.extend(data.get('results', []))  # 각 페이지의 결과를 누적
     return all_movies
 
+def fetch_movie_trailer(movie_id):
+    """
+    특정 영화의 트레일러 URL을 TMDB API에서 가져옵니다.
+    """
+    url = f"{BASE_URL}/movie/{movie_id}/videos"
+    response = requests.get(url, params={"api_key": API_KEY, "language": DEFAULT_LANGUAGE})
+    response.raise_for_status()
+    videos_data = response.json()
+
+    # 'YouTube' 유형의 트레일러 URL 찾기
+    for video in videos_data.get('results', []):
+        if video['type'] == 'Trailer' and video['site'] == 'YouTube':
+            return f"https://www.youtube.com/watch?v={video['key']}"  # YouTube URL 생성
+    return None  # 트레일러가 없을 경우

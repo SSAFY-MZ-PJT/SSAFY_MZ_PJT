@@ -34,6 +34,7 @@ urlpatterns = [
     # 영화, 리뷰, 토론
     path('movies/', include('movies.urls')),
     path('reviews/', include('reviews.urls')),
+    path('chats/', include('chats.urls')),
 
     
     # 이메일 인증

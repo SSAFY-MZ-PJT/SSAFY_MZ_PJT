@@ -13,42 +13,47 @@ client = OpenAI(api_key=settings.OPENAI_API_KEY)  # OpenAI API 키 설정
 def chat(request):
     if request.method == "POST":
         try:
-            # 세션 데이터 사용
+            # 세션에서 캐릭터 정보 가져오기
             session = request.session
-            body = json.loads(request.body)
 
+            # POST 요청에서 데이터 추출
+            body = json.loads(request.body)
             user_message = body.get("message", None)
 
-            # 초기화: 캐릭터 정보 처리
+            # 대화 초기화: name과 personality 설정
             if "name" in body and "personality" in body:
                 session["name"] = body["name"]
                 session["personality"] = body["personality"]
-                session.save()
-
-                # 초기 메시지 생성
+                session.save()  # 세션 저장
                 ai_response = f"안녕하세요, 저는 {body['name']}입니다. 어떤 영화에 대해서 토론하고 싶으신가요?"
                 return JsonResponse({"ai_response": ai_response}, status=200)
 
-            # 세션에서 캐릭터 정보 가져오기
+            # 세션에서 name과 personality 가져오기
             ai_name = session.get("name", "MovieBot")
-            ai_personality = session.get("personality", "영화 전문가")
+            ai_personality = session.get("personality", "재미있고 영화에 박식한")
 
-            if not user_message:
-                return JsonResponse({"error": "User message is missing."}, status=400)
-
-            # OpenAI 메시지 구성
+            # 캐릭터 설정
             ai_context = (
-                f"너는 {ai_name}이야. {ai_personality} 성격을 가지고 있으며, "
-                "영화와 관련된 유익하고 재미있는 대화를 나누는 게 목표야."
+                f"너는 {ai_name}이야. {ai_personality} 성격을 가지고 있고, "
+                "사용자와 영화에 대해 유익하고 재미있는 대화를 나누는 게 목표야."
             )
+
+            # 메시지 배열 설정
             messages = [
                 {"role": "system", "content": ai_context},
-                {"role": "user", "content": user_message},
             ]
+
+            # 사용자 메시지가 없는 경우 AI가 먼저 인사
+            if user_message is None:
+                messages.append(
+                    {"role": "assistant", "content": f"안녕하세요, 저는 {ai_name}입니다. 어떤 영화에 대해서 토론하고 싶으신가요?"}
+                )
+            else:
+                messages.append({"role": "user", "content": user_message})
 
             # OpenAI API 호출
             response = client.chat.completions.create(
-                model="gpt-4",  # OpenAI 모델
+                model="gpt-4o-mini",  # 또는 "gpt-3.5-turbo"
                 messages=messages,
                 temperature=0.7,
                 max_tokens=500,
@@ -57,12 +62,20 @@ def chat(request):
             # AI 응답 추출
             ai_response = response.choices[0].message.content
 
+            # 응답 반환
             return JsonResponse({"ai_response": ai_response}, status=200)
 
         except Exception as e:
             return JsonResponse({"error": f"Unexpected error: {str(e)}"}, status=500)
 
-    return JsonResponse({"error": "Invalid request method. Use POST."}, status=405)
+    else:
+        return JsonResponse({"error": "Invalid request method. Use POST."}, status=405)
+
+
+
+
+
+
 
 
 

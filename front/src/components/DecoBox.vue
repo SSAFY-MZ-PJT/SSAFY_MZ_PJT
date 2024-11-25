@@ -32,7 +32,7 @@
   
   /* 입력 필드와 버튼 스타일 */
   .input-group {
-    max-width: 600px; /* 검색바의 최대 너비 */
+    max-width: 650px; /* 검색바의 최대 너비 */
     margin: 0 auto; /* 중앙 정렬 */
     
   }

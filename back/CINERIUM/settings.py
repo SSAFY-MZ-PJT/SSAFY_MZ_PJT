@@ -132,7 +132,7 @@ AUTHENTICATION_BACKENDS = [
 
 # 미디어 파일 설정 (프로필 이미지를 위해 필요)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 MIDDLEWARE = [
     # auth, cors 및 기본 미들웨어
@@ -239,6 +239,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

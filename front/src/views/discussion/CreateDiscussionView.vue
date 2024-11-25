@@ -1,3 +1,5 @@
+<!-- src/views/discussion/CreateDiscussionView.vue -->
+
 <template>
   <div>
     <DecoBox />

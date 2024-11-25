@@ -1,9 +1,11 @@
+<!-- src/views/discussion/TalkAiView.vue -->
+
 <template>
     <div class="mt-5 md-5">
       <div class="chat-page">
         <div class="chat-header">
-          <h2 class="fw-bold">{{ discussion.title }}</h2>
-          <p class="text-muted">Discussing: <strong>{{ movie.title }}</strong></p>
+          <!-- <h2 class="fw-bold">{{ discussion.title }}</h2>
+          <p class="text-muted">Discussing: <strong>{{ movie.title }}</strong></p> -->
         </div>
   
         <!-- Chat Messages -->
@@ -53,65 +55,30 @@
   </template>
   
   <script setup>
-  import { ref, reactive } from "vue";
-  
-  // Placeholder movie and discussion details
-  const movie = reactive({
-    title: "Dune: Part Two",
-  });
-  
-  const discussion = reactive({
-    title: "IDK What They Say Did You Understand?",
-  });
-  
-  // Selected character
-  const selectedCharacter = reactive({
-    id: 1,
-    name: "Professor Dialogue",
-    image: "src/assets/Discussions/Character1.png",
-  });
-  
-  // Chat messages
-  const messages = reactive([
-    {
-      id: 1,
-      sender: "character",
-      text: "In the quiet embrace of ink and page, a story unfolded, timeless and sage.",
-    },
-    {
-      id: 2,
-      sender: "user",
-      text: "I think Denis Villeneuve has just mad... In the quiet embrace of ink.",
-    },
-  ]);
-  
-  // New message
-  const newMessage = ref("");
-  
-  // Send message function
-  const sendMessage = () => {
-    if (!newMessage.value.trim()) return;
-  
-    // Add user's message to the chat
-    messages.push({
-      id: Date.now(),
-      sender: "user",
-      text: newMessage.value,
+import { ref, reactive } from "vue";
+import axios from "axios";
+
+const messages = reactive([]);
+const newMessage = ref("");
+
+const sendMessage = async () => {
+  if (!newMessage.value.trim()) return;
+
+  messages.push({ sender: "You", text: newMessage.value });
+  const userMessage = newMessage.value;
+  newMessage.value = "";
+
+  try {
+    const response = await axios.post("http://127.0.0.1:8000/chats/", {
+      message: userMessage,
     });
-  
-    // Reset the input
-    newMessage.value = "";
-  
-    // Simulate character response (can be replaced with an API call)
-    setTimeout(() => {
-      messages.push({
-        id: Date.now(),
-        sender: "character",
-        text: "That's an insightful thought! What did you think about the ending?",
-      });
-    }, 1000);
-  };
-  </script>
+
+    messages.push({ sender: "AI", text: response.data.ai_response });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+</script>
   
   <style scoped>
   .chat-page {

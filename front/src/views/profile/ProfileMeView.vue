@@ -59,6 +59,13 @@
     
     <!-- 기본 뷰 -->
     <div class="container" v-else>
+    
+      <!-- 캐릭터 선택 -->
+      <CharacterSelection
+        v-if="isCharacterSelectionVisible"
+        @characterSelected="handleCharacterSelected"
+      />
+      
       <!-- 좋아요한 영화 -->
       <div class="mt-5">
         <h3>Liked Movies</h3>
@@ -118,8 +125,47 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router"; // Vue Router 가져오기
 import axios from "axios";
 import defaultProfileImage from '@/assets/Navbaricons/user.png';
+import CharacterSelection from "@/components/CharacterSelection.vue"; // 새 컴포넌트 import
+
+const router = useRouter(); // Vue Router 사용
+
+// 캐릭터 선택 UI 표시 여부 상태
+const isCharacterSelectionVisible = ref(false);
+
+// 캐릭터 선택 UI 표시 함수
+const showCharacterSelection = () => {
+  isCharacterSelectionVisible.value = true;
+};
+
+// 캐릭터 선택 후 처리
+const handleCharacterSelected = async (character) => {
+  try {
+    console.log("Character selected:", character);
+
+    // 백엔드로 데이터 전송
+    const response = await axios.post("http://127.0.0.1:8000/chats/", {
+      name: character.name,
+      personality: character.personality,
+    });
+
+    console.log("Response from backend:", response.data);
+
+    // TalkAiView.vue로 이동
+    router.push({
+      name: "TalkAiView", // 라우트 이름
+      params: {
+        characterName: character.name,
+        characterPersonality: character.personality,
+        initialMessage: response.data.ai_response,
+      },
+    });
+  } catch (error) {
+    console.error("Error sending character data:", error);
+  }
+};
 
 // 상태 관리
 const viewMode = ref('default'); // 기본 viewMode 설정

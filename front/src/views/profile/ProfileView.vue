@@ -35,18 +35,20 @@
                 </a>
               </div>
             </div>
-            <!-- 팔로우 버튼 -->
-            <div class="d-flex justify-content-end mt-3">
-              <button
-                class="btn"
-                :class="isFollowing ? 'btn-secondary' : 'btn-primary'"
-                @click="toggleFollow"
-              >
-                {{ isFollowing ? "Unfollow" : "Follow" }}
-              </button>
-            </div>
           </div>
         </div>
+
+        <!-- 팔로우 버튼 -->
+        <div class="d-flex justify-content-center mt-3">
+          <button
+            class="btn"
+            :class="isFollowing ? 'btn-secondary' : 'btn-primary'"
+            @click="toggleFollow"
+          >
+            {{ isFollowing ? "Unfollow" : "Follow" }}
+          </button>
+        </div>
+
       </div>
     </div>
     
@@ -65,10 +67,11 @@
     </div>
 
     <!-- 기본 뷰 -->
-    <div v-else>
+    <div class="container" v-else>
       <!-- 좋아요한 영화 -->
       <div class="mt-5">
         <h3>Liked Movies</h3>
+        <hr class=" mb-5 mt-5">
         <div v-if="profile.liked_movies.length > 0" class="d-flex flex-wrap">
           <div v-for="movie in profile.liked_movies" :key="movie.id" class="card m-2" style="width: 18rem;">
             <img :src="movie.poster_image_url" class="card-img-top" alt="Movie Poster" />
@@ -84,6 +87,7 @@
       <!-- 작성한 리뷰 -->
       <div class="mt-5">
         <h3>Written Reviews</h3>
+        <hr class=" mb-5 mt-5">
         <div v-if="profile.reviews.length > 0" class="d-flex flex-wrap">
           <div v-for="review in profile.reviews" :key="review.id" class="card m-2" style="width: 18rem;">
             <div class="card-body">
@@ -185,6 +189,11 @@ const toggleFollow = async () => {
     isFollowing.value = !isFollowing.value;
   }
 };
+
+// Posts 화면 전환
+const showPosts = () => {
+  viewMode.value = 'default'
+}
 
 onMounted(() => {
   fetchProfile();
@@ -331,6 +340,7 @@ font-weight: bold;
 
 
 button {
+  width: 150px;
   background-color: #ffffff;
   color: #254E01 !important; /* 버튼 글자 색상 */
   border: 1px solid #254E01 !important; /* 테두리 색상 */

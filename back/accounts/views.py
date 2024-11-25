@@ -12,6 +12,7 @@ from reviews.serializers import ReviewSerializer
 from accounts.models import User
 from movies.models import Movie
 
+from allauth.account.models import EmailAddress
 from allauth.account.models import EmailConfirmationHMAC
 from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
@@ -103,6 +104,10 @@ def user_detail(request, username):
         if not is_current_user:  # 권한 확인
             return Response({"error": "You can only delete your own account."}, status=status.HTTP_403_FORBIDDEN)
         
+
+        # 이메일 관련 정보 삭제 (Allauth)
+        EmailAddress.objects.filter(email=user.email).delete()
+
         # 연관된 데이터 안전 삭제
         user.reviews.all().delete()
         user.comments.all().delete()

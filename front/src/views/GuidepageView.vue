@@ -1,7 +1,7 @@
 <template>
   <div class="guide-page">
     <!-- Section 1 -->
-    <header class="header">
+    <header class="header section" ref="sections">
       <div class="container text-center">
         <h1 class="logo">C:nerium</h1>
         <h2 class="main-title">영화를 보고, 의견을 나누고, 성장하다.</h2>
@@ -23,13 +23,10 @@
     </header>
 
     <main>
-      <section class="content container">
-        <!-- Section 2 -->
-        <div class="row align-items-center my-5 topdiv">
-          <div class="col-md-6 img2">
-            <img src="../assets/Guideicons/1467.png" alt="Illustration 1" class="img-fluid">
-          </div>
-          <div class="col-md-6 text-section">
+      <!-- Section 2 -->
+      <section class="content container section" ref="sections">
+        <div class="row align-items-center my-5 topdiv text-center">
+          <div class="text-section">
             <h5 class="small-title">영화 정보를 한눈에</h5>
             <h3 style="color: #5B7C3C;">한 곳에서 영화 정보를 모두 확인하세요</h3>
             <p>
@@ -38,13 +35,12 @@
             </p>
           </div>
         </div>
+      </section>
 
-        <!-- Section 3 -->
-        <div class="row align-items-center my-5 flex-row-reverse topdiv">
-          <div class="col-md-6 text-end img3">
-            <img src="#" alt="Illustration 2" class="img-fluid" width="250">
-          </div>
-          <div class="col-md-6 text-section">
+      <!-- Section 3 -->
+      <section class="content container section" ref="sections">
+        <div class="my-5 topdiv justify-content-center text-center">
+          <div class="col-md-12 text-section">
             <h5 class="small-title">나만의 토론 공간</h5>
             <h3>개인적인 토론으로 내 생각을 확장하세요</h3>
             <p>
@@ -53,13 +49,12 @@
             </p>
           </div>
         </div>
+      </section>
 
-        <!-- Section 4 -->
+      <!-- Section 4 -->
+      <section class="content container section" ref="sections">
         <div class="row align-items-center my-5 topdiv">
-          <div class="col-md-6 img3">
-            <img src="../assets/Guideicons/person2.png" alt="Illustration 1" class="img-fluid" width="310">
-          </div>
-          <div class="col-md-6 text-section">
+          <div class="col-md-12 text-section text-center">
             <h5 class="small-title">다양한 리뷰와 의견</h5>
             <h3>다른 사람들의 리뷰를 확인하고 소통하세요</h3>
             <p>
@@ -68,10 +63,12 @@
             </p>
           </div>
         </div>
+      </section>
 
-        <!-- Section 5 -->
-        <div class="row align-items-center my-5 topdiv">
-          <div class="col-md-6 img3">
+      <!-- Section 5 -->
+      <section class="content container section" ref="sections">
+        <div class="row align-items-center my-5 topdiv text-center">
+          <div class="col-md-6 mx-auto">
             <img src="../assets/Guideicons/person3.png" alt="Illustration 3" class="img-fluid" width="300">
           </div>
           <div class="col-md-6 text-section">
@@ -83,25 +80,43 @@
               지금 당신의 영화 여정을 시작하세요.
             </p>
           </div>
-          <div class="text-center py-5">
+          <div class="text-center py-5 mt-5">
             <button @click="goToSignUp" class="btn btn-outline-success btn-lg">회원가입하기</button>
           </div>
         </div>
-
       </section>
     </main>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const sections = ref([]);
 
 const goToSignUp = () => {
   router.push({ name: 'SignUpView' });
 };
 
+onMounted(() => {
+  const observerOptions = {
+    root: null,
+    threshold: 0.1, // 섹션의 10%가 보일 때 애니메이션 트리거
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible'); // 섹션이 보이면 visible 클래스 추가
+      }
+    });
+  }, observerOptions);
+
+  sections.value = document.querySelectorAll('.section');
+  sections.value.forEach((section) => observer.observe(section));
+});
 </script>
 
 <style scoped>
@@ -109,12 +124,12 @@ const goToSignUp = () => {
 .guide-page {
   position: relative;
   width: 100%;
-  min-height: 100vh; /* 전체 화면 높이 */
-  background-image: url('../assets/Guideicons/background.png'); /* 배경 이미지 경로 */
-  background-size: cover; /* 배경 이미지 크기 설정 */
-  background-repeat: no-repeat; /* 배경 이미지 반복 방지 */
-  background-position: center; /* 배경 위치 중앙 정렬 */
-  overflow: hidden; /* 초과된 부분 숨김 */
+  min-height: 100vh;
+  background-image: url('../assets/Guideicons/background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  overflow: hidden;
 }
 
 /* Global Styles */
@@ -131,6 +146,7 @@ h3 {
 p {
   padding-top: 1rem;
   line-height: 2.5;
+  font-size: 1.2rem;
 }
 
 /* Header Section */
@@ -155,13 +171,13 @@ p {
 
 /* Content Section */
 .content .text-section h5 {
-  font-size: 1rem;
+  font-size: 1.5rem;
   color: #00380C;
   font-weight: bold;
 }
 
 .content .text-section h3 {
-  font-size: 1.8rem;
+  font-size: 2.5rem;
   margin-top: 10px;
   color: #333;
   font-weight: bold;
@@ -169,25 +185,26 @@ p {
 
 .content .text-section p {
   margin-top: 10px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #555;
 }
 
+/* Row styling */
 .topdiv {
-  padding-bottom: 9rem;
-  padding-top: 5rem;
+  padding-bottom: 15rem;
+  padding-top: 15rem;
 }
 
 .custom-width {
-  width: 50%; /* 전체 화면의 50% 너비 */
-  max-width: 600px; /* 최대 너비 600px */
-  margin: 0 auto; /* 가운데 정렬 */
+  width: 50%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 button {
   background-color: #ffffff;
-  color: #254E01 !important; /* 버튼 글자 색상 */
-  border: 2px solid #254E01 !important; /* 테두리 색상 */
+  color: #254E01 !important;
+  border: 2px solid #254E01 !important;
   transition: all 0.3s ease;
 }
 
@@ -197,12 +214,23 @@ button:hover {
   border-color: #254E01 !important;
 }
 
-.img2 {
-  transform: scale(0.8);
+/* Section animation */
+.section {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease-out;
 }
 
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section 5 이미지 가운데 정렬 */
 .img3 {
-  transform: scale(1.3); /* 이미지를 1.5배 확대 */
-  transition: transform 0.3s ease; /* 부드러운 전환 */
+  transform: scale(1.3);
+  transition: transform 0.3s ease;
+  margin: 0 auto;
+  display: block;
 }
 </style>

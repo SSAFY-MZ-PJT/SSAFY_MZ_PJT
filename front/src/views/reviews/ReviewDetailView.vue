@@ -241,21 +241,6 @@ const addReply = async (commentId) => {
 };
 
 
-// 댓글 좋아요 토글
-const toggleCommentLike = async (commentId) => {
-  try {
-    await axios.post(`${BASE_URL}/reviews/like/${commentId}/`);
-    const comment = comments.value.find((c) => c.id === commentId);
-    if (comment) {
-      comment.liked = !comment.liked;
-      comment.likes += comment.liked ? 1 : -1;
-    }
-  } catch (error) {
-    console.error("Error toggling like for comment:", error);
-    alert("Failed to toggle like for comment.");
-  }
-};
-
 // 댓글 정렬
 const sortComments = (type) => {
   if (type === "recent") {
@@ -264,6 +249,7 @@ const sortComments = (type) => {
     sortedComments.value = [...comments.value].sort((a, b) => b.likes - a.likes);
   }
 };
+
 
 
 // 컴포넌트 마운트 시 데이터 로드

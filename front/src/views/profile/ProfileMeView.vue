@@ -60,7 +60,14 @@
     <!-- 기본 뷰 -->
     <div class="container" v-else>
     
-      <!-- 캐릭터 선택 -->
+      <!-- 토론 섹션 -->
+      <h1 class="text-center fw-bold mb-3">Discussion</h1>
+      <!-- New Discussion Button -->
+      <div class="button-container mb-5 d-flex justify-content-center">
+        <button class="btn" @click="showCharacterSelection">새로운 토론 생성</button>
+      </div>
+
+      <!-- Character Selection -->
       <CharacterSelection
         v-if="isCharacterSelectionVisible"
         @characterSelected="handleCharacterSelected"
@@ -125,10 +132,11 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router"; // Vue Router 가져오기
+import { useRouter } from "vue-router";
 import axios from "axios";
+import CharacterSelection from "@/components/CharacterSelection.vue";
+
 import defaultProfileImage from '@/assets/Navbaricons/user.png';
-import CharacterSelection from "@/components/CharacterSelection.vue"; // 새 컴포넌트 import
 
 const router = useRouter(); // Vue Router 사용
 
@@ -141,30 +149,22 @@ const showCharacterSelection = () => {
 };
 
 // 캐릭터 선택 후 처리
-const handleCharacterSelected = async (character) => {
-  try {
-    console.log("Character selected:", character);
+const handleCharacterSelected = (character) => {
+  console.log("Character selected:", character);
 
-    // 백엔드로 데이터 전송
-    const response = await axios.post("http://127.0.0.1:8000/chats/", {
-      name: character.name,
-      personality: character.personality,
-    });
+  console.log("Navigating with params:", {
+  characterName: character.name,
+  characterPersonality: character.personality,
+});
 
-    console.log("Response from backend:", response.data);
-
-    // TalkAiView.vue로 이동
-    router.push({
-      name: "TalkAiView", // 라우트 이름
-      params: {
-        characterName: character.name,
-        characterPersonality: character.personality,
-        initialMessage: response.data.ai_response,
-      },
-    });
-  } catch (error) {
-    console.error("Error sending character data:", error);
-  }
+  // TalkAiView로 이동 (백엔드 요청 없이 이동)
+  router.push({
+  name: "TalkAiView",
+  params: {
+    characterName: character.name,
+    characterPersonality: character.personality,
+  },
+});
 };
 
 // 상태 관리

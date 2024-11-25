@@ -125,13 +125,10 @@ const router = createRouter({
       component: CreateDiscussionView
     },
     {
-      path: '/talkai',
+      path: '/talkai/:characterName/:characterPersonality',
       name: 'TalkAiView',
       component: TalkAiView,
-      props: (route) => ({
-        characterName: route.params.characterName,
-        characterPersonality: route.params.characterPersonality,
-      }),
+      props: true,
     },
     
     {

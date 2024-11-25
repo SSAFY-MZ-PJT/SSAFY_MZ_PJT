@@ -42,7 +42,7 @@
         <!-- Section 3 -->
         <div class="row align-items-center my-5 flex-row-reverse topdiv">
           <div class="col-md-6 text-end img3">
-            <img src="#" alt="Illustration 2" class="img-fluid" width="250">
+            <img src="../assets/Guideicons/person1.png" alt="Illustration 2" class="img-fluid" width="250">
           </div>
           <div class="col-md-6 text-section">
             <h5 class="small-title">나만의 토론 공간</h5>

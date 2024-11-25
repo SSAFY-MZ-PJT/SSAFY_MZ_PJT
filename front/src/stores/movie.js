@@ -114,4 +114,4 @@ export const useMovieStore = defineStore('movie', {
     storage: window.localStorage, // 상태를 로컬 스토리지에 저장
     paths: ['nowPlaying', 'popular', 'recommended', 'movieDetails'], // 저장할 상태 지정
   },
-},{persist:true});
+});

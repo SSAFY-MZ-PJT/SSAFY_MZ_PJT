@@ -12,7 +12,6 @@ import ProfileView from '../views/profile/ProfileView.vue'
 import MainView from '../views/movies/MainView.vue'
 import RecommendDetailView from '../views/movies/RecommendDetailView.vue'
 import MovieDetailView from '../views/movies/MovieDetailView.vue'
-import SearchResultView from '../views/movies/SearchResultView.vue'
 
 import UserupdateView from '../views/account/UserupdateView.vue'
 
@@ -87,12 +86,6 @@ const router = createRouter({
       component: MovieDetailView,
       props: true,
     },
-    {
-      path: "/movies/search",
-      name: "SearchResultView",
-      component: SearchResultView,
-      props: true,
-    },
     
     // reviews
     {
@@ -101,20 +94,20 @@ const router = createRouter({
       component: BoardView,
     },
     {
-      path: '/reviews/board/:movieId',
+      path: '/reviews/board/:movie.id',
       // path: '/reviews/boarddetail',
       name: 'BoardDetailView',
       component: BoardDetailView,
       props: true,
     },
     {
-      path: '/movies/:movieId/reviews/:id',
+      path: '/reviews/:id',
       name: 'ReviewDetailView',
       component: ReviewDetailView,
       props: true,
     },
     {
-      path: '/reviews/:id',
+      path: '/reviews/create',
       name: 'ReviewCreateView',
       component: ReviewCreateView
     },
@@ -127,7 +120,11 @@ const router = createRouter({
     {
       path: '/talkai',
       name: 'TalkAiView',
-      component: TalkAiView
+      component: TalkAiView,
+      props: (route) => ({
+        characterName: route.params.characterName,
+        characterPersonality: route.params.characterPersonality,
+      }),
     },
     
     {

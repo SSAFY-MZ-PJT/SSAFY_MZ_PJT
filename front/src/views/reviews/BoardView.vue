@@ -48,7 +48,7 @@
                     :key="index"
                     class="review-card flex-grow-1 mb-2 d-flex flex-column justify-content-between"
                     :style="{ backgroundColor: getReviewBgColor(review.rating) }"
-                    @click="navigateToReview(review.id, movie.id)"
+                    @click="navigateToReview(review.id)"
                     >
                     <div>
                       <div class="d-flex align-items-center mb-2">
@@ -66,7 +66,7 @@
                         :class="review.liked ? 'bi bi-hand-thumbs-up-fill like-icon' : 'bi bi-hand-thumbs-up like-icon'"
                         @click="toggleLike(movie.id, review.id)"
                       ></i>
-                      <span class="like-count ms-2">• {{ review.likes.length }} likes</span>
+                      <span class="like-count ms-2">• {{ review.likes }} likes</span>
                     </div>
                   </div>
                 </div>
@@ -230,8 +230,8 @@ const loadMoviesAndReviews = async () => {
 
     const fetchedMovies = await reviewStore.fetchMoviesWithReviews();
 
-    // 데이터 제한을 프론트엔드에서 적용 시간 남을 때 ㄱㄱ
-    movies.value = fetchedMovies.slice(0, 50).map((movie) => ({
+    const limitedMovies = fetchedMovies.slice(0, 50); // 100개만 가져오기
+    movies.value = limitedMovies.map((movie) => ({
       ...movie,
       representativeReviews: calculateRepresentativeReviews(movie.reviews),
     }));
@@ -243,9 +243,8 @@ const loadMoviesAndReviews = async () => {
   }
 };
 
-const navigateToReview = (reviewId, movieId) => {
-  console.log('Navigating to ReviewDetailView:', { reviewId, movieId });
-  router.push({ name: 'ReviewDetailView', params: { id: reviewId, movieId } });
+const navigateToReview = (reviewId) => {
+  router.push({ name: 'ReviewDetailView', params: { id: reviewId } });
 };
 
 const navigateToMovie = (movieId) => {

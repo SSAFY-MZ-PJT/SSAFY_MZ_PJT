@@ -20,9 +20,10 @@
                     <a href="https://github.com/SSAFY-MZ-PJT/SSAFY_MZ_PJT" class="text-dark text-decoration-none">GitHub</a>
                   </li>
                   <li class="col-md-4 list-inline-item mb-3">
-                    <router-link :to="{name:'BoardView'}" class="text-dark text-decoration-none">
+                    <a href="#" class="text-dark text-decoration-none">게시판</a>
+                    <!-- <router-link :to="{name:''}" class="text-dark text-decoration-none">
                       게시판
-                    </router-link> 
+                    </router-link>  -->
                   </li>
                 </ul>
               </div>

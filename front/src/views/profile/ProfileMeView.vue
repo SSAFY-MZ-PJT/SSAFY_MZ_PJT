@@ -44,6 +44,8 @@
 
     <hr class="responsive-hr mb-5 mt-5">
 
+    
+
     <!-- 팔로워/팔로잉 목록 -->
     <div v-if="viewMode !== 'default'" class="mt-5">
       <h3>{{ viewMode === 'followers' ? 'Followers' : 'Following' }}</h3>
@@ -59,6 +61,19 @@
     
     <!-- 기본 뷰 -->
     <div class="container" v-else>
+      
+      <!-- 토론 섹션 -->
+      <h1 class="text-center fw-bold mb-3">Recent Discussion</h1>
+      <!-- 버튼 컨테이너 -->
+      <div class="button-container mb-5 d-flex justify-content-center">
+        <button class="btn" @click="showCharacterSelection">새로운 토론 생성</button>
+      </div>
+      <!-- 캐릭터 선택 -->
+      <CharacterSelection
+        v-if="isCharacterSelectionVisible"
+        @characterSelected="handleCharacterSelected"
+      />
+
       <!-- 좋아요한 영화 -->
       <div class="mt-5">
         <h3>Liked Movies</h3>

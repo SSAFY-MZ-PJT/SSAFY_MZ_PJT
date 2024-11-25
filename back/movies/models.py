@@ -46,6 +46,7 @@ class Movie(models.Model):
     runtime = models.IntegerField(default=0)
     tagline = models.TextField(default="", blank=True)
     vote_count = models.IntegerField(default=0)
+    trailer_url = models.URLField(null=True, blank=True)
     is_now_playing = models.BooleanField(default=False)
     is_popular = models.BooleanField(default=False)
 

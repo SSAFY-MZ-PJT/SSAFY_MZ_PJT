@@ -2,69 +2,6 @@
   <div>
     <DecoBox />
     <div class="container mt-5">
-      <!-- 영화 디테일 설명 -->
-      <div class="row pb-5">
-        <div class="col-md-3">
-          <img :src="movie.poster" alt="Movie Poster" class="img-fluid rounded shadow" />
-        </div>
-        <div class="col-md-9">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <h1 class="fw-bold">{{ movie.title }}</h1>
-              <p class="text-muted">{{ movie.year }} • {{ movie.rating }} • {{ movie.runtime }}</p>
-            </div>
-          </div>
-
-          <!-- 장르 표시 -->
-          <div class="mb-3">
-            <span v-for="genre in movie.genres" :key="genre" class="badge bg-secondary me-2">
-              {{ genre }}
-            </span>
-          </div>
-
-          <!-- 줄거리 -->
-          <p class="lead">{{ movie.plot }}</p>
-
-          <!-- 감독, 작가, 출연진 -->
-          <div class="mt-4">
-            <h6 class="mb-3" style="color: #797979;">
-              <strong>Directors:</strong> &nbsp;&nbsp;<span style="color: #002C0C;">{{ movie.directors.join(" • ") }}</span>
-            </h6>
-            <h6 class="mb-3" style="color: #797979;">
-              <strong>Writers:</strong> &nbsp;&nbsp;<span style="color: #002C0C;">{{ movie.writers.join(" • ") }}</span>
-            </h6>
-            <h6 class="mb-3" style="color: #797979;">
-              <strong>Stars:</strong> &nbsp;&nbsp;<span style="color: #002C0C;">{{ movie.stars.join(" • ") }}</span>
-            </h6>
-          </div>
-          <div v-if="movie.tagline" class="tagline mt-4">
-            "{{ movie.tagline }}"
-          </div>
-        </div>
-      </div>
-
-      <!-- 토론 생성 폼 -->
-      <div class="review-form mt-5">
-        <h2 class="text-center fw-bold">Create a Discussion</h2>
-
-        <!-- 평점 -->
-        <div class="text-center mt-5">
-          <h4 class="fw-bold mb-4">My Rate:</h4>
-          <div class="mb-4 stars-container">
-            <span
-              v-for="star in 5"
-              :key="star"
-              @mouseover="hoverStars(star)"
-              @mouseleave="resetStars"
-              @click="setRating(star)"
-              class="star"
-              :class="{ active: star <= hoverRating || star <= rating }"
-            >
-              ★
-            </span>
-          </div>
-        </div>
-
         <!-- 토론 제목 -->
         <div class="mb-4">
           <input
@@ -124,7 +61,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup>

@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # API 키
 TMDB_API_KEY = '95fdc7d197e0ebacb14c6073f7a5def1'
+OPENAI_API_KEY = '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'
 
 # Application definition
 
@@ -131,7 +132,7 @@ AUTHENTICATION_BACKENDS = [
 
 # 미디어 파일 설정 (프로필 이미지를 위해 필요)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 MIDDLEWARE = [
     # auth, cors 및 기본 미들웨어
@@ -238,6 +239,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

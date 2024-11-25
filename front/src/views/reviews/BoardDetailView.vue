@@ -73,7 +73,7 @@
                 class="col-md-6"
                 v-for="review in highlightedReviews"
                 :key="review.id"
-                @click="navigateToReview(review.id)"
+                @click="navigateToReview(review.id, movie.id)"
               >
                 <div class="review-card p-3 mb-4" :style="{ backgroundColor: getReviewBgColor(review.rating) }">
                   <div class="d-flex align-items-center mb-2">
@@ -89,7 +89,7 @@
                       :class="review.liked ? 'bi bi-hand-thumbs-up-fill like-icon' : 'bi bi-hand-thumbs-up like-icon'"
                       @click="toggleLike(review.id)"
                     ></i>
-                    <span class="like-count ms-2">• {{ review.likes }} likes</span>
+                    <span class="like-count ms-2">• {{ review.likes.length }} likes</span>
                   </div>
                 </div>
               </div>
@@ -109,7 +109,7 @@
                 <div
                   class="review-card p-3 mb-4 w-100"
                   :style="{ backgroundColor: getReviewBgColor(review.rating) }"
-                  @click="navigateToReview(review.id)"
+                  @click="navigateToReview(review.id, movie.id)"
                 >
                   <div class="d-flex align-items-center mb-2">
                     <span class="rating-badge">
@@ -124,7 +124,7 @@
                       :class="review.liked ? 'bi bi-hand-thumbs-up-fill like-icon' : 'bi bi-hand-thumbs-up like-icon'"
                       @click.stop="toggleLike(review.id)"
                     ></i>
-                    <span class="like-count ms-2">• {{ review.likes }} likes</span>
+                    <span class="like-count ms-2">• {{ review.likes.length }} likes</span>
                   </div>
                 </div>
               </div>
@@ -246,8 +246,9 @@ const getReviewBgColor = (rating) => {
   return '#FAFAFA';
 };
 
-const navigateToReview = (reviewId) => {
-  router.push({ name: 'ReviewDetailView', params: { id: reviewId } });
+const navigateToReview = (reviewId, movieId) => {
+  console.log('Navigating to ReviewDetailView:', { reviewId, movieId });
+  router.push({ name: 'ReviewDetailView', params: { id: reviewId, movieId } });
 };
 
 // On component mounted

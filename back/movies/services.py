@@ -1,7 +1,7 @@
 # movies/services.py
 
 from .models import Movie, Director, Actor, Genre
-from .utils import fetch_movie_details, fetch_movies_by_genre, fetch_movie_credits, fetch_movies_by_category
+from .utils import fetch_movie_details, fetch_movies_by_genre, fetch_movie_credits, fetch_movies_by_category, fetch_movie_trailer
 
 def save_movie_by_id(movie_id):
     """
@@ -58,6 +58,9 @@ def save_movie_to_db(movie_data):
         )
         actors.append(actor)
 
+    # 트레일러 URL 가져오기
+    trailer_url = fetch_movie_trailer(movie_data['id']) or None
+
     # 영화 데이터 저장
     movie, created = Movie.objects.get_or_create(
         tmdb_id=movie_data['id'],  # TMDB ID 저장
@@ -74,6 +77,7 @@ def save_movie_to_db(movie_data):
             'runtime': movie_data.get('runtime'),
             'tagline': movie_data.get('tagline'),
             'vote_count': movie_data.get('vote_count'),
+            'trailer_url': trailer_url,
             'director': director,
         }
     )

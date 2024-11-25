@@ -67,4 +67,4 @@ export const useReviewStore = defineStore("review", {
       }
     },
   },
-});
+},{persist:true});

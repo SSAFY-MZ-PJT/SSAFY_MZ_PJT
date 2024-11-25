@@ -188,7 +188,6 @@ const formData = reactive({
 const emailId = ref("");
 const selectedDomain = ref("");
 const customDomain = ref("");
-const confirmPassword = ref("");
 
 const updateEmailDomain = () => {
   if (selectedDomain.value) {

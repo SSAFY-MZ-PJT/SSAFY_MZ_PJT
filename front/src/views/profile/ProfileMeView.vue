@@ -1,13 +1,13 @@
 <!-- views/profile/ProfileMeView.vue -->
 
 <template>
-  <div class="pt-5 mx-4"> 
-    <!-- 내 프로필 -->
+  <div class="pt-5 mx-4">
+    <!-- 프로필 섹션 -->
     <div class="pt-5">
       <div class="container mt-5 justify-content-center">
         <!-- 프로필 헤더 -->
         <div class="row mb-4">
-          <!-- 왼쪽: 프로필 이미지 및 정보 -->
+          <!-- 왼쪽: 프로필 이미지 -->
           <div class="col-md-6 d-flex align-items-center">
             <img :src="profile.profile_image || defaultProfileImage" alt="Profile Picture" class="rounded-circle me-5" width="120" />
             <div>
@@ -41,32 +41,29 @@
         </div>
       </div>
     </div>
-    
+
     <hr class="responsive-hr mb-5 mt-5">
-    
-    <!-- FFS 컴포넌트 (팔로워/팔로잉) -->
-    <!-- <FFS v-if="viewMode !== 'default'" :viewMode="viewMode" /> -->
-    
-    <!-- 토론, 리뷰 섹션 -->
-    <div v-if="viewMode === 'default'">
-      <h1 class="text-center fw-bold mb-3">Recent Discussion</h1>
-      <!-- 버튼 컨테이너 -->
-      <div class="button-container mb-5 d-flex justify-content-center">
-        <button class="btn">새로운 토론 생성</button>
-      </div>
-      <ul class="nav nav-underline justify-content-center custom-nav">
-        <li class="nav-item">
-          <a class="nav-link custom-link" href="#">최신순</a>
-        </li>
-        <li class="nav-item mx-2 text-muted">/</li>
-        <li class="nav-item">
-          <a class="nav-link custom-link" href="#">별점순</a>
+
+    <!-- 팔로워/팔로잉 목록 -->
+    <div v-if="viewMode !== 'default'" class="mt-5">
+      <h3>{{ viewMode === 'followers' ? 'Followers' : 'Following' }}</h3>
+      <ul v-if="followersFollowingList.length > 0" class="list-group">
+        <li v-for="user in followersFollowingList" :key="user.id" class="list-group-item d-flex align-items-center">
+          <img :src="user.profile_image || defaultProfileImage" alt="User Picture" class="rounded-circle me-3" width="50" />
+          <p class="mb-0">{{ user.username }}</p>
         </li>
       </ul>
+      <p v-else>No {{ viewMode === 'followers' ? 'followers' : 'following' }} found.</p>
+    </div>
 
+    
+    <!-- 기본 뷰 -->
+    <div class="container" v-else>
       <!-- 좋아요한 영화 -->
       <div class="mt-5">
         <h3>Liked Movies</h3>
+        <hr class=" mb-5 mt-5">
+
         <div v-if="profile.liked_movies.length > 0" class="d-flex flex-wrap">
           <div v-for="movie in profile.liked_movies" :key="movie.id" class="card m-2" style="width: 18rem;">
             <img :src="movie.poster_image_url" class="card-img-top" alt="Movie Poster" />
@@ -78,107 +75,55 @@
         </div>
         <p v-else>No liked movies.</p>
       </div>
+      
 
       <!-- 작성한 리뷰 -->
       <div class="mt-5">
         <h3>Written Reviews</h3>
-        <div v-if="profile.reviews.length > 0" class="d-flex flex-wrap">
-          <div v-for="review in profile.reviews" :key="review.id" class="card m-2" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">{{ review.title }}</h5>
-              <p class="card-text">Rating: {{ review.rating }}/5</p>
-              <p class="card-text"><small class="text-muted">Created At: {{ review.created_at }}</small></p>
+        <hr class=" mb-5 mt-5">
+        <div v-if="profile.reviews.length > 0" class="container mt-4">
+          <div class="row">
+            <div v-for="review in profile.reviews" :key="review.id" class="col-md-3 mb-4">
+              <div class="card h-100">
+                <!-- 카드 헤더 -->
+                <div class="card-header d-flex align-items-center">
+                  <div>
+                    <h6 class="mb-0 fw-bold">{{ profile.username }}</h6>
+                    <small class="text-muted">Created At: {{ formatDate(review.created_at) }}</small>
+                  </div>
+                </div>
+                <!-- 카드 본문 -->
+                <div class="card-body">
+                  <img :src="review.movie.poster_url || '@/assets/Reviewicons/default-movie.png'" alt="Movie Poster" class="card-img-top mb-3">
+                  <h5 class="fw-bold">{{ review.title }}</h5>
+                  <div class="d-flex align-items-center">
+                    <img src="@/assets/Reviewicons/star.png" alt="star" width="20" class="me-2">
+                    <p class="mb-0">Rating: {{ review.rating }}/5</p>
+                  </div>
+                  <div class="mt-3 d-flex">
+                    <img src="@/assets/Reviewicons/수정아이콘.png" alt="edit" width="20" class="me-2" @click="editReview(review.id)">
+                    <img src="@/assets/Reviewicons/삭제아이콘.png" alt="delete" width="20" @click="deleteReview(review.id)">
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <p v-else>No reviews written.</p>
       </div>
-
-      <!-- 카드 -->
-      <div class="container mt-4">
-        <div class="row">
-          <!-- 카드 1 -->
-          <div class="col-md-3 mb-4">
-            <div class="card h-100">
-              <div class="card-header d-flex align-items-center">
-                <!-- 프로필 이미지 -->
-                <img src="@/assets/Reviewicons/user.png" alt="Profile Picture" class="rounded-circle me-3" width="35">
-                <!-- 닉네임과 작성 일자 -->
-                <div>
-                  <h6 class="mb-0 fw-bold">User Name</h6>
-                  <small class="text-muted">게시일: 2023-11-18</small>
-                </div>
-              </div>
-              <!-- <img src="../icons/movie_p.webp" class="card-img-top no-rounded" alt="Card Image"> -->
-              <div class="card-body">
-                <h5 class="fw-bold">Card Title 1</h5>
-                <div class="d-flex align-items-center">
-                  <img src="@/assets/Reviewicons/star.png" alt="star" width="20" class="me-2">
-                  <p class="mb-0">수정 필요</p>
-                </div>
-                <div class="mt-3">
-                  <img src="@/assets/Reviewicons/수정아이콘.png" alt="수정" width="20" class="me-2">
-                  <img src="@/assets/Reviewicons/삭제아이콘.png" alt="delete" width="20">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 페이지 이동 바 -->
-      <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-          <!-- 이전 페이지 버튼 -->
-          <li class="page-item disabled">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <!-- 페이지 번호 -->
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item" aria-current="page">
-            <a class="page-link" href="#">3</a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">4</a></li>
-          <li class="page-item"><a class="page-link" href="#">5</a></li>
-          <!-- 다음 페이지 버튼 -->
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
     </div>
   </div>
 </template>
 
+
 <script setup>
-import FFS from '@/components/FFS.vue'; // FFS 컴포넌트 가져오기
 import { ref, onMounted } from "vue";
 import axios from "axios";
-// 기본 프로필 이미지 경로
 import defaultProfileImage from '@/assets/Navbaricons/user.png';
 
-const viewMode = ref('default'); // 기본 viewMode 설정
-
-// 새로운 토론 생성
-const createDiscussion = () => {
-  alert('새로운 토론 생성 버튼 클릭됨! 기능 추가 예정.');
-};
-
-// 토론 정렬
-const sortDiscussions = (sortType) => {
-  if (sortType === 'latest') {
-    alert('토론을 최신순으로 정렬합니다.'); // 정렬 기능 추가
-  } else if (sortType === 'rating') {
-    alert('토론을 별점순으로 정렬합니다.'); // 정렬 기능 추가
-  }
-};
-
 // 상태 관리
+const viewMode = ref('default'); // 기본 viewMode 설정
+const myName = ref("")
 const profile = ref({
   username: "",
   profile_image: "",
@@ -188,37 +133,69 @@ const profile = ref({
   followers: [],
   followings: []
 });
+const followersFollowingList = ref([]);
 
-// 데이터 로드 함수
+// 포스터가 없는 경우 기본 포스터 경로
+const defaultPosterUrl = '@/assets/Reviewicons/default-movie.png';
+
+// 프로필 데이터 로드 함수
 const fetchProfile = async () => {
   try {
     const response = await axios.get("http://localhost:8000/accounts/me/", {
-      headers: {
-        Authorization: `Token ${localStorage.getItem("accessToken")}`,
-      },
+      headers: { Authorization: `Token ${localStorage.getItem("accessToken")}` },
     });
     profile.value = response.data;
+    myName.value = profile.value.username
+    console.log(profile.value.followings)
+
+    // 리뷰 데이터에 영화 포스터 추가
+    profile.value.reviews = profile.value.reviews.map((review) => ({
+      ...review,
+      movie: { ...review.movie, poster_url: review.movie?.poster_url || defaultPosterUrl },
+    }));
   } catch (error) {
     console.error("Error fetching profile data:", error);
-    alert("Failed to fetch profile data. Please try again later.");
   }
 };
 
-// 컴포넌트 마운트 시 데이터 로드
-onMounted(() => {
-  fetchProfile();
-});
+// followers 또는 followings 데이터 로드 함수
+const fetchFollowersFollowing = async (type) => {
+  try {
+    // 올바른 API 경로로 요청
+    const response = await axios.get(`http://localhost:8000/accounts/${myName.value}/follow/`, {
+      headers: { Authorization: `Token ${localStorage.getItem("accessToken")}` },
+    });
 
-// 팔로워/팔로잉 보기 설정
-const showFollowersFollowing = (mode) => {
-  viewMode.value = mode; // 'followers' 또는 'following'으로 변경
+    // API 응답에서 followers 또는 followings 데이터 필터링
+    followersFollowingList.value = response.data[type] || []; // 데이터 없으면 빈 배열로 대체
+    console.log(`Fetched ${type}:`, followersFollowingList.value); // 디버깅 로그
+  } catch (error) {
+    console.error(`Error fetching ${type} list:`, error);
+    followersFollowingList.value = [];
+    alert(`Failed to load ${type} list.`);
+  }
 };
 
-// Posts 화면 전환
+// 팔로워/팔로잉 보기 설정 함수
+const showFollowersFollowing = (mode) => {
+  viewMode.value = mode; // 'followers' 또는 'following'으로 전환
+  fetchFollowersFollowing(mode); // 데이터 로드
+};
+
+
+// 포스트 보기 설정
 const showPosts = () => {
-  viewMode.value = 'default'
-}
+  viewMode.value = 'default';
+};
+
+// 날짜 포맷 함수
+const formatDate = (isoDate) => new Date(isoDate).toISOString().split("T")[0];
+
+// 컴포넌트 마운트 시 데이터 로드
+onMounted(() => fetchProfile());
 </script>
+
+
     
 <style scoped>
 /* 클릭 가능한 텍스트 스타일 */

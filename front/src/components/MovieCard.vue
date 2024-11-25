@@ -34,7 +34,7 @@
           {{ movie.title }}
         </h6>
         <p class="text-muted mb-1">
-          📅 : {{ movie.release_date }} &nbsp;&nbsp;
+          📅 {{ movie.release_date }} &nbsp;&nbsp;
           <span class="text-warning fw-bold">★ {{ movie.rating }}</span>
         </p>
         <div class="d-flex align-items-center justify-content-between">

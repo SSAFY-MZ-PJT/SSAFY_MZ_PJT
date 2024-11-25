@@ -1,7 +1,9 @@
 // stores/auth.js
+
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import api from '@/api';
 
 export const useAuthStore = defineStore('auth', () => {
   // state
@@ -13,7 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
   // const userId = ref(localStorage.getItem('userId')); // 로그인 후 저장된 userId
 
 
-  // 회원가입s
+  // 회원가입
   async function registerUser(payload) {
     isLoading.value = true
     error.value = null
@@ -102,14 +104,22 @@ export const useAuthStore = defineStore('auth', () => {
   
 
   // 인증자 확인
-  const restoreAuthState = () => {
-    const savedToken = localStorage.getItem('accessToken');
+  // 상태 복원 (앱 초기화 시 호출)
+  const restoreAuthState = async () => {
+    const savedToken = localStorage.getItem("accessToken");
     if (savedToken) {
       token.value = savedToken;
-      axios.defaults.headers.common['Authorization'] = `Token ${savedToken}`;
-      isAuthenticated.value = true; // 반응형 상태 업데이트
+      axios.defaults.headers.common["Authorization"] = `Token ${savedToken}`;
+      try {
+        const response = await axios.get("http://localhost:8000/accounts/me/");
+        user.value = response.data;
+        isAuthenticated.value = true; // 유효한 사용자일 경우 인증됨
+      } catch (error) {
+        console.error("Error verifying token:", error);
+        isAuthenticated.value = false; // 토큰이 유효하지 않음
+        logout(); // 로그아웃 처리
+      }
     } else {
-      token.value = null;
       isAuthenticated.value = false;
     }
   };

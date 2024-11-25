@@ -54,7 +54,7 @@
           <hr />
           <div class="d-flex align-items-start gap-3">
             <img
-              :src="movieStore.movieDetails.director.photo_url ? movieStore.movieDetails.director.photo_url : '/src/assets/Movieicons/default_profile.png'"
+              :src="movieStore.movieDetails.director.photo_url"
               alt="Director Image"
               class="img-fluid rounded shadow"
               width="100"
@@ -73,7 +73,7 @@
           <div class="d-flex flex-wrap gap-4">
             <div v-for="cast in movieStore.movieDetails.actors" 
             :key="cast.id" class="text-center">
-              <img :src="cast.photo_url ? cast.photo_url : '/src/assets/Movieicons/default_profile.png'" 
+              <img :src="cast.photo_url" alt="Cast Image" 
               class="img-fluid shadow" width="100" />
               <p class="mt-2 mb-0 fw-bold" style="color: #002c0c;">{{ cast.name }}</p>
               <p class="text-muted small">{{ cast.role || 'Actor' }}</p>
@@ -99,62 +99,43 @@
           <hr />
           <li><strong>Is Popular:</strong> {{ movieStore.movieDetails.is_popular ? 'Yes' : 'No' }}</li>
         </ul>
+      </div>
 
-
-            <!-- User Reviews Section -->
-          <div class="mt-5">
-            <div class="d-flex justify-content-between align-items-center pt-5">
-              <!-- User Reviews Title and View All Button -->
+        <!-- User Reviews Section -->
+        <div class="mt-5">
+          <div class="d-flex justify-content-between align-items-center pt-5">
+          <!-- User Reviews Title and View All Button -->
+          <div class="d-flex align-items-center">
+            <h3 class="fw-bold me-3">User Reviews</h3>
+            <!-- View All Reviews Button -->
+            <button class="btn see-all">
+              See all 1.4K
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+          <!-- Create Review Button -->
+          <button class="btn custom-button">Create Review</button>
+        </div>
+          <hr />
+          <div v-for="review in movieStore.movieDetails.reviews" :key="review.id" class="card mt-3 p-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0 fw-bold">{{ review.title }}</h5>
               <div class="d-flex align-items-center">
-                <h3 class="fw-bold me-3">User Reviews</h3>
-                <!-- View All Reviews Button -->
-                <button
-                  class="btn see-all"
-                  @click="goToBoardDetail(route.params.id)"
-                >
-                  See all
-                  <i class="bi bi-chevron-right"></i>
-                </button>
+                <i :class="review.liked ? 'bi bi-hand-thumbs-up-fill like-icon' : 'bi bi-hand-thumbs-up like-icon'" @click="toggleLike(review.id)"></i>
+                <span class="like-count ms-2">• {{ review.likes }} likes</span>
               </div>
-              <!-- Create Review Button -->
-              <button
-                class="btn custom-button"
-                @click="router.push({ name: 'ReviewCreateView', params: { id: route.params.id } })"
-              >
-                Create Review
-              </button>
             </div>
-            <hr />
-            <div
-              v-for="review in topReviews"
-              :key="review.id"
-              class="card mt-3 p-3"
-            >
-              <div class="d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0 fw-bold">{{ review.title }}</h5>
-                <div class="d-flex align-items-center">
-                  <i
-                    :class="review.liked ? 'bi bi-hand-thumbs-up-fill like-icon' : 'bi bi-hand-thumbs-up like-icon'"
-                    @click="toggleLike(review.id)"
-                  ></i>
-                  <span class="like-count ms-2">• {{ review.likes }} likes</span>
-                </div>
-              </div>
-              <p class="text-muted small mb-1">
-                By {{ review.author }} • {{ formatDate(review.created_at) }}
-              </p>
-              <p class="card-text">{{ review.content }}</p>
-            </div>
+            <p class="text-muted small mb-1">By {{ review.author }} • {{ review.date }}</p>
+            <p class="card-text">{{ review.text }}</p>
           </div>
         </div>
       </div>
 
 
-      <!-- Similar Movies Section -->
+            <!-- Similar Movies Section -->
       <div class="section mt-5">
         <div class="section-header d-flex justify-content-between align-items-center">
           <h3 class="fw-bold">Similar Movies</h3>
-          <hr>
           <div class="controls">
             <button class="circle-btn" @click="prevSlide">❮</button>
             <button class="circle-btn" @click="nextSlide">❯</button>
@@ -185,62 +166,16 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, watch, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import { useMovieStore } from "@/stores/movie";
-import { useReviewStore } from "@/stores/review";
 import Search from "@/components/Search.vue";
 import MovieCard from "@/components/MovieCard.vue";
 
 // 상태 및 라우트 설정
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
 const movieStore = useMovieStore();
-const reviewStore = useReviewStore();
 const currentSlide = ref(0);
-
-// 리뷰 데이터를 저장할 상태
-const reviews = ref([]);
-
-// 대표 리뷰 2개 계산
-const topReviews = computed(() => {
-  const sortedReviews = [...reviews.value].sort((a, b) => {
-    if (b.likes === a.likes) {
-      return new Date(b.created_at) - new Date(a.created_at); // 최신 순
-    }
-    return b.likes - a.likes; // 좋아요 순
-  });
-  return sortedReviews.slice(0, 2);
-});
-
-// 리뷰 데이터 가져오기
-const fetchReviews = async () => {
-  try {
-    const { reviews: fetchedReviews } = await reviewStore.fetchMovieDetails(route.params.id);
-    reviews.value = fetchedReviews; // 리뷰 상태 업데이트
-  } catch (error) {
-    console.error("Error fetching reviews:", error);
-  }
-};
-
-// 날짜 포맷 함수
-const formatDate = (isoDate) => {
-  const date = new Date(isoDate);
-  return date.toISOString().split("T")[0]; // "YYYY-MM-DD" 포맷
-};
-
-// 좋아요 토글 (movieStore.movieDetails.reviews용)
-const toggleMovieDetailReviewLike = (id) => {
-  const review = movieStore.movieDetails.reviews.find((r) => r.id === id);
-  if (review) {
-    review.liked = !review.liked;
-    review.likes += review.liked ? 1 : -1;
-  }
-};
-
-const goToBoardDetail = (movieId) => {
-  router.push({ name: 'BoardDetailView', params: { movieId } });
-};
 
 // 데이터 로딩 로직
 const loadMovieData = async (movieId) => {
@@ -285,7 +220,6 @@ const formatNumber = (number) =>
 
 // 초기 데이터 로드
 onMounted(() => loadMovieData(route.params.id));
-onMounted(fetchReviews);
 
 // 라우트 변경 시 데이터 로드
 watch(
@@ -443,7 +377,5 @@ hr {
 .see-all {
   margin-left: 0.5rem; /* 아이콘과 텍스트 사이 간격 */
   font-size: 1.2rem;
-  color: #888888;
-  background-color: #f0f0f0;
 }
 </style>

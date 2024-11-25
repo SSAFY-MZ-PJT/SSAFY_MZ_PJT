@@ -313,12 +313,4 @@ const playTrailer = (url) => {
   color: #ffffff;
   border: none;
 }
-
-.card-link {
-  text-decoration: none; /* 밑줄 제거 */
-  }
-
-  .card-link:hover {
-    text-decoration: none; /* 호버 상태에서도 밑줄 제거 */
-  }
 </style>

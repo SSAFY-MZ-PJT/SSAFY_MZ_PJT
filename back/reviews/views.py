@@ -75,14 +75,19 @@ def review_detail(request, review_pk):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def comment_list_create(request, review_pk):
+    """
+    특정 리뷰에 대한 댓글 조회 및 작성
+    """
     review = get_object_or_404(Review, pk=review_pk)
 
     if request.method == 'GET':
-        comments = review.comments.all()
+        # 댓글 직렬화
+        comments = review.comments.all().select_related('user')  # user 정보 포함
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
+        # 댓글 작성
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, review=review)

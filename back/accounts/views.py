@@ -21,10 +21,6 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-# @ensure_csrf_cookie
-# def csrf_token(request):
-#     return JsonResponse({'message': 'CSRF cookie set'})
-
 @ensure_csrf_cookie
 def csrf_token(request):
     return JsonResponse({'message': 'CSRF cookie set'})

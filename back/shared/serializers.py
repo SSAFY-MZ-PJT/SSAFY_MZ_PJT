@@ -30,4 +30,4 @@ class SimpleReviewSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Review
-        fields = ('id', 'title', 'rating', 'created_at')
+        fields = ('id', 'title', 'rating', 'created_at', 'movie',)

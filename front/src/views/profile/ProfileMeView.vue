@@ -1,5 +1,3 @@
-<!-- views/profile/ProfileMeView.vue -->
-
 <template>
   <div class="pt-5 mx-4"> 
     <!-- 내 프로필 -->
@@ -9,10 +7,10 @@
         <div class="row mb-4">
           <!-- 왼쪽: 프로필 이미지 및 정보 -->
           <div class="col-md-6 d-flex align-items-center">
-            <img :src="profile.profile_image || defaultProfileImage" alt="Profile Picture" class="rounded-circle me-5" width="120" />
+            <img src="@/assets/Navbaricons/user.png" alt="Profile Picture" class="rounded-circle me-5" width="120">
             <div>
-              <h2 class="fw-bold">{{ profile.username }}</h2>
-              <p class="text-muted">{{ profile.introduction || "No introduction provided." }}</p>
+              <h2 class="fw-bold">User Name</h2>
+              <p class="text-muted">A short introduction about the user goes here.</p>
             </div>
           </div>
           <!-- 오른쪽: 작성글, 팔로워 수, 팔로잉 수 -->
@@ -20,19 +18,19 @@
             <div class="d-flex align-items-center justify-content-end h-100 border-separator">
               <div class="px-3 text-center border-end">
                 <a class="text-decoration-none text-dark" @click="showPosts">
-                  <p class="fw-bold fs-4">{{ profile.reviews.length }}</p>
+                  <p class="fw-bold fs-4">50</p>
                   <p class="text-muted">Posts</p>
                 </a>
               </div>
               <div class="px-3 text-center border-start border-end">
                 <a class="text-decoration-none text-dark" @click="showFollowersFollowing('followers')">
-                  <p class="fw-bold fs-4">{{ profile.followers.length }}</p>
+                  <p class="fw-bold fs-4">200</p>
                   <p class="text-muted">Followers</p>
                 </a>
               </div>
               <div class="px-3 text-center border-start">
                 <a class="text-decoration-none text-dark" @click="showFollowersFollowing('following')">
-                  <p class="fw-bold fs-4">{{ profile.followings.length }}</p>
+                  <p class="fw-bold fs-4">180</p>
                   <p class="text-muted">Following</p>
                 </a>
               </div>
@@ -45,7 +43,7 @@
     <hr class="responsive-hr mb-5 mt-5">
     
     <!-- FFS 컴포넌트 (팔로워/팔로잉) -->
-    <!-- <FFS v-if="viewMode !== 'default'" :viewMode="viewMode" /> -->
+    <FFS v-if="viewMode !== 'default'" :viewMode="viewMode" />
     
     <!-- 토론, 리뷰 섹션 -->
     <div v-if="viewMode === 'default'">
@@ -64,36 +62,6 @@
         </li>
       </ul>
 
-      <!-- 좋아요한 영화 -->
-      <div class="mt-5">
-        <h3>Liked Movies</h3>
-        <div v-if="profile.liked_movies.length > 0" class="d-flex flex-wrap">
-          <div v-for="movie in profile.liked_movies" :key="movie.id" class="card m-2" style="width: 18rem;">
-            <img :src="movie.poster_image_url" class="card-img-top" alt="Movie Poster" />
-            <div class="card-body">
-              <h5 class="card-title">{{ movie.title }}</h5>
-              <p class="card-text">Release Date: {{ movie.release_date }}</p>
-            </div>
-          </div>
-        </div>
-        <p v-else>No liked movies.</p>
-      </div>
-
-      <!-- 작성한 리뷰 -->
-      <div class="mt-5">
-        <h3>Written Reviews</h3>
-        <div v-if="profile.reviews.length > 0" class="d-flex flex-wrap">
-          <div v-for="review in profile.reviews" :key="review.id" class="card m-2" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">{{ review.title }}</h5>
-              <p class="card-text">Rating: {{ review.rating }}/5</p>
-              <p class="card-text"><small class="text-muted">Created At: {{ review.created_at }}</small></p>
-            </div>
-          </div>
-        </div>
-        <p v-else>No reviews written.</p>
-      </div>
-
       <!-- 카드 -->
       <div class="container mt-4">
         <div class="row">
@@ -109,7 +77,7 @@
                   <small class="text-muted">게시일: 2023-11-18</small>
                 </div>
               </div>
-              <!-- <img src="../icons/movie_p.webp" class="card-img-top no-rounded" alt="Card Image"> -->
+              <img src="../icons/movie_p.webp" class="card-img-top no-rounded" alt="Card Image">
               <div class="card-body">
                 <h5 class="fw-bold">Card Title 1</h5>
                 <div class="d-flex align-items-center">
@@ -157,57 +125,14 @@
 
 <script setup>
 import FFS from '@/components/FFS.vue'; // FFS 컴포넌트 가져오기
-import { ref, onMounted } from "vue";
-import axios from "axios";
-// 기본 프로필 이미지 경로
-import defaultProfileImage from '@/assets/Navbaricons/user.png';
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-const viewMode = ref('default'); // 기본 viewMode 설정
+const route = useRoute();
+const userId = route.params.userId; // URL에서 userId 추출
 
-// 새로운 토론 생성
-const createDiscussion = () => {
-  alert('새로운 토론 생성 버튼 클릭됨! 기능 추가 예정.');
-};
-
-// 토론 정렬
-const sortDiscussions = (sortType) => {
-  if (sortType === 'latest') {
-    alert('토론을 최신순으로 정렬합니다.'); // 정렬 기능 추가
-  } else if (sortType === 'rating') {
-    alert('토론을 별점순으로 정렬합니다.'); // 정렬 기능 추가
-  }
-};
-
-// 상태 관리
-const profile = ref({
-  username: "",
-  profile_image: "",
-  introduction: "",
-  reviews: [],
-  liked_movies: [],
-  followers: [],
-  followings: []
-});
-
-// 데이터 로드 함수
-const fetchProfile = async () => {
-  try {
-    const response = await axios.get("http://localhost:8000/accounts/me/", {
-      headers: {
-        Authorization: `Token ${localStorage.getItem("accessToken")}`,
-      },
-    });
-    profile.value = response.data;
-  } catch (error) {
-    console.error("Error fetching profile data:", error);
-    alert("Failed to fetch profile data. Please try again later.");
-  }
-};
-
-// 컴포넌트 마운트 시 데이터 로드
-onMounted(() => {
-  fetchProfile();
-});
+// viewMode 상태 관리
+const viewMode = ref('default');
 
 // 팔로워/팔로잉 보기 설정
 const showFollowersFollowing = (mode) => {

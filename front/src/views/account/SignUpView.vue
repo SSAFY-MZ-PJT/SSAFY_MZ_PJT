@@ -1,5 +1,3 @@
-<!-- src/views/account/SignUpView.vue -->
-
 <template>
   <div class="container mt-5">
     <h2 class="text-center mb-4">회원가입</h2>
@@ -100,11 +98,11 @@
       <!-- 한줄 소개 -->
       <div class="row mb-3">
         <div class="col-md-12">
-          <label for="introduction" class="form-label">한줄 소개 (선택사항)</label>
+          <label for="aboutMe" class="form-label">한줄 소개 (선택사항)</label>
           <textarea
-            id="introduction"
+            id="aboutMe"
             class="form-control"
-            v-model="formData.introduction"
+            v-model="formData.aboutMe"
             placeholder="한줄 소개를 작성하세요 (최대 50자)"
             maxlength="50"
             rows="3"
@@ -181,7 +179,7 @@ const formData = reactive({
   password1: "",
   password2: "",
   emailVerificationCode: "",
-  introduction: "",
+  aboutMe: "",
   selectedGenres: [],
 });
 
@@ -206,25 +204,25 @@ watch(emailId, updateEmailDomain);
 watch(customDomain, updateEmail);
 
 const genres = [
-  { id: 1, name: "액션", color: "#FFB3BA", textColor: "#8B0000" },
-  { id: 2, name: "모험", color: "#FFDFBA", textColor: "#A84300" },
-  { id: 3, name: "애니메이션", color: "#FFFFBA", textColor: "#8B8B00" },
-  { id: 4, name: "코미디", color: "#BAFFC9", textColor: "#004C16" },
-  { id: 5, name: "범죄", color: "#BAE1FF", textColor: "#003B6F" },
-  { id: 6, name: "다큐멘터리", color: "#D5AAFF", textColor: "#350062" },
-  { id: 7, name: "드라마", color: "#FFCCF9", textColor: "#8B003A" },
-  { id: 8, name: "가족", color: "#F3FFE3", textColor: "#344C00" },
-  { id: 9, name: "판타지", color: "#FFDEFA", textColor: "#7A3973" },
-  { id: 10, name: "역사", color: "#E0BBE4", textColor: "#3C004C" },
-  { id: 11, name: "공포", color: "#FFABAB", textColor: "#600000" },
-  { id: 12, name: "음악", color: "#B2F4FF", textColor: "#004254" },
-  { id: 13, name: "미스터리", color: "#D3F8E2", textColor: "#004025" },
-  { id: 14, name: "로맨스", color: "#FFB7CE", textColor: "#72122E" },
-  { id: 15, name: "SF", color: "#D4F1F4", textColor: "#00383F" },
-  { id: 16, name: "TV 영화", color: "#FBE4FF", textColor: "#5D0074" },
-  { id: 17, name: "스릴러", color: "#F8D4E4", textColor: "#3B0E22" },
-  { id: 18, name: "전쟁", color: "#D5D8DC", textColor: "#303030" },
-  { id: 19, name: "서부", color: "#F5E6CC", textColor: "#5C401F" },
+  { id: 28, name: "액션", color: "#FFB3BA", textColor: "#8B0000" },
+  { id: 12, name: "모험", color: "#FFDFBA", textColor: "#A84300" },
+  { id: 16, name: "애니메이션", color: "#FFFFBA", textColor: "#8B8B00" },
+  { id: 35, name: "코미디", color: "#BAFFC9", textColor: "#004C16" },
+  { id: 80, name: "범죄", color: "#BAE1FF", textColor: "#003B6F" },
+  { id: 99, name: "다큐멘터리", color: "#D5AAFF", textColor: "#350062" },
+  { id: 18, name: "드라마", color: "#FFCCF9", textColor: "#8B003A" },
+  { id: 10751, name: "가족", color: "#F3FFE3", textColor: "#344C00" },
+  { id: 14, name: "판타지", color: "#FFDEFA", textColor: "#7A3973" },
+  { id: 36, name: "역사", color: "#E0BBE4", textColor: "#3C004C" },
+  { id: 27, name: "공포", color: "#FFABAB", textColor: "#600000" },
+  { id: 10402, name: "음악", color: "#B2F4FF", textColor: "#004254" },
+  { id: 9648, name: "미스터리", color: "#D3F8E2", textColor: "#004025" },
+  { id: 10749, name: "로맨스", color: "#FFB7CE", textColor: "#72122E" },
+  { id: 878, name: "SF", color: "#D4F1F4", textColor: "#00383F" },
+  { id: 10770, name: "TV 영화", color: "#FBE4FF", textColor: "#5D0074" },
+  { id: 53, name: "스릴러", color: "#F8D4E4", textColor: "#3B0E22" },
+  { id: 10752, name: "전쟁", color: "#D5D8DC", textColor: "#303030" },
+  { id: 37, name: "서부", color: "#F5E6CC", textColor: "#5C401F" },
 ];
 
 
@@ -260,27 +258,18 @@ const passwordMismatch = computed(() => {
 const registerUser = async () => {
   if (isFormValid.value && !passwordMismatch.value && passwordIsValid.value) {
     try {
-      // 장르 이름을 ID로 변환
-      const genreIds = formData.selectedGenres.map(
-        genreName => genres.find(g => g.name === genreName).id
-      );
-
-      const payload = {
-        ...formData,
-        favorite_genres: genreIds, // 장르 ID 배열로 변경
-      };
-
-      console.log("전송 데이터:", payload);
-
-      const success = await authStore.registerUser(payload);
+      console.log(formData)
+      const success = await authStore.registerUser(formData)
+      
       if (success) {
-        router.push({ name: 'GuidepageView' }); // 회원가입 성공 시 로그인 페이지로 이동
+        // 회원가입 성공 시 로그인 페이지로 이동
+        router.push({ name: 'LogInView' });
       }
     } catch (error) {
-      console.error("회원가입 중 오류 발생:", error);
+      console.error("회원가입 중 오류 발생:", error)
     }
   } else {
-    alert("모든 필드를 올바르게 입력해주세요.");
+    alert("모든 필드를 올바르게 입력해주세요.")
   }
 };
 </script>

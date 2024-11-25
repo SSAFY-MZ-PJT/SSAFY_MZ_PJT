@@ -123,11 +123,11 @@
       <!-- 한줄소개 -->
       <div class="row mb-3">
         <div class="col-md-12">
-          <label for="introduction" class="form-label">한줄 소개</label>
+          <label for="aboutMe" class="form-label">한줄 소개</label>
           <textarea
-            id="introduction"
+            id="aboutMe"
             class="form-control"
-            v-model="formData.introduction"
+            v-model="formData.aboutMe"
             placeholder="한줄 소개를 작성하세요 (최대 50자)"
             maxlength="50"
             rows="3"
@@ -193,7 +193,7 @@ import { ref, reactive, computed, watch } from "vue";
 const formData = reactive({
   username: "",
   email: "",
-  introduction: "",
+  aboutMe: "",
   password: "",
   selectedGenres: [],
   profileImage: null,
@@ -267,7 +267,7 @@ const resetForm = () => {
   formData.username = "";
   formData.email = "";
   formData.password = "";
-  formData.introduction = "";
+  formData.aboutMe = "";
   formData.selectedGenres = [];
   Object.keys(genreColors).forEach((key) => delete genreColors[key]);
 };

@@ -1,92 +1,85 @@
-// src/router/index.js
+import { createRouter, createWebHistory } from 'vue-router';
+import GuidepageView from '../views/GuidepageView.vue';
 
-import { createRouter, createWebHistory } from 'vue-router'
-import GuidepageView from '../views/GuidepageView.vue'
+import SignUpView from '../views/account/SignUpView.vue';
+import LogInView from '../views/account/LogInView.vue';
 
-import SignUpView from '../views/account/SignUpView.vue'
-import LogInView from '../views/account/LogInView.vue'
+import ProfileMeView from '../views/profile/ProfileMeView.vue';
+import ProfileView from '../views/profile/ProfileView.vue';
 
-import ProfileMeView from '../views/profile/ProfileMeView.vue'
-import ProfileView from '../views/profile/ProfileView.vue'
+import MainView from '../views/movies/MainView.vue';
+import RecommendDetailView from '../views/movies/RecommendDetailView.vue';
+import MovieDetailView from '../views/movies/MovieDetailView.vue';
 
-import MainView from '../views/movies/MainView.vue'
-import RecommendDetailView from '../views/movies/RecommendDetailView.vue'
-import MovieDetailView from '../views/movies/MovieDetailView.vue'
+import UserupdateView from '../views/account/UserupdateView.vue';
 
-import UserupdateView from '../views/account/UserupdateView.vue'
+import BoardView from '../views/reviews/BoardView.vue';
+import BoardDetailView from '../views/reviews/BoardDetailView.vue';
+import ReviewDetailView from '../views/reviews/ReviewDetailView.vue';
+import ReviewCreateView from '../views/reviews/ReviewCreateView.vue';
 
-import BoardView from '../views/reviews/BoardView.vue'
-import BoardDetailView from '../views/reviews/BoardDetailView.vue'
-import ReviewDetailView from '../views/reviews/ReviewDetailView.vue'
-import ReviewCreateView from '../views/reviews/ReviewCreateView.vue'
+import CreateDiscussionView from '../views/discussion/CreateDiscussionView.vue';
+import TalkAiView from '../views/discussion/TalkAiView.vue';
+import EmailVerificationView from '../views/account/EmailVerificationView.vue';
 
-import CreateDiscussionView from '../views/discussion/CreateDiscussionView.vue'
-import TalkAiView from '../views/discussion/TalkAiView.vue'
-import EmailVerificationView from '../views/account/EmailVerificationView.vue'
-
-import { useAuthStore } from '../stores/auth'
+import { useAuthStore } from '../stores/auth';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     // account
     {
-        path: '/email-verification',
-        name: 'EmailVerification',
-        component: EmailVerificationView
+      path: '/email-verification',
+      name: 'EmailVerification',
+      component: EmailVerificationView,
     },
     {
       path: '/account/login',
       name: 'LogInView',
-      component: LogInView
+      component: LogInView,
     },
     {
       path: '/account/signup',
       name: 'SignUpView',
-      component: SignUpView
+      component: SignUpView,
     },
     {
       path: '/account/userupdate',
       name: 'UserupdateView',
-      component: UserupdateView
+      component: UserupdateView,
     },
 
     // profile
     {
       path: '/profile',
       name: 'ProfileMeView',
-      component: ProfileMeView
+      component: ProfileMeView,
     },
     {
-      path: '/profile/:username',
-      // path: '/profile/profileother',
+      path: '/profile/profileother',
       name: 'ProfileView',
-      component: ProfileView
+      component: ProfileView,
     },
 
     // movies
     {
-      path: "/movies/main",
-      name: "MainView",
+      path: '/movies/main',
+      name: 'MainView',
       component: MainView,
     },
     {
-      path: "/movies/:category",
-      name: "RecommendDetailView",
+      path: '/movies/:category',
+      name: 'RecommendDetailView',
       component: RecommendDetailView,
       props: true,
-      beforeEnter: (to, from, next) => {
-        if (isNaN(to.params.category)) next(); // category가 숫자가 아니면 이동 허용
-        else next(false); // 숫자인 경우는 MovieDetailView로 이동
-      },
     },
     {
-      path: "/movies/:id(\\d+)", // 숫자만 허용
-      name: "MovieDetailView",
+      path: '/movies/:id',
+      name: 'MovieDetailView',
       component: MovieDetailView,
       props: true,
     },
-    
+
     // reviews
     {
       path: '/reviews/board',
@@ -94,43 +87,50 @@ const router = createRouter({
       component: BoardView,
     },
     {
-      path: '/reviews/board/:movie.id',
-      // path: '/reviews/boarddetail',
+      path: '/reviews/:movieId/boarddetail',
       name: 'BoardDetailView',
       component: BoardDetailView,
       props: true,
     },
     {
-      path: '/reviews/:review.id',
-      // path: '/reviews/1',
+      path: '/reviews/:id',
       name: 'ReviewDetailView',
       component: ReviewDetailView,
       props: true,
     },
     {
-      path: '/reviews/create',
+      path: '/reviews/create/:id',
       name: 'ReviewCreateView',
-      component: ReviewCreateView
+      component: ReviewCreateView,
     },
     // discussion
     {
       path: '/craetediscussion',
-      name: 'CreateDiscussionView',
-      component: CreateDiscussionView
+      name: 'CreateDiscussionView.vue',
+      component: CreateDiscussionView,
     },
     {
       path: '/talkai',
       name: 'TalkAiView',
-      component: TalkAiView
+      component: TalkAiView,
     },
-    
+
     {
       path: '/',
       name: 'GuidepageView',
-      component: GuidepageView
+      component: GuidepageView,
     },
-  ]
-})
+  ],
+
+  // 스크롤 동작 설정
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition; // 브라우저 뒤로가기/앞으로가기를 클릭했을 때 이전 위치로 이동
+    } else {
+      return { top: 0 }; // 항상 맨 위로 이동
+    }
+  },
+});
 
 // router.beforeEach
 router.beforeEach((to, from, next) => {
@@ -161,5 +161,4 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
-
-export default router
+export default router;

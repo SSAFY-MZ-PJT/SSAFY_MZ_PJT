@@ -84,8 +84,10 @@
         <hr class=" mb-5 mt-5">
 
         <div v-if="profile.liked_movies.length > 0" class="d-flex flex-wrap">
-          <div v-for="movie in profile.liked_movies" :key="movie.id" class="card m-2" style="width: 18rem;">
-            <img :src="movie.poster_image_url" class="card-img-top" alt="Movie Poster" />
+          <div v-for="movie in profile.liked_movies" :key="movie.id" class="card m-2 sizeup" style="width: 18rem;">
+            <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id } }" class="card-link">
+              <img :src="movie.poster_image_url" class="card-img-top" alt="Movie Poster" />
+            </router-link>
             <div class="card-body">
               <h5 class="card-title">{{ movie.title }}</h5>
               <p class="card-text">Release Date: {{ movie.release_date }}</p>
@@ -113,7 +115,6 @@
                 </div>
                 <!-- 카드 본문 -->
                 <div class="card-body">
-                  <img :src="review.movie.poster_url || '@/assets/Reviewicons/default-movie.png'" alt="Movie Poster" class="card-img-top mb-3">
                   <h5 class="fw-bold">{{ review.title }}</h5>
                   <div class="d-flex align-items-center">
                     <img src="@/assets/Reviewicons/star.png" alt="star" width="20" class="me-2">
@@ -312,6 +313,10 @@ font-weight: bold;
     border: none; /* 테두리 제거 */
   }
 
+.sizeup:hover {
+  transform: scale(1.1);
+  transition: all 0.3s ease; /* 부드러운 효과 */
+}
 
 /* 리뷰, 토론 카드 컴포 */
 .card {

@@ -33,10 +33,6 @@
           <!-- Comments Header -->
           <div class="d-flex justify-content-between align-items-center mb-4">
             <h4>{{ comments.length }} Comments</h4>
-            <div>
-              <a href="#" class="text-muted me-3" @click.prevent="sortComments('recent')">최신순</a>
-              <a href="#" class="text-muted" @click.prevent="sortComments('likes')">좋아요순</a>
-            </div>
           </div>
           <hr />
 

@@ -126,7 +126,7 @@ project/
 <br/>
 
 ## 🌳 ERD
-ERD_Cinerium (1)
+[ERD_Cinerium (1)](https://github.com/SSAFY-MZ-PJT/SSAFY_MZ_PJT/issues/19#issue-2679292047)
 
 
 <br/>

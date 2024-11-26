@@ -22,4 +22,4 @@ class Command(BaseCommand):
 # python manage.py update_movie_categories --pages <number_of_pages>
 
 
-# python manage.py dumpdata --indent 2 > data.json
+# python dump_data.py

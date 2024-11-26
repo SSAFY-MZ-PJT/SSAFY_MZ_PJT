@@ -26,6 +26,10 @@
           <hr />
           <!-- Content -->
           <p class="pb-5 pt-3 fs-5">{{ review.content }}</p>
+          <div class="d-flex justify-content-end">
+            <a href="" class="text-muted me-3" >수정하기</a>
+            <a href="" class="text-muted me-3">삭제</a>
+          </div>
         </div>
 
         <!-- Comments Section -->
@@ -33,10 +37,6 @@
           <!-- Comments Header -->
           <div class="d-flex justify-content-between align-items-center mb-4">
             <h4>{{ comments.length }} Comments</h4>
-            <div>
-              <a href="#" class="text-muted me-3" @click.prevent="sortComments('recent')">최신순</a>
-              <a href="#" class="text-muted" @click.prevent="sortComments('likes')">좋아요순</a>
-            </div>
           </div>
           <hr />
 
@@ -63,7 +63,7 @@
                 </div>
                 <p class="mb-2">{{ comment.content }}</p>
                 <div class="d-flex align-items-center">
-                  <a href="#" class="text-muted reply-btn" @click.prevent="replyInput[comment.id] = !replyInput[comment.id]">Reply</a>
+                  <a href="#" class="text-muted reply-btn" @click.prevent="toggleReplyInput(comment.id)">Reply</a>
                 </div>
 
                 <!-- 대댓글 목록 -->
@@ -81,15 +81,15 @@
                 </div>
 
                 <!-- 대댓글 입력창 -->
-                <div v-if="replyInput[comment.id]" class="reply-form mt-2 d-flex align-items-center">
-                    <input
-                      type="text"
-                      v-model="replyInput[comment.id]"
-                      class="form-control me-2"
-                      placeholder="Write a reply..."
-                    />
-                    <button class="btn custom-button" @click="addReply(comment.id)">Reply</button>
-                  </div>
+                <div v-if="replyInput[comment.id] !== undefined" class="reply-form mt-2 d-flex align-items-center">
+                  <input
+                    type="text"
+                    v-model="replyInput[comment.id]"
+                    class="form-control me-2"
+                    placeholder="Write a reply..."
+                  />
+                  <button class="btn custom-button" @click="addReply(comment.id)">Reply</button>
+                </div>
               </div>
             </div>
           </div>
@@ -210,13 +210,23 @@ const addComment = async () => {
   }
 };
 
+// 댓글에 대한 reply 입력창 토글
+const toggleReplyInput = (commentId) => {
+  if (replyInput.value[commentId] !== undefined) {
+    // 이미 열려 있다면 닫기
+    delete replyInput.value[commentId];
+  } else {
+    // 열려있지 않다면 빈 문자열로 초기화
+    replyInput.value[commentId] = "";
+  }
+};
+
 // 대댓글 추가
 const addReply = async (commentId) => {
   const content = replyInput.value[commentId];
 
-  // content가 문자열인지 확인
-  if (typeof content !== "string" || !content.trim()) {
-    alert("입력하지 않으셨습니다. 다시 한 번 확인해주세요.");
+  if (!content || typeof content !== "string" || !content.trim()) {
+    alert("Reply cannot be empty.");
     return;
   }
 
@@ -225,6 +235,7 @@ const addReply = async (commentId) => {
       `${BASE_URL}/reviews/${review.value.id}/comments/${commentId}/replies/`,
       { content }
     );
+
     const targetComment = comments.value.find((c) => c.id === commentId);
     if (targetComment) {
       if (!targetComment.replies) targetComment.replies = [];

@@ -1,3 +1,4 @@
+<!-- src/components/MovieCard.vue -->
 <template>
   <div class="card h-100">
     <div class="position-relative">
@@ -11,10 +12,10 @@
       </router-link>
       <!-- Favorite Button -->
       <button
-      class="bookmark-btn position-absolute top-0 end-0 btn btn-sm m-1"
-      @click="toggleFavorite(movie.id)"
-          :class="{ 'active': movie.isFavorite }"
-        >
+        class="bookmark-btn position-absolute top-0 end-0 btn btn-sm m-1"
+        @click.stop="toggleFavorite(movie.id)"
+        :class="{ 'active': movie.isFavorite }"
+      >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -23,10 +24,10 @@
             class="bi bi-bookmark"
             viewBox="0 0 16 16"
           >
-            <path
-              d="M2 2v13.5l6-3.5 6 3.5V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1z"
-              :fill="movie.isFavorite ? '#002C0C' : 'currentColor'"
-            />
+          <path
+            d="M2 2v13.5l6-3.5 6 3.5V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1z"
+            :fill="movie.isFavorite ? '#002C0C' : 'currentColor'"
+          />
           </svg>
         </button>
       </div>
@@ -49,16 +50,20 @@
   </template>
   
   <script setup>
+  import { useMovieStore } from '@/stores/movie';
+
   defineProps({
     movie: {
       type: Object,
       required: true,
     },
   });
-  
+
+  const movieStore = useMovieStore();
+
   const toggleFavorite = (id) => {
-    console.log(`Toggle favorite for movie with id: ${id}`);
-  };
+  movieStore.toggleFavorite(id);
+};
   
   const playTrailer = (url) => {
     window.open(url, "_blank");

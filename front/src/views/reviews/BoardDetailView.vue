@@ -51,8 +51,13 @@
               </div>
               <hr>
               <div class="mt-4 d-flex justify-content-end"> 
-                <button class="btn custom-button">
-                  <i class="bi bi-plus-lg"></i> Add to Watchlist
+                <button
+                  class="btn custom-button"
+                  @click="toggleFavorite(movieStore.movieDetails.id)"
+                  :class="{ 'btn-success': movieStore.movieDetails.isFavorite, 'btn-outline-primary': !movieStore.movieDetails.isFavorite }"
+                >
+                  <i :class="movieStore.movieDetails.isFavorite ? 'bi bi-bookmark-check-fill' : 'bi bi-bookmark'"></i>
+                  {{ movieStore.movieDetails.isFavorite ? 'Added to Watchlist' : 'Add to Watchlist' }}
                 </button>
                 <router-link :to="{ name: 'ReviewCreateView', params: { id: movie.id } }">
                   <button class="btn custom-button ms-3">
@@ -166,7 +171,9 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useReviewStore } from '@/stores/review';
+import { useMovieStore } from "@/stores/movie";
 
+const movieStore = useMovieStore();
 const router = useRouter()
 const route = useRoute();
 const reviewStore = useReviewStore();
@@ -238,6 +245,16 @@ const toggleLike = async (reviewId) => {
     console.error('Failed to toggle like:', error);
   }
 };
+
+// 좋아요 토글 함수
+const toggleFavorite = async (movieId) => {
+  try {
+    await movieStore.toggleFavorite(movieId);
+  } catch (error) {
+    console.error("Failed to toggle favorite:", error);
+  }
+};
+
 
 // Review color based on rating
 const getReviewBgColor = (rating) => {

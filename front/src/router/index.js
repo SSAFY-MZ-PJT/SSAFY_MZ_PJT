@@ -125,7 +125,7 @@ const router = createRouter({
       component: CreateDiscussionView
     },
     {
-      path: '/talkai/:characterName/:characterPersonality',
+      path: '/talkai/:characterName/:characterPersonality/:characterImage',
       name: 'TalkAiView',
       component: TalkAiView,
       props: true,

@@ -25,8 +25,13 @@
                 </p>
               </div>
               <!-- Watchlist Button -->
-              <button class="btn custom-button">
-                <i class="bi bi-plus-lg"></i> Add to Watchlist
+              <button
+                class="btn custom-button"
+                @click="toggleFavorite(movieStore.movieDetails.id)"
+                :class="{ 'btn-success': movieStore.movieDetails.isFavorite, 'btn-outline-primary': !movieStore.movieDetails.isFavorite }"
+              >
+                <i :class="movieStore.movieDetails.isFavorite ? 'bi bi-bookmark-check-fill' : 'bi bi-bookmark'"></i>
+                {{ movieStore.movieDetails.isFavorite ? 'Added to Watchlist' : 'Add to Watchlist' }}
               </button>
             </div>
 
@@ -270,14 +275,16 @@ const prevSlide = () => {
   currentSlide.value = (currentSlide.value - 1 + totalSlides) % totalSlides;
 };
 
-// 좋아요 토글
-const toggleLike = (id) => {
-  const review = movieStore.movieDetails.reviews.find((r) => r.id === id);
-  if (review) {
-    review.liked = !review.liked;
-    review.likes += review.liked ? 1 : -1;
+
+// 좋아요 토글 함수
+const toggleFavorite = async (movieId) => {
+  try {
+    await movieStore.toggleFavorite(movieId);
+  } catch (error) {
+    console.error("Failed to toggle favorite:", error);
   }
 };
+
 
 // 숫자 형식 변환
 const formatNumber = (number) => 
@@ -445,5 +452,21 @@ hr {
   font-size: 1.2rem;
   color: #888888;
   background-color: #f0f0f0;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+
+.btn-outline-primary {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: #fff;
 }
 </style>

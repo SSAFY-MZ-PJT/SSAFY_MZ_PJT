@@ -48,7 +48,7 @@ def save_movie_to_db(movie_data):
 
     # 배우 데이터 처리
     actors = []
-    for cast_member in credits_data.get('cast', [])[:10]:  # 최대 10명 저장
+    for cast_member in credits_data.get('cast', [])[:18]:  # 최대 10명 저장
         actor, _ = Actor.objects.get_or_create(
             tmdb_id=cast_member['id'],  # TMDB ID 저장
             defaults={

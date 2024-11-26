@@ -27,9 +27,11 @@
       <section class="content container section" ref="sections">
         <div class="row align-items-center my-5 topdiv text-center">
           <div class="text-section">
-            <h5 class="small-title">영화 정보를 한눈에</h5>
-            <h3 style="color: #5B7C3C;">한 곳에서 영화 정보를 모두 확인하세요</h3>
-            <p>
+            <h5 class="small-title" style="color: #FFFFFF;">영화 정보를 한눈에</h5>
+            <h3 style="color: #EBEEEB;">한 곳에서 영화 정보를 모두 확인하세요</h3>
+            <p style="color: #C9D2CC;">
+              Cinerium은 영화에 대한 정보를 간편하게 확인할 수 있는 플랫폼입니다.  
+              당신이 <strong>좋아하는 영화</strong>의 리뷰와 평점을 한눈에 살펴보세요. 
               Cinerium은 영화에 대한 정보를 간편하게 확인할 수 있는 플랫폼입니다.  
               당신이 좋아하는 영화의 리뷰와 평점을 한눈에 살펴보세요.
             </p>
@@ -44,6 +46,8 @@
             <h5 class="small-title">나만의 토론 공간</h5>
             <h3>개인적인 토론으로 내 생각을 확장하세요</h3>
             <p>
+              혼자만 볼 수 있는 <strong>개인 토론 기능</strong>으로 몰랐던 것을 질문하고  
+              영화의 깊은 의미를 탐구하며 더 나은 시각을 얻어보세요.
               혼자만 볼 수 있는 개인 토론 기능으로 몰랐던 것을 질문하고  
               영화의 깊은 의미를 탐구하며 더 나은 시각을 얻어보세요.
             </p>
@@ -58,7 +62,7 @@
             <h5 class="small-title">다양한 리뷰와 의견</h5>
             <h3>다른 사람들의 리뷰를 확인하고 소통하세요</h3>
             <p>
-              리뷰가 마음에 드는 사람을 팔로우하고 그들의 새로운 글을 확인할 수 있습니다.  
+              리뷰가 마음에 드는 사람을 팔로우하고 그들의 새로운 글을 확인할 수 있습니다. <br>  
               서로의 의견을 통해 다양한 시각을 경험해 보세요.
             </p>
           </div>
@@ -141,6 +145,10 @@ h1.logo {
 
 h3 {
   color: #fff;
+}
+
+.wit{
+  color: #ffffff;
 }
 
 p {

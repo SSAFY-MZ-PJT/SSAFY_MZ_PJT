@@ -1,9 +1,9 @@
 <!-- src/views/discussion/TalkAiView.vue -->
 
 <template>
-  <div class="chat-page">
+  <div class="chat-page mt-5">
     <!-- Chat Messages -->
-    <div class="chat-container">
+    <div class="chat-container mt-5">
       <div
         v-for="message in messages"
         :key="message.id"
@@ -19,16 +19,12 @@
         </div>
         <div class="message-content">
           <p class="sender-name">
-            {{ message.sender === "character" ? characterName : "You" }}
+            {{ message.sender === "character" ? characterName : username }}
           </p>
           <p class="message-text">{{ message.text }}</p>
         </div>
         <div class="message-avatar" v-if="message.sender === 'user'">
-          <img
-            src="https://via.placeholder.com/50"
-            alt="User Avatar"
-            class="avatar"
-          />
+          <img :src="profileImage || defaultProfileImage" :alt="username" class="avatar" />
         </div>
       </div>
     </div>
@@ -49,10 +45,19 @@
 
 <script setup>
 import { reactive, ref, onMounted } from "vue";
-
+import { useUserStore } from "@/stores/auth.js";
 import axios from "axios";
 
-// Props로 Vue Router에서 전달된 데이터를 받음
+// Pinia Store 가져오기
+const userStore = useUserStore();
+const { username, profileImage } = userStore;
+const defaultProfileImage = "@/assets/Navbaricons/user.png"; // 기본 이미지 경로
+
+// Chat 상태 관리
+const messages = reactive([]);
+const newMessage = ref("");
+
+// Props로 캐릭터 정보 전달
 const props = defineProps({
   characterName: {
     type: String,
@@ -62,12 +67,11 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  characterImage: {
+    type: String,
+    required: true,
+  },
 });
-console.log("Props received:", props.characterName, props.characterPersonality);
-
-// Chat 상태 관리
-const messages = reactive([]);
-const newMessage = ref("");
 
 // Initialize Chat
 const initializeChat = async () => {
@@ -76,7 +80,6 @@ const initializeChat = async () => {
       name: props.characterName,
       personality: props.characterPersonality,
     });
-    console.log("Backend response:", response.data);
     messages.push({
       id: Date.now(),
       sender: "character",
@@ -84,7 +87,6 @@ const initializeChat = async () => {
     });
   } catch (error) {
     console.error("Error initializing chat:", error);
-    console.error("Response from backend:", error.response?.data);
   }
 };
 
@@ -112,15 +114,15 @@ const sendMessage = async () => {
     });
   } catch (error) {
     console.error("Error sending message:", error);
-    console.error("Response from backend:", error.response?.data);
   }
 };
 
-
-
-
-// Initialize Chat on Component Mount
-onMounted(() => {
+/// Fetch User Data and Initialize Chat
+onMounted(async () => {
+  if (!userStore.username) {
+    // 사용자 정보가 없으면 데이터를 가져옵니다.
+    await userStore.fetchUserData();
+  }
   initializeChat();
 });
 </script>
@@ -130,7 +132,7 @@ onMounted(() => {
   .chat-page {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 90vh;
     max-width: 800px;
     margin: 0 auto;
     border: 1px solid #ddd;

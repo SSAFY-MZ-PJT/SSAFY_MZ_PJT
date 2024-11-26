@@ -9,7 +9,12 @@
         <div class="row mb-4">
           <!-- 왼쪽: 프로필 이미지 -->
           <div class="col-md-6 d-flex align-items-center">
-            <img :src="profile.profile_image || defaultProfileImage" alt="Profile Picture" class="rounded-circle me-5" width="120" />
+            <img
+              :src="profile.profile_image"
+              alt="Profile Picture"
+              class="rounded-circle me-5"
+              width="120"
+            />
             <div>
               <h2 class="fw-bold">{{ profile.username }}</h2>
               <p class="text-muted">{{ profile.introduction || "No introduction provided." }}</p>
@@ -155,6 +160,7 @@ const handleCharacterSelected = (character) => {
   console.log("Navigating with params:", {
   characterName: character.name,
   characterPersonality: character.personality,
+  characterImage: character.image,
 });
 
   // TalkAiView로 이동 (백엔드 요청 없이 이동)
@@ -163,6 +169,7 @@ const handleCharacterSelected = (character) => {
   params: {
     characterName: character.name,
     characterPersonality: character.personality,
+    characterImage: character.image,
   },
 });
 };
@@ -190,9 +197,19 @@ const fetchProfile = async () => {
     const response = await axios.get("http://localhost:8000/accounts/me/", {
       headers: { Authorization: `Token ${localStorage.getItem("accessToken")}` },
     });
-    profile.value = response.data;
-    myName.value = profile.value.username
+    const profileData = response.data;
+
     console.log(profile.value.followings)
+    
+    // 프로필 이미지
+    profile.value = {
+      ...profileData,
+      profile_image: profileData.profile_image.startsWith("/media/")
+      ? `http://127.0.0.1:8000${profileData.profile_image}` // 상대 경로 처리
+      : profileData.profile_image, // 절대 경로 그대로 사용
+    };
+    
+    myName.value = profile.value.username
 
     // 리뷰 데이터에 영화 포스터 추가
     profile.value.reviews = profile.value.reviews.map((review) => ({

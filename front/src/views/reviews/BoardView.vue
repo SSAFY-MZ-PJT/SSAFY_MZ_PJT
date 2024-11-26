@@ -28,7 +28,14 @@
                   </p>
                 </div>
                 <div class="d-flex align-items-center">
-                  <button class="btn custom-button">+ Add to Watchlist</button>
+                  <button
+                  class="btn custom-button"
+                  @click="toggleFavorite(movieStore.movieDetails.id)"
+                  :class="{ 'btn-success': movieStore.movieDetails.isFavorite, 'btn-outline-primary': !movieStore.movieDetails.isFavorite }"
+                >
+                  <i :class="movieStore.movieDetails.isFavorite ? 'bi bi-bookmark-check-fill' : 'bi bi-bookmark'"></i>
+                  {{ movieStore.movieDetails.isFavorite ? 'Added to Watchlist' : 'Add to Watchlist' }}
+                </button>
                 </div>
               </div>
               
@@ -155,9 +162,10 @@ import { ref, computed, onMounted } from "vue";
 import Search from "@/components/Search.vue";
 import { useReviewStore } from "@/stores/review";
 import { useRouter } from "vue-router"
+import { useMovieStore } from "@/stores/movie";
 
+const movieStore = useMovieStore();
 const router = useRouter()
-
 const reviewStore = useReviewStore();
 const isLoading = ref(true);
 const error = ref(null);
@@ -254,6 +262,15 @@ const navigateToReview = (reviewId, movieId) => {
 
 const navigateToMovie = (movieId) => {
   router.push({ name: 'BoardDetailView', params: { movieId } });
+};
+
+// 좋아요 토글 함수
+const toggleFavorite = async (movieId) => {
+  try {
+    await movieStore.toggleFavorite(movieId);
+  } catch (error) {
+    console.error("Failed to toggle favorite:", error);
+  }
 };
 
 onMounted(loadMoviesAndReviews);

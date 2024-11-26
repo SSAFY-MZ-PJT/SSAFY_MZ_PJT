@@ -124,19 +124,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  // // // 프로필 정보 가져오기
-  // const fetchUserProfile = async () => {
-  //   try {
-  //     const userId = localStorage.getItem('userId'); // 저장된 userId 가져오기
-  //     const response = await axios.get(`http://localhost:8000/accounts/${userId}/`);
-  //     return response.data; // 사용자 프로필 데이터 반환
-  //   } catch (error) {
-  //     console.error("사용자 프로필 가져오기 실패:", error);
-  //     throw error;
-  //   }
-  // };
-  
-  // expose managed state as return value
   return {
     isLoading,
     error,
@@ -147,3 +134,39 @@ export const useAuthStore = defineStore('auth', () => {
     restoreAuthState,
   }
 },{persist:true})
+
+export const useUserStore = defineStore("userStore", {
+  state: () => ({
+    username: null,
+    profileImage: null,
+  }),
+  actions: {
+    async fetchUserData() {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          console.error("No access token found.");
+          return;
+        }
+    
+        const response = await axios.get("http://127.0.0.1:8000/accounts/me/", {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+    
+        this.username = response.data.username;
+    
+        // 프로필 이미지 URL 설정 (MEDIA_URL 확인)
+        const profileImagePath = response.data.profile_image;
+        if (profileImagePath.startsWith("/media/")) {
+          this.profileImage = `http://127.0.0.1:8000${profileImagePath}`;
+        } else {
+          this.profileImage = profileImagePath; // 절대 URL일 경우 그대로 사용
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+  },
+},{persist:true});

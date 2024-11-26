@@ -15,6 +15,34 @@ export const useMovieStore = defineStore('movie', {
   }),
 
   actions: {
+    // 좋아요 토글 액션
+    async toggleFavorite(movieId) {
+      try {
+        const response = await axios.post(`http://localhost:8000/movies/like/${movieId}/`);
+        const liked = response.data.liked;
+
+        // 좋아요 상태 업데이트
+        const updateFavoriteState = (movies) => {
+          const movie = movies.find((movie) => movie.id === movieId);
+          if (movie) {
+            movie.isFavorite = liked;
+          }
+        };
+
+        updateFavoriteState(this.nowPlaying);
+        updateFavoriteState(this.popular);
+        updateFavoriteState(this.recommended);
+
+        if (this.movieDetails && this.movieDetails.id === movieId) {
+          this.movieDetails.isFavorite = liked;
+        }
+
+        console.log(`Favorite toggled for movie ${movieId}:`, liked);
+      } catch (error) {
+        console.error('Failed to toggle favorite:', error.response?.data || error.message);
+      }
+    },
+    
     // 메인 페이지 영화 데이터 가져오기
     async fetchMainPageMovies() {
       this.isLoading = true;

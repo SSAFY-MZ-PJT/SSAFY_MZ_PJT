@@ -26,16 +26,22 @@
   const characters = ref([
     {
       id: 1,
-      name: "Professor Dialogue",
+      name: "Finn",
       personality: "Friendly and knowledgeable",
-      image: "/path/to/character1.png",
+      image: new URL('@/assets/Discussions/Character1.png', import.meta.url).href,
     },
     {
       id: 2,
-      name: "Movie Critic Max",
+      name: "Bella",
       personality: "Sarcastic but insightful",
-      image: "/path/to/character2.png",
+      image: new URL('@/assets/Discussions/Character2.png', import.meta.url).href,
     },
+    {
+      id: 3,
+      name: "Alice",
+      personality: "Energetic and charismatic",
+      image: new URL('@/assets/Discussions/Character3.png', import.meta.url).href,
+    }
   ]);
   
   // 캐릭터 선택 시 부모에게 데이터 전달

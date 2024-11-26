@@ -53,21 +53,21 @@ Cinerium은 단순히 영화를 감상하는 것에서 그치지 않고, 사용�
 
 | HTML5 | CSS3 | JavaScript | Vue.js|
 |:------:|:------:|:------:|:------:|
-| | | | |
+| | | | ![vue](https://github.com/user-attachments/assets/a047c33c-d56d-4541-ae00-e6a893ecadf6) |
 
 
 - **백엔드**:
 
 | Django | Node.js |
 |:------:|:------:|
-| | |
+| ![django](https://github.com/user-attachments/assets/03d8a947-10ba-4ba9-aba1-80c4d77000a6) | ![node](https://github.com/user-attachments/assets/3e133dc2-feb0-4a9b-bab5-72993b3907aa) |
 
 - **데이터베이스**:
 
 
 | MySQL | 
 |:------:|
-| |
+| ![mysql](https://github.com/user-attachments/assets/f56ccfc9-7ac6-4810-927b-e085cd9356ad) |
 
 
 <br/>

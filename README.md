@@ -53,7 +53,7 @@ Cinerium은 단순히 영화를 감상하는 것에서 그치지 않고, 사용�
 
 | HTML5 | CSS3 | JavaScript | Vue.js|
 |:------:|:------:|:------:|:------:|
-| ![html](https://github.com/user-attachments/assets/3e84d5c0-7d05-4928-a29c-2301d351a1e2) | ![css](https://github.com/user-attachments/assets/318dff7f-4299-4b51-ad5a-fc8886b892b8) | ![javasc](https://github.com/user-attachments/assets/9c146669-ef34-4c2f-941f-f4f6cbdc4897) | ![vue](https://github.com/user-attachments/assets/a047c33c-d56d-4541-ae00-e6a893ecadf6) |
+| ![html](https://github.com/user-attachments/assets/3e84d5c0-7d05-4928-a29c-2301d351a1e2) | ![cssss](https://github.com/user-attachments/assets/7470c575-2319-436a-a672-b12bace90911) | ![javasc](https://github.com/user-attachments/assets/9c146669-ef34-4c2f-941f-f4f6cbdc4897) | ![vue](https://github.com/user-attachments/assets/a047c33c-d56d-4541-ae00-e6a893ecadf6) |
 
 
 - **백엔드**:
@@ -65,9 +65,9 @@ Cinerium은 단순히 영화를 감상하는 것에서 그치지 않고, 사용�
 - **데이터베이스**:
 
 
-| MySQL | 
+| SQLite | 
 |:------:|
-| ![mysql](https://github.com/user-attachments/assets/f56ccfc9-7ac6-4810-927b-e085cd9356ad) |
+| ![다운로드 (1)](https://github.com/user-attachments/assets/e0c3d93b-60b4-459e-bfa2-5f4e0df840f7) |
 
 
 <br/>

@@ -78,24 +78,36 @@ Cinerium은 단순히 영화를 감상하는 것에서 그치지 않고, 사용�
 
 1. **사용자 관리 시스템**
    - 회원가입, 로그인, 로그아웃 기능
+   - 회원가입 시 인증 메일 구현
+   - 회원가입 시 원하는 장르 태그로 선택
    - 개인 프로필 관리
+   - 개인 프로필 수정 및 비밀번호 변경
+   - 개인 프로필 내 팔로우, 팔로워 기능
+   - 작성한 게시글, 찜한 영화, 좋아요한 게시글 확인 가능
 
 2. **영화 추천 시스템**
-   - 인기 영화 추천
+   - 인기 영화, 상영 중인 영화 추천
    - 사용자 맞춤 영화 추천 (선호 태그 기반)
    - 필터링을 통한 개인화된 추천
+   - 원하는 영화 찜 기능
+   - 전체, 상세 페이지로 모든 영화 정보 확인 가능
 
 3. **영화 정보 제공**
    - 상세 정보 제공 (감독, 배우, 예산, 수익, 개봉일 등)
    - 트레일러 및 관련 미디어 통합
+   - 태그 기반 비슷한 영화 추천
+   - footer에 다른 영화 사이트로 갈 수 있는 아이콘 설정
 
 4. **리뷰 및 평가 시스템**
+   - 리뷰 CRUD 구현
    - 영화 리뷰 작성 및 조회
    - 댓글 기능을 통한 사용자 간 상호작용
+   - 리뷰 좋아요 기능으로 리뷰 반응 가능
 
 5. **AI 토론 시스템**
    - 3가지 다른 성격의 AI 캐릭터와 영화에 대한 토론
    - 사용자의 비판적 사고 능력 향상 지원
+   - 영화 내에서 몰랐던 지식이나 정보를 얻을 수 있음
 
 
 <br/>
@@ -121,13 +133,6 @@ project/
 
 ```
 
-- 사용자가 선택한 영화에 대해 각 AI 캐릭터와 심층적인 토론 진행
-- 토론 내용을 바탕으로 사용자의 영화 이해도와 비판적 사고력 향상 지원
-
-### 리뷰 시스템
-- 별점, 텍스트 리뷰, 태그 기반의 다각적 평가 시스템
-- 감정 분석을 통한 리뷰 요약 및 시각화
-- 사용자 간 리뷰 추천 및 공유 기능
 
 
 <br/>
@@ -156,6 +161,74 @@ AI 기능으로 이동하면 컴포넌트가 마운트되면서 필요한 정보
 사용자가 AI의 첫 응답에 답변하면 대화가 시작됩니다. 이후 AI와 사용자는 질문과 답변을 반복하며 대화를 이어나갈 수 있도록 양방향 통신이 지원됩니다. 이 과정은 대화 형식으로, 자연스러운 대화 경험을 제공하도록 설계됩니다.
 
 
+### 코드
+
+```python
+def chat(request):
+    if request.method == "POST":
+        try:
+            # 세션에서 캐릭터 정보 가져오기
+            session = request.session
+
+            # POST 요청에서 데이터 추출
+            body = json.loads(request.body)
+            user_message = body.get("message", None)
+
+            # 대화 초기화: name과 personality 설정
+            if "name" in body and "personality" in body:
+                session["name"] = body["name"]
+                session["personality"] = body["personality"]
+                session.save()  # 세션 저장
+                ai_response = f"안녕하세요, 저는 {body['name']}입니다. 어떤 영화에 대해서 토론하고 싶으신가요?"
+                return JsonResponse({"ai_response": ai_response}, status=200)
+
+            # 세션에서 name과 personality 가져오기
+            ai_name = session.get("name", "MovieBot")
+            ai_personality = session.get("personality", "재미있고 영화에 박식한")
+
+            # 캐릭터 설정
+            ai_context = (
+                f"너는 {ai_name}이야. {ai_personality} 성격을 가지고 있고, "
+                "사용자와 영화에 대해 유익하고 재미있는 대화를 나누는 게 목표야."
+                "너는 AI가 아니라 사람이야. 영화를 너무너무 좋아하는 사람이지."
+                "누가 너한테 AI인지 사람인지 물어본다면 사람이라고 대답해. 너는 사람이야."
+                "너는 최대한 친근하게 말하는 아주 친절한 사람이야."
+            )
+
+            # 메시지 배열 설정
+            messages = [
+                {"role": "system", "content": ai_context},
+            ]
+
+            # 사용자 메시지가 없는 경우 AI가 먼저 인사
+            if user_message is None:
+                messages.append(
+                    {"role": "assistant", "content": f"안녕하세요, 저는 {ai_name}입니다. 어떤 영화에 대해서 토론하고 싶으신가요?"}
+                )
+            else:
+                messages.append({"role": "user", "content": user_message})
+
+            # OpenAI API 호출
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",  # 또는 "gpt-3.5-turbo"
+                messages=messages,
+                temperature=0.7,
+                max_tokens=500,
+            )
+
+            # AI 응답 추출
+            ai_response = response.choices[0].message.content
+
+            # 응답 반환
+            return JsonResponse({"ai_response": ai_response}, status=200)
+
+        except Exception as e:
+            return JsonResponse({"error": f"Unexpected error: {str(e)}"}, status=500)
+
+    else:
+        return JsonResponse({"error": "Invalid request method. Use POST."}, status=405)
+```
+
 
 
 <br/>
@@ -164,16 +237,37 @@ AI 기능으로 이동하면 컴포넌트가 마운트되면서 필요한 정보
 ## 🌿 보완점
 
 - 리뷰 및 토론 생성 시 토론 데이터 저장 기능
-- 검색 기능 심화
+- 검색 기능 심화 -> 크롤링이나 모든 DB를 프론트로 보내 연관 글자가 있는 모든 영화를 볼 수 있게 하기
 - 영화와 관련된 뉴스 컴포넌트 추가
-- 처음부터 완벽하게 구현하는 것을 추구하기보다는 기본적인 것부터 구현하면서 백엔드와 프론트엔드를 기능별로 맞춰가는 방식으로 갔으면 더 좋았을 것 같습니다.
-- 이후 시간이 남을 때 디벨롭 하는게 정신건강에 좋습니다.
+- 1) 개인 프로필 불러오기 및 비밀 번호 변경 구현
+- 2) 게시판 CRUD 중 삭제와 수정 기능 미구현
+
+1의 원인
+- 찾는 중..
+
+2의 원인
+```python
+# reviews/urls.py
+
+from django.urls import path, include
+from . import views
+
+app_name = 'reviews'
+
+urlpatterns = [
+    path('', views.all_review_list, name='all_review_list'), # 전체 리뷰 조회
+    path('<int:movie_pk>/', views.movie_review_list_create, name='movie_review_list_create'), # 특정 영화에 대한 리뷰 리스트 조회 (GET) 및 특정 영화에 대한 리뷰 작성 (POST)
+    path('<int:review_pk>/', views.review_detail, name='review_detail'), # 리뷰 상세 조회, 리뷰 삭제, 리뷰 수정
+]
+```
+백엔드 쪽에서는 어떤 pk값인지 구분이 가능하지만 프론트 쪽에서는 영화의 pk이인지 리뷰의 pk인지 구분할 수 없음.
 
 
 <br/>
 <br/>
 
 ## 📗 후기
+> 처음부터 완벽하게 구현하는 것을 추구하기보다는 기본적인 것부터 구현하면서 백엔드와 프론트엔드를 기능별로 맞춰가는 방식으로 갔으면 더 좋았을 것 같습니다.
 
 ### 김재혁 (M담당)
 - 백엔드 개발 80% 이상 담당  
